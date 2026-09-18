@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Ranking Técnico · O&M Solar</title>
+<title>Corrida Operacional · O&M Solar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -31,172 +31,112 @@
     min-height:100vh;
     line-height:1.5;
   }
-  h1,h2,h3, .display{
-    font-family:'Sora', system-ui, sans-serif;
-    letter-spacing:-0.01em;
-  }
-  .wrap{
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 32px 20px 80px;
-  }
-  header.top{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:16px;
-    margin-bottom: 36px;
-    flex-wrap: wrap;
-  }
-  .brand{
-    display:flex;
-    align-items:center;
-    gap:12px;
-  }
-  .brand .mark{
-    width:40px;height:40px;border-radius:10px;
-    background: linear-gradient(135deg, var(--amber), #D9820F);
-    display:flex;align-items:center;justify-content:center;
-    font-weight:800; color:#1A1200; font-size:18px;
-    flex-shrink:0;
-  }
+  h1,h2,h3, .display{ font-family:'Sora', system-ui, sans-serif; letter-spacing:-0.01em; }
+  .wrap{ max-width: 1100px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  header.top{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .brand .mark{ width:40px;height:40px;border-radius:10px; background: linear-gradient(135deg, var(--amber), #D9820F); display:flex;align-items:center;justify-content:center; font-weight:800; color:#1A1200; font-size:18px; flex-shrink:0; }
   .brand h1{ font-size: 20px; margin:0; color:var(--text); }
   .brand p{ margin:2px 0 0; font-size:12.5px; color:var(--text-dim); }
-
-  .pill{
-    font-size:12px; color:var(--text-dim);
-    border:1px solid var(--line); padding:6px 12px; border-radius:999px;
-    display:flex; align-items:center; gap:6px;
-  }
+  .pill{ font-size:12px; color:var(--text-dim); border:1px solid var(--line); padding:6px 12px; border-radius:999px; display:flex; align-items:center; gap:6px; }
   .dot{width:7px;height:7px;border-radius:50%;background:var(--teal);}
 
   /* Gate */
-  #gate{
-    max-width:380px; margin: 12vh auto; text-align:center;
-  }
-  #gate .mark{
-    width:56px;height:56px;border-radius:14px;margin:0 auto 20px;
-    background: linear-gradient(135deg, var(--amber), #D9820F);
-    display:flex;align-items:center;justify-content:center;
-    font-weight:800; color:#1A1200; font-size:24px;
-  }
+  #gate{ max-width:380px; margin: 12vh auto; text-align:center; }
+  #gate .mark{ width:56px;height:56px;border-radius:14px;margin:0 auto 20px; background: linear-gradient(135deg, var(--amber), #D9820F); display:flex;align-items:center;justify-content:center; font-weight:800; color:#1A1200; font-size:24px; }
   #gate h2{ font-size:22px; margin:0 0 6px; }
   #gate p{ color:var(--text-dim); font-size:14px; margin:0 0 24px; }
-  #gate input{
-    width:100%; padding:13px 16px; border-radius:10px;
-    border:1px solid var(--line); background:var(--bg-panel);
-    color:var(--text); font-size:15px; text-align:center;
-    letter-spacing: 2px;
-  }
+  #gate input{ width:100%; padding:13px 16px; border-radius:10px; border:1px solid var(--line); background:var(--bg-panel); color:var(--text); font-size:15px; text-align:center; letter-spacing: 2px; }
   #gate input:focus{ outline:none; border-color:var(--amber); }
-  #gate button{
-    width:100%; margin-top:12px; padding:13px 16px; border-radius:10px;
-    border:none; background:var(--amber); color:#1A1200;
-    font-weight:700; font-size:15px; cursor:pointer;
-    transition:.15s filter;
-  }
+  #gate button{ width:100%; margin-top:12px; padding:13px 16px; border-radius:10px; border:none; background:var(--amber); color:#1A1200; font-weight:700; font-size:15px; cursor:pointer; transition:.15s filter; }
   #gate button:hover{ filter:brightness(1.08); }
   #gate .err{ color:var(--danger); font-size:13px; margin-top:10px; min-height:16px; }
 
-  /* Layout */
-  .grid{
-    display:grid;
-    grid-template-columns: 1.3fr 1fr;
-    gap: 22px;
-    align-items:start;
+  /* Tabs de departamento */
+  .dept-tabs{ display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; }
+  .dept-tab{
+    padding:10px 18px; border-radius:10px; border:1px solid var(--line);
+    background: var(--bg-panel); color:var(--text-dim); font-size:13.5px; font-weight:600;
+    cursor:pointer; display:flex; align-items:center; gap:8px; transition:.15s;
   }
-  @media (max-width: 860px){ .grid{ grid-template-columns: 1fr; } }
+  .dept-tab:hover{ border-color:var(--amber-dim); }
+  .dept-tab.active{ background: var(--amber); color:#1A1200; border-color:var(--amber); }
 
-  .card{
-    background: var(--bg-panel);
-    border:1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 22px;
-  }
-  .card h2{ font-size:16px; margin:0 0 4px; }
+  .grid{ display:grid; grid-template-columns: 1.35fr 1fr; gap: 22px; align-items:start; }
+  @media (max-width: 900px){ .grid{ grid-template-columns: 1fr; } }
+
+  .card{ background: var(--bg-panel); border:1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+  .card h2{ font-size:16px; margin:0 0 4px; display:flex; align-items:center; gap:8px; }
   .card .sub{ font-size:12.5px; color:var(--text-dim); margin:0 0 18px; }
 
-  /* Ranking list */
-  .rank-row{
-    display:grid;
-    grid-template-columns: 34px 1fr auto;
-    gap:14px;
-    align-items:center;
-    padding: 13px 10px;
-    border-radius:10px;
-    margin-bottom:6px;
+  /* Corrida (race bars) */
+  .race-row{ margin-bottom:18px; }
+  .race-top{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px; }
+  .race-name{ font-weight:700; font-size:14.5px; display:flex; align-items:center; gap:8px; }
+  .race-pos{ font-family:'Sora'; font-weight:800; font-size:13px; color:var(--text-dim); width:20px; }
+  .race-row.p1 .race-pos{ color:#FFD166; }
+  .race-row.p2 .race-pos{ color:#C9D3DE; }
+  .race-row.p3 .race-pos{ color:#D8985B; }
+  .race-score{ font-family:'Sora'; font-weight:800; font-size:14.5px; color:var(--amber); }
+  .race-meta{ font-size:11.5px; color:var(--text-dim); }
+  .track{ position:relative; height:14px; background: rgba(255,255,255,0.04); border-radius:999px; overflow:hidden; }
+  .track-fill{
+    position:absolute; left:0; top:0; height:100%; border-radius:999px;
+    background: linear-gradient(90deg, var(--amber-dim), var(--amber));
+    transition: width .6s ease;
   }
-  .rank-row:nth-child(odd){ background: rgba(255,255,255,0.02); }
-  .rank-num{
-    font-family:'Sora', sans-serif;
-    font-weight:800; font-size:16px; color:var(--text-dim);
-    text-align:center;
+  .track-rocket{
+    position:absolute; top:50%; transform: translate(-50%,-50%); font-size:16px;
+    transition: left .6s ease;
   }
-  .rank-row.p1 .rank-num{ color: #FFD166; }
-  .rank-row.p2 .rank-num{ color: #C9D3DE; }
-  .rank-row.p3 .rank-num{ color: #D8985B; }
-  .rank-name{ font-weight:600; font-size:14.5px; }
-  .rank-meta{ font-size:12px; color:var(--text-dim); margin-top:1px; }
-  .rank-score{
-    font-family:'Sora', sans-serif;
-    font-weight:800; font-size:20px; color:var(--amber);
-    text-align:right;
-  }
-  .rank-score span{ font-size:11px; color:var(--text-dim); font-weight:500; display:block; }
   .empty{ color:var(--text-dim); font-size:13.5px; padding: 20px 10px; text-align:center; }
 
   /* Form */
   label{ display:block; font-size:12.5px; color:var(--text-dim); margin:14px 0 6px; }
   label:first-of-type{ margin-top:0; }
   select, input[type=text], input[type=number], textarea{
-    width:100%; padding:10px 12px; border-radius:9px;
-    border:1px solid var(--line); background:var(--bg-panel-2);
-    color:var(--text); font-size:14px; font-family:inherit;
+    width:100%; padding:10px 12px; border-radius:9px; border:1px solid var(--line);
+    background:var(--bg-panel-2); color:var(--text); font-size:14px; font-family:inherit;
   }
   select:focus, input:focus, textarea:focus{ outline:none; border-color:var(--amber); }
   textarea{ resize:vertical; min-height:56px; }
-
   .slider-row{ display:flex; align-items:center; gap:12px; margin-top:6px; }
-  input[type=range]{
-    flex:1; accent-color: var(--amber); height:4px;
-  }
-  .slider-val{
-    font-family:'Sora', sans-serif; font-weight:700; font-size:15px;
-    color:var(--amber); width:28px; text-align:right;
-  }
-
-  button.primary{
-    width:100%; margin-top:20px; padding:13px 16px; border-radius:10px;
-    border:none; background:var(--amber); color:#1A1200;
-    font-weight:700; font-size:14.5px; cursor:pointer;
-  }
+  input[type=range]{ flex:1; accent-color: var(--amber); height:4px; }
+  .slider-val{ font-family:'Sora'; font-weight:700; font-size:15px; color:var(--amber); width:28px; text-align:right; }
+  button.primary{ width:100%; margin-top:20px; padding:13px 16px; border-radius:10px; border:none; background:var(--amber); color:#1A1200; font-weight:700; font-size:14.5px; cursor:pointer; }
   button.primary:hover{ filter:brightness(1.08); }
   button.primary:disabled{ opacity:.5; cursor:default; }
-
   .form-msg{ font-size:13px; margin-top:10px; min-height:16px; }
   .form-msg.ok{ color: var(--teal); }
   .form-msg.err{ color: var(--danger); }
 
-  .add-tecnico{
-    margin-top:18px; padding-top:16px; border-top:1px dashed var(--line);
+  /* Gerenciar equipe */
+  .manage-list{ margin-top:8px; }
+  .manage-item{ display:flex; align-items:center; gap:8px; padding:7px 0; border-bottom:1px solid var(--line); }
+  .manage-item:last-child{ border-bottom:none; }
+  .manage-item input[type=text]{ flex:1; padding:7px 10px; font-size:13px; }
+  .icon-btn{
+    border:1px solid var(--line); background:transparent; color:var(--text-dim);
+    width:30px; height:30px; border-radius:8px; cursor:pointer; font-size:13px;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
   }
-  .add-tecnico .row{ display:flex; gap:8px; }
-  .add-tecnico input{ flex:1; }
-  .add-tecnico button{
-    padding: 0 16px; border-radius:9px; border:1px solid var(--line);
-    background:transparent; color:var(--text); font-size:13px; cursor:pointer;
-  }
-  .add-tecnico button:hover{ border-color:var(--amber); color:var(--amber); }
+  .icon-btn:hover{ border-color:var(--amber); color:var(--amber); }
+  .icon-btn.danger:hover{ border-color:var(--danger); color:var(--danger); }
+  .add-row{ display:flex; gap:8px; margin-top:14px; }
+  .add-row input{ flex:1; }
+  .add-row button{ padding: 0 16px; border-radius:9px; border:1px solid var(--line); background:transparent; color:var(--text); font-size:13px; cursor:pointer; }
+  .add-row button:hover{ border-color:var(--amber); color:var(--amber); }
 
   .log{ margin-top:22px; }
-  .log-item{
-    display:flex; justify-content:space-between; gap:10px;
-    padding: 10px 0; border-bottom:1px solid var(--line);
-    font-size:13px;
-  }
+  .log-item{ display:flex; justify-content:space-between; gap:10px; padding: 10px 0; border-bottom:1px solid var(--line); font-size:13px; }
   .log-item:last-child{ border-bottom:none; }
   .log-item .who{ color:var(--text-dim); }
   .log-item .val{ font-weight:700; color:var(--teal); }
+
+  details.manage{ margin-top:20px; }
+  details.manage summary{ cursor:pointer; font-size:13px; color:var(--text-dim); user-select:none; }
+  details.manage summary:hover{ color:var(--amber); }
 
   ::placeholder{ color:#4E617A; }
 </style>
@@ -205,7 +145,7 @@
 
 <div id="gate">
   <div class="mark">☀</div>
-  <h2>Ranking Técnico</h2>
+  <h2>Corrida Operacional</h2>
   <p>Digite a senha de acesso para lançar pontuações</p>
   <input id="gate-input" type="password" placeholder="senha" autocomplete="off" />
   <button id="gate-btn">Entrar</button>
@@ -216,66 +156,74 @@
 <div class="wrap" id="app" style="display:none;">
   <header class="top">
     <div class="brand">
-      <div class="mark">☀</div>
+      <div class="mark">🚀</div>
       <div>
-        <h1>Ranking Técnico</h1>
-        <p>O&M Solar · Setor Técnico</p>
+        <h1>Corrida Operacional</h1>
+        <p>O&M Solar</p>
       </div>
     </div>
     <div class="pill" id="status-pill"><span class="dot"></span> conectado</div>
   </header>
 
+  <div class="dept-tabs" id="dept-tabs">
+    <div class="dept-tab active" data-dept="campo_tecnico">🔧 Campo Técnico</div>
+    <div class="dept-tab" data-dept="supervisores">🧭 Supervisores</div>
+    <div class="dept-tab" data-dept="cog">🛰️ COG</div>
+    <div class="dept-tab" data-dept="pcm">🗓️ PCM</div>
+  </div>
+
   <div class="grid">
     <div class="card">
-      <h2>Classificação</h2>
-      <p class="sub">Média de OS fechada, prazo e qualidade — todos os lançamentos</p>
-      <div id="ranking-list"><div class="empty">Carregando…</div></div>
+      <h2 id="race-title">🚀 Campo Técnico</h2>
+      <p class="sub">Média dos indicadores lançados — todos os registros</p>
+      <div id="race-list"><div class="empty">Carregando…</div></div>
     </div>
 
     <div class="card" id="form-card">
       <h2>Lançar pontuação</h2>
-      <p class="sub">Preencha após o fechamento de uma ordem de serviço</p>
+      <p class="sub">Preencha após avaliar o desempenho</p>
 
-      <label>Técnico</label>
-      <select id="f-tecnico"></select>
+      <label>Pessoa</label>
+      <select id="f-pessoa"></select>
 
       <label>Seu nome (gestor)</label>
       <input type="text" id="f-gestor" placeholder="Ex: Carlos Mendes" />
 
-      <label>Nº da OS (opcional)</label>
-      <input type="text" id="f-os" placeholder="Ex: OS-2026-0341" />
+      <label>Referência (opcional)</label>
+      <input type="text" id="f-os" placeholder="Ex: OS-2026-0341, período, etc." />
 
-      <label>OS fechada corretamente</label>
+      <label id="lbl-1">Indicador 1 — Produtividade / OS fechada</label>
       <div class="slider-row">
-        <input type="range" id="f-os-nota" min="0" max="10" value="8" />
-        <div class="slider-val" id="f-os-nota-val">8</div>
+        <input type="range" id="f-nota1" min="0" max="10" value="8" />
+        <div class="slider-val" id="f-nota1-val">8</div>
       </div>
 
-      <label>Cumprimento de prazo</label>
+      <label id="lbl-2">Indicador 2 — Prazo / SLA</label>
       <div class="slider-row">
-        <input type="range" id="f-prazo-nota" min="0" max="10" value="8" />
-        <div class="slider-val" id="f-prazo-nota-val">8</div>
+        <input type="range" id="f-nota2" min="0" max="10" value="8" />
+        <div class="slider-val" id="f-nota2-val">8</div>
       </div>
 
-      <label>Qualidade do serviço</label>
+      <label id="lbl-3">Indicador 3 — Qualidade</label>
       <div class="slider-row">
-        <input type="range" id="f-qualidade-nota" min="0" max="10" value="8" />
-        <div class="slider-val" id="f-qualidade-nota-val">8</div>
+        <input type="range" id="f-nota3" min="0" max="10" value="8" />
+        <div class="slider-val" id="f-nota3-val">8</div>
       </div>
 
       <label>Observação (opcional)</label>
-      <textarea id="f-obs" placeholder="Algo que valha registrar sobre o atendimento"></textarea>
+      <textarea id="f-obs" placeholder="Algo que valha registrar"></textarea>
 
       <button class="primary" id="f-submit">Lançar pontuação</button>
       <p class="form-msg" id="f-msg"></p>
 
-      <div class="add-tecnico">
-        <label style="margin-top:0;">Adicionar técnico à equipe</label>
-        <div class="row">
-          <input type="text" id="new-tecnico" placeholder="Nome do técnico" />
-          <button id="new-tecnico-btn">Adicionar</button>
+      <details class="manage">
+        <summary>⚙ Gerenciar equipe deste departamento</summary>
+        <div class="manage-list" id="manage-list"></div>
+        <div class="add-row">
+          <input type="text" id="new-pessoa" placeholder="Nome da nova pessoa" />
+          <button id="new-pessoa-btn">Adicionar</button>
         </div>
-      </div>
+      </details>
     </div>
   </div>
 
@@ -293,6 +241,14 @@
 
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+  const DEPTS = {
+    campo_tecnico: { label: '🔧 Campo Técnico', l1: 'Indicador 1 — Produtividade / OS fechada', l2: 'Indicador 2 — Prazo / SLA', l3: 'Indicador 3 — Qualidade' },
+    supervisores:  { label: '🧭 Supervisores',   l1: 'Indicador 1 — Gestão da equipe',           l2: 'Indicador 2 — Cumprimento de metas', l3: 'Indicador 3 — Qualidade / Segurança' },
+    cog:           { label: '🛰️ COG',            l1: 'Indicador 1 — Acionamentos',               l2: 'Indicador 2 — SLA de resposta',      l3: 'Indicador 3 — Gestão das ocorrências' },
+    pcm:           { label: '🗓️ PCM',            l1: 'Indicador 1 — Programação',                l2: 'Indicador 2 — Planejamento',         l3: 'Indicador 3 — Gestão das S.S.' },
+  };
+
+  let currentDept = 'campo_tecnico';
   const gate = document.getElementById('gate');
   const app = document.getElementById('app');
   const formCard = document.getElementById('form-card');
@@ -300,10 +256,7 @@
   // ---- Gate de senha ----
   document.getElementById('gate-btn').onclick = checkPassword;
   document.getElementById('gate-input').addEventListener('keydown', e => { if(e.key === 'Enter') checkPassword(); });
-  document.getElementById('gate-skip').onclick = (e) => {
-    e.preventDefault();
-    enterApp(false);
-  };
+  document.getElementById('gate-skip').onclick = (e) => { e.preventDefault(); enterApp(false); };
 
   async function checkPassword(){
     const val = document.getElementById('gate-input').value.trim();
@@ -312,145 +265,194 @@
     if(!val){ errEl.textContent = 'Digite a senha.'; return; }
     const { data, error } = await sb.from('acesso').select('senha').eq('id', 1).single();
     if(error){ errEl.textContent = 'Erro ao validar senha. Tente novamente.'; return; }
-    if(data && data.senha === val){
-      enterApp(true);
-    } else {
-      errEl.textContent = 'Senha incorreta.';
-    }
+    if(data && data.senha === val){ enterApp(true); }
+    else { errEl.textContent = 'Senha incorreta.'; }
   }
 
   function enterApp(canWrite){
     gate.style.display = 'none';
     app.style.display = 'block';
     if(!canWrite){ formCard.style.display = 'none'; }
-    loadTecnicos();
-    loadRanking();
+    setupTabs();
+    refreshAll();
+  }
+
+  function setupTabs(){
+    document.querySelectorAll('.dept-tab').forEach(tab => {
+      tab.onclick = () => {
+        document.querySelectorAll('.dept-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentDept = tab.dataset.dept;
+        document.getElementById('race-title').textContent = '🚀 ' + DEPTS[currentDept].label.replace(/^\S+\s/, '');
+        document.getElementById('lbl-1').textContent = DEPTS[currentDept].l1;
+        document.getElementById('lbl-2').textContent = DEPTS[currentDept].l2;
+        document.getElementById('lbl-3').textContent = DEPTS[currentDept].l3;
+        refreshAll();
+      };
+    });
+  }
+
+  function refreshAll(){
+    loadPessoas();
+    loadRace();
     loadLog();
+    loadManageList();
   }
 
   // ---- Sliders ----
-  ['os-nota','prazo-nota','qualidade-nota'].forEach(id => {
+  ['nota1','nota2','nota3'].forEach(id => {
     const input = document.getElementById('f-'+id);
     const label = document.getElementById('f-'+id+'-val');
     input.addEventListener('input', () => label.textContent = input.value);
   });
 
-  // ---- Carregar técnicos no select ----
-  async function loadTecnicos(){
-    const { data, error } = await sb.from('tecnicos').select('id,nome').eq('ativo', true).order('nome');
-    const select = document.getElementById('f-tecnico');
+  // ---- Pessoas no select do formulário ----
+  async function loadPessoas(){
+    const { data, error } = await sb.from('pessoas').select('id,nome').eq('ativo', true).eq('departamento', currentDept).order('nome');
+    const select = document.getElementById('f-pessoa');
     select.innerHTML = '';
     if(error || !data || data.length === 0){
-      select.innerHTML = '<option value="">Nenhum técnico cadastrado</option>';
+      select.innerHTML = '<option value="">Nenhuma pessoa cadastrada</option>';
       return;
     }
-    data.forEach(t => {
+    data.forEach(p => {
       const opt = document.createElement('option');
-      opt.value = t.id;
-      opt.textContent = t.nome;
+      opt.value = p.id;
+      opt.textContent = p.nome;
       select.appendChild(opt);
     });
   }
 
-  // ---- Adicionar técnico ----
-  document.getElementById('new-tecnico-btn').onclick = async () => {
-    const input = document.getElementById('new-tecnico');
+  // ---- Gerenciar equipe (listar / editar / apagar) ----
+  async function loadManageList(){
+    const container = document.getElementById('manage-list');
+    const { data, error } = await sb.from('pessoas').select('id,nome').eq('ativo', true).eq('departamento', currentDept).order('nome');
+    if(error || !data || data.length === 0){
+      container.innerHTML = '<div class="empty" style="padding:8px 0;">Ninguém cadastrado ainda neste departamento</div>';
+      return;
+    }
+    container.innerHTML = data.map(p => `
+      <div class="manage-item" data-id="${p.id}">
+        <input type="text" value="${escapeAttr(p.nome)}" />
+        <button class="icon-btn save-btn" title="Salvar nome">💾</button>
+        <button class="icon-btn danger del-btn" title="Remover">🗑</button>
+      </div>
+    `).join('');
+
+    container.querySelectorAll('.save-btn').forEach(btn => {
+      btn.onclick = async () => {
+        const row = btn.closest('.manage-item');
+        const id = row.dataset.id;
+        const novoNome = row.querySelector('input').value.trim();
+        if(!novoNome) return;
+        await sb.from('pessoas').update({ nome: novoNome }).eq('id', id);
+        loadPessoas(); loadRace(); loadLog();
+      };
+    });
+    container.querySelectorAll('.del-btn').forEach(btn => {
+      btn.onclick = async () => {
+        const row = btn.closest('.manage-item');
+        const id = row.dataset.id;
+        if(!confirm('Remover esta pessoa? Os lançamentos dela também serão apagados.')) return;
+        await sb.from('pessoas').delete().eq('id', id);
+        loadManageList(); loadPessoas(); loadRace(); loadLog();
+      };
+    });
+  }
+
+  document.getElementById('new-pessoa-btn').onclick = async () => {
+    const input = document.getElementById('new-pessoa');
     const nome = input.value.trim();
     if(!nome) return;
-    const { error } = await sb.from('tecnicos').insert({ nome });
-    if(!error){
-      input.value = '';
-      loadTecnicos();
-    }
+    const { error } = await sb.from('pessoas').insert({ nome, departamento: currentDept });
+    if(!error){ input.value = ''; loadManageList(); loadPessoas(); }
   };
 
   // ---- Enviar pontuação ----
   document.getElementById('f-submit').onclick = async () => {
     const btn = document.getElementById('f-submit');
     const msg = document.getElementById('f-msg');
-    msg.className = 'form-msg';
-    msg.textContent = '';
+    msg.className = 'form-msg'; msg.textContent = '';
 
-    const tecnico_id = document.getElementById('f-tecnico').value;
+    const pessoa_id = document.getElementById('f-pessoa').value;
     const gestor = document.getElementById('f-gestor').value.trim();
     const os_numero = document.getElementById('f-os').value.trim();
-    const nota_os_fechada = Number(document.getElementById('f-os-nota').value);
-    const nota_prazo = Number(document.getElementById('f-prazo-nota').value);
-    const nota_qualidade = Number(document.getElementById('f-qualidade-nota').value);
+    const nota_os_fechada = Number(document.getElementById('f-nota1').value);
+    const nota_prazo = Number(document.getElementById('f-nota2').value);
+    const nota_qualidade = Number(document.getElementById('f-nota3').value);
     const observacao = document.getElementById('f-obs').value.trim();
 
-    if(!tecnico_id){ msg.textContent = 'Selecione um técnico.'; msg.className = 'form-msg err'; return; }
+    if(!pessoa_id){ msg.textContent = 'Selecione uma pessoa.'; msg.className = 'form-msg err'; return; }
     if(!gestor){ msg.textContent = 'Informe seu nome.'; msg.className = 'form-msg err'; return; }
 
-    btn.disabled = true;
-    btn.textContent = 'Enviando…';
+    btn.disabled = true; btn.textContent = 'Enviando…';
 
     const { error } = await sb.from('pontuacoes').insert({
-      tecnico_id, gestor, os_numero: os_numero || null,
+      pessoa_id, gestor, os_numero: os_numero || null,
       nota_os_fechada, nota_prazo, nota_qualidade,
       observacao: observacao || null
     });
 
-    btn.disabled = false;
-    btn.textContent = 'Lançar pontuação';
+    btn.disabled = false; btn.textContent = 'Lançar pontuação';
 
-    if(error){
-      msg.textContent = 'Erro ao lançar. Tente novamente.';
-      msg.className = 'form-msg err';
-      return;
-    }
+    if(error){ msg.textContent = 'Erro ao lançar. Tente novamente.'; msg.className = 'form-msg err'; return; }
 
-    msg.textContent = 'Pontuação registrada!';
-    msg.className = 'form-msg ok';
+    msg.textContent = 'Pontuação registrada!'; msg.className = 'form-msg ok';
     document.getElementById('f-os').value = '';
     document.getElementById('f-obs').value = '';
-    loadRanking();
-    loadLog();
+    loadRace(); loadLog();
   };
 
-  // ---- Ranking ----
-  async function loadRanking(){
-    const container = document.getElementById('ranking-list');
-    const { data: tecnicos, error: e1 } = await sb.from('tecnicos').select('id,nome').eq('ativo', true);
-    const { data: pontuacoes, error: e2 } = await sb.from('pontuacoes').select('tecnico_id,nota_os_fechada,nota_prazo,nota_qualidade');
+  // ---- Corrida (ranking visual) ----
+  async function loadRace(){
+    const container = document.getElementById('race-list');
+    const { data: pessoas, error: e1 } = await sb.from('pessoas').select('id,nome').eq('ativo', true).eq('departamento', currentDept);
+    if(e1 || !pessoas){ container.innerHTML = '<div class="empty">Não foi possível carregar.</div>'; return; }
 
-    if(e1 || e2 || !tecnicos){
-      container.innerHTML = '<div class="empty">Não foi possível carregar o ranking.</div>';
+    if(pessoas.length === 0){
+      container.innerHTML = '<div class="empty">Nenhuma pessoa cadastrada neste departamento ainda.</div>';
       return;
     }
 
-    const byTecnico = {};
-    tecnicos.forEach(t => byTecnico[t.id] = { nome: t.nome, total: 0, count: 0 });
+    const ids = pessoas.map(p => p.id);
+    const { data: pontuacoes, error: e2 } = await sb.from('pontuacoes').select('pessoa_id,nota_os_fechada,nota_prazo,nota_qualidade').in('pessoa_id', ids);
+    if(e2){ container.innerHTML = '<div class="empty">Não foi possível carregar o ranking.</div>'; return; }
 
+    const byPessoa = {};
+    pessoas.forEach(p => byPessoa[p.id] = { nome: p.nome, total: 0, count: 0 });
     (pontuacoes || []).forEach(p => {
-      const bucket = byTecnico[p.tecnico_id];
-      if(!bucket) return;
-      const media = (p.nota_os_fechada + p.nota_prazo + p.nota_qualidade) / 3;
-      bucket.total += media;
-      bucket.count += 1;
+      const b = byPessoa[p.pessoa_id];
+      if(!b) return;
+      b.total += (p.nota_os_fechada + p.nota_prazo + p.nota_qualidade) / 3;
+      b.count += 1;
     });
 
-    const ranked = Object.values(byTecnico)
-      .map(t => ({ ...t, media: t.count ? t.total / t.count : null }))
-      .filter(t => t.count > 0)
+    const ranked = Object.values(byPessoa)
+      .map(p => ({ ...p, media: p.count ? p.total / p.count : null }))
+      .filter(p => p.count > 0)
       .sort((a,b) => b.media - a.media);
 
     if(ranked.length === 0){
-      container.innerHTML = '<div class="empty">Ainda não há pontuações lançadas.</div>';
+      container.innerHTML = '<div class="empty">Ainda não há pontuações lançadas neste departamento.</div>';
       return;
     }
 
-    container.innerHTML = ranked.map((t, i) => {
+    const max = ranked[0].media;
+    container.innerHTML = ranked.map((p, i) => {
       const pos = i + 1;
       const cls = pos === 1 ? 'p1' : pos === 2 ? 'p2' : pos === 3 ? 'p3' : '';
+      const pct = max > 0 ? Math.max(6, (p.media / max) * 100) : 6;
       return `
-        <div class="rank-row ${cls}">
-          <div class="rank-num">${pos}</div>
-          <div>
-            <div class="rank-name">${escapeHtml(t.nome)}</div>
-            <div class="rank-meta">${t.count} lançamento${t.count > 1 ? 's' : ''}</div>
+        <div class="race-row ${cls}">
+          <div class="race-top">
+            <div class="race-name"><span class="race-pos">${pos}º</span>${escapeHtml(p.nome)}</div>
+            <div class="race-score">${p.media.toFixed(1)}<span style="color:var(--text-dim); font-weight:500; font-size:11px;"> / 10</span></div>
           </div>
-          <div class="rank-score">${t.media.toFixed(1)}<span>/ 10</span></div>
+          <div class="track">
+            <div class="track-fill" style="width:${pct}%;"></div>
+            <div class="track-rocket" style="left:${pct}%;">🚀</div>
+          </div>
+          <div class="race-meta">${p.count} lançamento${p.count > 1 ? 's' : ''}</div>
         </div>`;
     }).join('');
   }
@@ -458,20 +460,22 @@
   // ---- Log de lançamentos ----
   async function loadLog(){
     const container = document.getElementById('log-list');
+    const { data: pessoas } = await sb.from('pessoas').select('id').eq('departamento', currentDept);
+    const ids = (pessoas || []).map(p => p.id);
+    if(ids.length === 0){ container.innerHTML = '<div class="empty">Nenhum lançamento ainda</div>'; return; }
+
     const { data, error } = await sb
       .from('pontuacoes')
-      .select('gestor, os_numero, nota_os_fechada, nota_prazo, nota_qualidade, criado_em, tecnicos(nome)')
+      .select('gestor, os_numero, nota_os_fechada, nota_prazo, nota_qualidade, criado_em, pessoas(nome)')
+      .in('pessoa_id', ids)
       .order('criado_em', { ascending: false })
       .limit(8);
 
-    if(error || !data || data.length === 0){
-      container.innerHTML = '<div class="empty">Nenhum lançamento ainda</div>';
-      return;
-    }
+    if(error || !data || data.length === 0){ container.innerHTML = '<div class="empty">Nenhum lançamento ainda</div>'; return; }
 
     container.innerHTML = data.map(p => {
       const media = ((p.nota_os_fechada + p.nota_prazo + p.nota_qualidade) / 3).toFixed(1);
-      const nome = p.tecnicos ? p.tecnicos.nome : 'Técnico removido';
+      const nome = p.pessoas ? p.pessoas.nome : 'Removido';
       const data_fmt = new Date(p.criado_em).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
       return `
         <div class="log-item">
@@ -484,11 +488,8 @@
     }).join('');
   }
 
-  function escapeHtml(str){
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  }
+  function escapeHtml(str){ const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
+  function escapeAttr(str){ return escapeHtml(str).replace(/"/g, '&quot;'); }
 </script>
 
 </body>
