@@ -6,490 +6,263 @@
 <title>Corrida Operacional · O&M Solar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <style>
   :root{
-    --bg: #0D1521;
-    --bg-panel: #131F30;
-    --bg-panel-2: #1A2A40;
-    --line: #24374F;
-    --text: #E7EDF5;
-    --text-dim: #8FA1B8;
-    --amber: #F5A623;
-    --amber-dim: #B87F1D;
-    --teal: #3ECFBE;
-    --danger: #E85D5D;
-    --radius: 14px;
+    --bg: #060A13;
+    --bg-panel: #0F1826;
+    --line: #24344C;
+    --text: #E9F0FA;
+    --text-dim: #7C90AC;
+    --amber: #FFB020;
+    --amber-2: #FF7A1A;
+    --cyan: #4CE0E0;
+    --danger: #FF5D6C;
+    --gold: #FFD166;
+    --silver: #C9D3DE;
+    --bronze: #D8985B;
+    --radius: 16px;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
-    background: radial-gradient(1100px 600px at 85% -10%, #16273D 0%, var(--bg) 55%) fixed;
-    color: var(--text);
+    background: var(--bg); color: var(--text);
     font-family: 'Inter', system-ui, sans-serif;
-    min-height:100vh;
-    line-height:1.5;
+    min-height:100vh; line-height:1.5; overflow-x:hidden; position:relative;
   }
-  h1,h2,h3, .display{ font-family:'Sora', system-ui, sans-serif; letter-spacing:-0.01em; }
-  .wrap{ max-width: 1100px; margin: 0 auto; padding: 32px 20px 80px; }
+  h1,h2,h3, .digital{ font-family:'Orbitron', system-ui, sans-serif; }
 
-  header.top{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom: 24px; flex-wrap: wrap; }
-  .brand{ display:flex; align-items:center; gap:12px; }
-  .brand .mark{ width:40px;height:40px;border-radius:10px; background: linear-gradient(135deg, var(--amber), #D9820F); display:flex;align-items:center;justify-content:center; font-weight:800; color:#1A1200; font-size:18px; flex-shrink:0; }
-  .brand h1{ font-size: 20px; margin:0; color:var(--text); }
-  .brand p{ margin:2px 0 0; font-size:12.5px; color:var(--text-dim); }
-  .pill{ font-size:12px; color:var(--text-dim); border:1px solid var(--line); padding:6px 12px; border-radius:999px; display:flex; align-items:center; gap:6px; }
-  .dot{width:7px;height:7px;border-radius:50%;background:var(--teal);}
+  #stars{ position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+  .neb{ position:absolute; border-radius:50%; filter:blur(90px); opacity:.28; }
+  .neb1{ width:520px; height:520px; background:#3A2E86; top:-160px; right:-120px; }
+  .neb2{ width:420px; height:420px; background:#1A4A5A; bottom:-140px; left:-100px; }
+  .star{ position:absolute; background:#fff; border-radius:50%; animation: twinkle linear infinite; }
+  @keyframes twinkle{ 0%,100%{ opacity:.15; } 50%{ opacity:1; } }
 
-  /* Gate */
-  #gate{ max-width:380px; margin: 12vh auto; text-align:center; }
-  #gate .mark{ width:56px;height:56px;border-radius:14px;margin:0 auto 20px; background: linear-gradient(135deg, var(--amber), #D9820F); display:flex;align-items:center;justify-content:center; font-weight:800; color:#1A1200; font-size:24px; }
-  #gate h2{ font-size:22px; margin:0 0 6px; }
-  #gate p{ color:var(--text-dim); font-size:14px; margin:0 0 24px; }
-  #gate input{ width:100%; padding:13px 16px; border-radius:10px; border:1px solid var(--line); background:var(--bg-panel); color:var(--text); font-size:15px; text-align:center; letter-spacing: 2px; }
-  #gate input:focus{ outline:none; border-color:var(--amber); }
-  #gate button{ width:100%; margin-top:12px; padding:13px 16px; border-radius:10px; border:none; background:var(--amber); color:#1A1200; font-weight:700; font-size:15px; cursor:pointer; transition:.15s filter; }
-  #gate button:hover{ filter:brightness(1.08); }
-  #gate .err{ color:var(--danger); font-size:13px; margin-top:10px; min-height:16px; }
+  .wrap{ max-width: 900px; margin: 0 auto; padding: 32px 20px 90px; position:relative; z-index:1; }
 
-  /* Tabs de departamento */
-  .dept-tabs{ display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; }
-  .dept-tab{
-    padding:10px 18px; border-radius:10px; border:1px solid var(--line);
-    background: var(--bg-panel); color:var(--text-dim); font-size:13.5px; font-weight:600;
-    cursor:pointer; display:flex; align-items:center; gap:8px; transition:.15s;
-  }
-  .dept-tab:hover{ border-color:var(--amber-dim); }
-  .dept-tab.active{ background: var(--amber); color:#1A1200; border-color:var(--amber); }
+  header.top{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom: 10px; flex-wrap: wrap; }
+  .brand{ display:flex; align-items:center; gap:14px; }
+  .brand .mark{ width:46px;height:46px;border-radius:12px; background: linear-gradient(135deg, var(--amber), var(--amber-2)); display:flex;align-items:center;justify-content:center; font-size:22px; flex-shrink:0; box-shadow: 0 0 24px rgba(255,176,32,0.45); }
+  .brand h1{ font-size: 21px; margin:0; color:var(--text); font-weight:800; letter-spacing:.03em; text-shadow: 0 0 18px rgba(255,176,32,.35); }
+  .brand p{ margin:3px 0 0; font-size:12px; color:var(--text-dim); letter-spacing:.08em; text-transform:uppercase; }
+  .live-badge{ display:flex; align-items:center; gap:8px; font-size:12px; font-weight:700; color:#FFB3B3; border:1px solid #6E2530; background:#2A1216; padding:7px 14px; border-radius:999px; letter-spacing:.06em; cursor:pointer; user-select:none; }
+  .live-badge:hover{ filter:brightness(1.15); }
+  .live-dot{ width:8px;height:8px;border-radius:50%; background:var(--danger); animation: pulse-dot 1.4s ease-in-out infinite; box-shadow: 0 0 10px var(--danger); }
+  @keyframes pulse-dot{ 0%,100%{ opacity:1; transform:scale(1);} 50%{ opacity:.4; transform:scale(.7);} }
 
-  .grid{ display:grid; grid-template-columns: 1.35fr 1fr; gap: 22px; align-items:start; }
-  @media (max-width: 900px){ .grid{ grid-template-columns: 1fr; } }
+  .updated-row{ font-size:11.5px; color:var(--text-dim); margin-bottom:22px; }
 
-  .card{ background: var(--bg-panel); border:1px solid var(--line); border-radius: var(--radius); padding: 22px; }
-  .card h2{ font-size:16px; margin:0 0 4px; display:flex; align-items:center; gap:8px; }
-  .card .sub{ font-size:12.5px; color:var(--text-dim); margin:0 0 18px; }
+  .card{ background: linear-gradient(180deg, var(--bg-panel), #0B1220); border:1px solid var(--line); border-radius: var(--radius); padding: 22px; backdrop-filter: blur(6px); margin-bottom:20px; }
+  .dept-heading{ display:flex; align-items:center; gap:9px; margin-bottom:14px; }
+  .dept-heading h2{ font-size:16px; margin:0; font-weight:800; letter-spacing:.02em; }
+  .dept-heading .count-tag{ font-size:10.5px; color:var(--text-dim); background:#0E1826; border:1px solid var(--line); padding:3px 9px; border-radius:999px; margin-left:auto; }
 
-  /* Corrida (race bars) */
-  .race-row{ margin-bottom:18px; }
+  /* Pódio */
+  .podium{ display:flex; align-items:flex-end; gap:10px; margin-bottom:22px; }
+  .podium-slot{ flex:1; text-align:center; }
+  .podium-emoji{ font-size:22px; margin-bottom:5px; }
+  .podium-name{ font-size:12px; font-weight:700; margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .podium-score{ font-family:'Orbitron'; font-weight:800; font-size:14px; }
+  .podium-bar{ border-radius:10px 10px 0 0; margin-top:8px; position:relative; overflow:hidden; }
+  .podium-bar::after{ content:''; position:absolute; inset:0; background: linear-gradient(180deg, rgba(255,255,255,.18), transparent 60%); }
+  .p-1 .podium-bar{ height:76px; background: linear-gradient(180deg,#FFD166,#B8891A); box-shadow:0 0 26px rgba(255,209,102,.35); }
+  .p-2 .podium-bar{ height:54px; background: linear-gradient(180deg,#D8E0EA,#8C9AAC); }
+  .p-3 .podium-bar{ height:40px; background: linear-gradient(180deg,#E3AD78,#9A5F30); }
+  .p-1 .podium-score{ color:var(--gold); }
+  .p-2 .podium-score{ color:var(--silver); }
+  .p-3 .podium-score{ color:var(--bronze); }
+  .podium-empty{ opacity:.25; }
+
+  /* Corrida */
+  .race-row{ margin-bottom:16px; }
+  .race-row:last-child{ margin-bottom:0; }
   .race-top{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px; }
-  .race-name{ font-weight:700; font-size:14.5px; display:flex; align-items:center; gap:8px; }
-  .race-pos{ font-family:'Sora'; font-weight:800; font-size:13px; color:var(--text-dim); width:20px; }
-  .race-row.p1 .race-pos{ color:#FFD166; }
-  .race-row.p2 .race-pos{ color:#C9D3DE; }
-  .race-row.p3 .race-pos{ color:#D8985B; }
-  .race-score{ font-family:'Sora'; font-weight:800; font-size:14.5px; color:var(--amber); }
-  .race-meta{ font-size:11.5px; color:var(--text-dim); }
-  .track{ position:relative; height:14px; background: rgba(255,255,255,0.04); border-radius:999px; overflow:hidden; }
-  .track-fill{
-    position:absolute; left:0; top:0; height:100%; border-radius:999px;
-    background: linear-gradient(90deg, var(--amber-dim), var(--amber));
-    transition: width .6s ease;
-  }
-  .track-rocket{
-    position:absolute; top:50%; transform: translate(-50%,-50%); font-size:16px;
-    transition: left .6s ease;
-  }
-  .empty{ color:var(--text-dim); font-size:13.5px; padding: 20px 10px; text-align:center; }
+  .race-name{ font-weight:700; font-size:14px; display:flex; align-items:center; gap:8px; }
+  .race-pos{ font-family:'Orbitron'; font-weight:800; font-size:12px; color:var(--text-dim); width:20px; }
+  .race-row.p1 .race-pos{ color:var(--gold); }
+  .race-row.p2 .race-pos{ color:var(--silver); }
+  .race-row.p3 .race-pos{ color:var(--bronze); }
+  .race-score{ font-family:'Orbitron'; font-weight:800; font-size:14px; color:var(--amber); }
+  .track{ position:relative; height:14px; background: linear-gradient(90deg, #0B1220, #131F30); border-radius:999px; border:1px solid var(--line); }
+  .track-inner{ position:relative; height:100%; border-radius:999px; overflow:hidden; }
+  .track-fill{ position:absolute; left:0; top:0; height:100%; border-radius:999px; background: linear-gradient(90deg, var(--amber-2), var(--amber)); transition: width 1s cubic-bezier(.2,.8,.2,1); box-shadow: 0 0 14px rgba(255,176,32,.5); }
+  .track-rocket{ position:absolute; top:50%; transform: translate(-50%,-50%); font-size:17px; transition: left 1s cubic-bezier(.2,.8,.2,1); filter: drop-shadow(0 0 6px rgba(255,176,32,.8)); z-index:2; }
+  .empty{ color:var(--text-dim); font-size:13px; padding: 16px 10px; text-align:center; }
+  .err-box{ color:var(--danger); font-size:12.5px; padding: 14px; text-align:center; border:1px dashed #6E2530; border-radius:10px; }
 
-  /* Form */
-  label{ display:block; font-size:12.5px; color:var(--text-dim); margin:14px 0 6px; }
-  label:first-of-type{ margin-top:0; }
-  select, input[type=text], input[type=number], textarea{
-    width:100%; padding:10px 12px; border-radius:9px; border:1px solid var(--line);
-    background:var(--bg-panel-2); color:var(--text); font-size:14px; font-family:inherit;
-  }
-  select:focus, input:focus, textarea:focus{ outline:none; border-color:var(--amber); }
-  textarea{ resize:vertical; min-height:56px; }
-  .slider-row{ display:flex; align-items:center; gap:12px; margin-top:6px; }
-  input[type=range]{ flex:1; accent-color: var(--amber); height:4px; }
-  .slider-val{ font-family:'Sora'; font-weight:700; font-size:15px; color:var(--amber); width:28px; text-align:right; }
-  button.primary{ width:100%; margin-top:20px; padding:13px 16px; border-radius:10px; border:none; background:var(--amber); color:#1A1200; font-weight:700; font-size:14.5px; cursor:pointer; }
-  button.primary:hover{ filter:brightness(1.08); }
-  button.primary:disabled{ opacity:.5; cursor:default; }
-  .form-msg{ font-size:13px; margin-top:10px; min-height:16px; }
-  .form-msg.ok{ color: var(--teal); }
-  .form-msg.err{ color: var(--danger); }
-
-  /* Gerenciar equipe */
-  .manage-list{ margin-top:8px; }
-  .manage-item{ display:flex; align-items:center; gap:8px; padding:7px 0; border-bottom:1px solid var(--line); }
-  .manage-item:last-child{ border-bottom:none; }
-  .manage-item input[type=text]{ flex:1; padding:7px 10px; font-size:13px; }
-  .icon-btn{
-    border:1px solid var(--line); background:transparent; color:var(--text-dim);
-    width:30px; height:30px; border-radius:8px; cursor:pointer; font-size:13px;
-    display:flex; align-items:center; justify-content:center; flex-shrink:0;
-  }
-  .icon-btn:hover{ border-color:var(--amber); color:var(--amber); }
-  .icon-btn.danger:hover{ border-color:var(--danger); color:var(--danger); }
-  .add-row{ display:flex; gap:8px; margin-top:14px; }
-  .add-row input{ flex:1; }
-  .add-row button{ padding: 0 16px; border-radius:9px; border:1px solid var(--line); background:transparent; color:var(--text); font-size:13px; cursor:pointer; }
-  .add-row button:hover{ border-color:var(--amber); color:var(--amber); }
-
-  .log{ margin-top:22px; }
-  .log-item{ display:flex; justify-content:space-between; gap:10px; padding: 10px 0; border-bottom:1px solid var(--line); font-size:13px; }
-  .log-item:last-child{ border-bottom:none; }
-  .log-item .who{ color:var(--text-dim); }
-  .log-item .val{ font-weight:700; color:var(--teal); }
-
-  details.manage{ margin-top:20px; }
-  details.manage summary{ cursor:pointer; font-size:13px; color:var(--text-dim); user-select:none; }
-  details.manage summary:hover{ color:var(--amber); }
-
-  ::placeholder{ color:#4E617A; }
+  @keyframes popIn{ from{ opacity:0; transform:translateY(6px); } to{ opacity:1; transform:translateY(0); } }
+  .race-row{ animation: popIn .35s ease both; }
 </style>
 </head>
 <body>
 
-<div id="gate">
-  <div class="mark">☀</div>
-  <h2>Corrida Operacional</h2>
-  <p>Digite a senha de acesso para lançar pontuações</p>
-  <input id="gate-input" type="password" placeholder="senha" autocomplete="off" />
-  <button id="gate-btn">Entrar</button>
-  <p class="err" id="gate-err"></p>
-  <p style="margin-top:18px;"><a href="#" id="gate-skip" style="color:var(--text-dim); font-size:12.5px;">ver apenas o ranking →</a></p>
-</div>
+<div id="stars"><div class="neb neb1"></div><div class="neb neb2"></div></div>
 
-<div class="wrap" id="app" style="display:none;">
+<div class="wrap">
   <header class="top">
     <div class="brand">
       <div class="mark">🚀</div>
       <div>
-        <h1>Corrida Operacional</h1>
-        <p>O&M Solar</p>
+        <h1>CORRIDA OPERACIONAL</h1>
+        <p>O&M Solar · Performance em tempo real</p>
       </div>
     </div>
-    <div class="pill" id="status-pill"><span class="dot"></span> conectado</div>
+    <div class="live-badge" id="refresh-btn"><span class="live-dot"></span> AO VIVO · atualizar</div>
   </header>
+  <div class="updated-row" id="updated-row">Carregando dados da planilha…</div>
 
-  <div class="dept-tabs" id="dept-tabs">
-    <div class="dept-tab active" data-dept="campo_tecnico">🔧 Campo Técnico</div>
-    <div class="dept-tab" data-dept="supervisores">🧭 Supervisores</div>
-    <div class="dept-tab" data-dept="cog">🛰️ COG</div>
-    <div class="dept-tab" data-dept="pcm">🗓️ PCM</div>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <h2 id="race-title">🚀 Campo Técnico</h2>
-      <p class="sub">Média dos indicadores lançados — todos os registros</p>
-      <div id="race-list"><div class="empty">Carregando…</div></div>
-    </div>
-
-    <div class="card" id="form-card">
-      <h2>Lançar pontuação</h2>
-      <p class="sub">Preencha após avaliar o desempenho</p>
-
-      <label>Pessoa</label>
-      <select id="f-pessoa"></select>
-
-      <label>Seu nome (gestor)</label>
-      <input type="text" id="f-gestor" placeholder="Ex: Carlos Mendes" />
-
-      <label>Referência (opcional)</label>
-      <input type="text" id="f-os" placeholder="Ex: OS-2026-0341, período, etc." />
-
-      <label id="lbl-1">Indicador 1 — Produtividade / OS fechada</label>
-      <div class="slider-row">
-        <input type="range" id="f-nota1" min="0" max="10" value="8" />
-        <div class="slider-val" id="f-nota1-val">8</div>
-      </div>
-
-      <label id="lbl-2">Indicador 2 — Prazo / SLA</label>
-      <div class="slider-row">
-        <input type="range" id="f-nota2" min="0" max="10" value="8" />
-        <div class="slider-val" id="f-nota2-val">8</div>
-      </div>
-
-      <label id="lbl-3">Indicador 3 — Qualidade</label>
-      <div class="slider-row">
-        <input type="range" id="f-nota3" min="0" max="10" value="8" />
-        <div class="slider-val" id="f-nota3-val">8</div>
-      </div>
-
-      <label>Observação (opcional)</label>
-      <textarea id="f-obs" placeholder="Algo que valha registrar"></textarea>
-
-      <button class="primary" id="f-submit">Lançar pontuação</button>
-      <p class="form-msg" id="f-msg"></p>
-
-      <details class="manage">
-        <summary>⚙ Gerenciar equipe deste departamento</summary>
-        <div class="manage-list" id="manage-list"></div>
-        <div class="add-row">
-          <input type="text" id="new-pessoa" placeholder="Nome da nova pessoa" />
-          <button id="new-pessoa-btn">Adicionar</button>
-        </div>
-      </details>
-    </div>
-  </div>
-
-  <div class="card log">
-    <h2>Últimos lançamentos</h2>
-    <div id="log-list"><div class="empty">Nenhum lançamento ainda</div></div>
-  </div>
+  <div id="departments-overview"></div>
 </div>
 
 <script>
-  // ====== CONFIGURAÇÃO SUPABASE ======
-  const SUPABASE_URL = "https://zttujixbckgjqzrlyqto.supabase.co";
-  const SUPABASE_ANON_KEY = "sb_publishable_Sogdh3lUrjhCjhoDG6hd0w_xl9vkqhz";
-  // ====================================
-
-  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // ====== CONFIGURAÇÃO DA PLANILHA ======
+  const SPREADSHEET_ID = "1WssLPScBf4Dnaa9MoEuoxP0yZeblrTZ6a-qaGeN9ux0";
+  const AUTO_REFRESH_MINUTES = 5;
+  // =======================================
 
   const DEPTS = {
-    campo_tecnico: { label: '🔧 Campo Técnico', l1: 'Indicador 1 — Produtividade / OS fechada', l2: 'Indicador 2 — Prazo / SLA', l3: 'Indicador 3 — Qualidade' },
-    supervisores:  { label: '🧭 Supervisores',   l1: 'Indicador 1 — Gestão da equipe',           l2: 'Indicador 2 — Cumprimento de metas', l3: 'Indicador 3 — Qualidade / Segurança' },
-    cog:           { label: '🛰️ COG',            l1: 'Indicador 1 — Acionamentos',               l2: 'Indicador 2 — SLA de resposta',      l3: 'Indicador 3 — Gestão das ocorrências' },
-    pcm:           { label: '🗓️ PCM',            l1: 'Indicador 1 — Programação',                l2: 'Indicador 2 — Planejamento',         l3: 'Indicador 3 — Gestão das S.S.' },
+    campo_tecnico: { title: '🔧 Campo Técnico', sheet: 'Tecnicos' },
+    supervisores:  { title: '🧭 Supervisores',   sheet: 'Supervisores' },
+    cog:           { title: '🛰️ COG',            sheet: 'COG' },
+    pcm:           { title: '🗓️ PCM',            sheet: 'PCM' },
   };
+  const DEPT_ORDER = ['campo_tecnico','supervisores','cog','pcm'];
 
-  let currentDept = 'campo_tecnico';
-  const gate = document.getElementById('gate');
-  const app = document.getElementById('app');
-  const formCard = document.getElementById('form-card');
-
-  // ---- Gate de senha ----
-  document.getElementById('gate-btn').onclick = checkPassword;
-  document.getElementById('gate-input').addEventListener('keydown', e => { if(e.key === 'Enter') checkPassword(); });
-  document.getElementById('gate-skip').onclick = (e) => { e.preventDefault(); enterApp(false); };
-
-  async function checkPassword(){
-    const val = document.getElementById('gate-input').value.trim();
-    const errEl = document.getElementById('gate-err');
-    errEl.textContent = '';
-    if(!val){ errEl.textContent = 'Digite a senha.'; return; }
-    const { data, error } = await sb.from('acesso').select('senha').eq('id', 1).single();
-    if(error){ errEl.textContent = 'Erro ao validar senha. Tente novamente.'; return; }
-    if(data && data.senha === val){ enterApp(true); }
-    else { errEl.textContent = 'Senha incorreta.'; }
+  function csvUrl(sheetName){
+    return `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}&_=${Date.now()}`;
   }
 
-  function enterApp(canWrite){
-    gate.style.display = 'none';
-    app.style.display = 'block';
-    if(!canWrite){ formCard.style.display = 'none'; }
-    setupTabs();
-    refreshAll();
-  }
-
-  function setupTabs(){
-    document.querySelectorAll('.dept-tab').forEach(tab => {
-      tab.onclick = () => {
-        document.querySelectorAll('.dept-tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        currentDept = tab.dataset.dept;
-        document.getElementById('race-title').textContent = '🚀 ' + DEPTS[currentDept].label.replace(/^\S+\s/, '');
-        document.getElementById('lbl-1').textContent = DEPTS[currentDept].l1;
-        document.getElementById('lbl-2').textContent = DEPTS[currentDept].l2;
-        document.getElementById('lbl-3').textContent = DEPTS[currentDept].l3;
-        refreshAll();
-      };
-    });
-  }
-
-  function refreshAll(){
-    loadPessoas();
-    loadRace();
-    loadLog();
-    loadManageList();
-  }
-
-  // ---- Sliders ----
-  ['nota1','nota2','nota3'].forEach(id => {
-    const input = document.getElementById('f-'+id);
-    const label = document.getElementById('f-'+id+'-val');
-    input.addEventListener('input', () => label.textContent = input.value);
-  });
-
-  // ---- Pessoas no select do formulário ----
-  async function loadPessoas(){
-    const { data, error } = await sb.from('pessoas').select('id,nome').eq('ativo', true).eq('departamento', currentDept).order('nome');
-    const select = document.getElementById('f-pessoa');
-    select.innerHTML = '';
-    if(error || !data || data.length === 0){
-      select.innerHTML = '<option value="">Nenhuma pessoa cadastrada</option>';
-      return;
+  // ---- Estrelas de fundo ----
+  (function generateStars(){
+    const container = document.getElementById('stars');
+    const n = window.innerWidth < 700 ? 60 : 120;
+    for(let i = 0; i < n; i++){
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 2 + 0.6;
+      s.style.width = size + 'px'; s.style.height = size + 'px';
+      s.style.top = Math.random() * 100 + '%'; s.style.left = Math.random() * 100 + '%';
+      s.style.animationDuration = (Math.random() * 3 + 2) + 's';
+      s.style.animationDelay = (Math.random() * 3) + 's';
+      container.appendChild(s);
     }
-    data.forEach(p => {
-      const opt = document.createElement('option');
-      opt.value = p.id;
-      opt.textContent = p.nome;
-      select.appendChild(opt);
-    });
-  }
+  })();
 
-  // ---- Gerenciar equipe (listar / editar / apagar) ----
-  async function loadManageList(){
-    const container = document.getElementById('manage-list');
-    const { data, error } = await sb.from('pessoas').select('id,nome').eq('ativo', true).eq('departamento', currentDept).order('nome');
-    if(error || !data || data.length === 0){
-      container.innerHTML = '<div class="empty" style="padding:8px 0;">Ninguém cadastrado ainda neste departamento</div>';
-      return;
-    }
-    container.innerHTML = data.map(p => `
-      <div class="manage-item" data-id="${p.id}">
-        <input type="text" value="${escapeAttr(p.nome)}" />
-        <button class="icon-btn save-btn" title="Salvar nome">💾</button>
-        <button class="icon-btn danger del-btn" title="Remover">🗑</button>
+  // ---- Monta os blocos (um por departamento, empilhados) ----
+  (function buildOverview(){
+    const container = document.getElementById('departments-overview');
+    container.innerHTML = DEPT_ORDER.map(key => `
+      <div class="card dept-block" data-dept="${key}">
+        <div class="dept-heading">
+          <h2>🚀 ${DEPTS[key].title}</h2>
+          <span class="count-tag" id="count-${key}">—</span>
+        </div>
+        <div class="podium" id="podium-${key}"></div>
+        <div id="race-${key}"><div class="empty">Carregando…</div></div>
       </div>
     `).join('');
+  })();
 
-    container.querySelectorAll('.save-btn').forEach(btn => {
-      btn.onclick = async () => {
-        const row = btn.closest('.manage-item');
-        const id = row.dataset.id;
-        const novoNome = row.querySelector('input').value.trim();
-        if(!novoNome) return;
-        await sb.from('pessoas').update({ nome: novoNome }).eq('id', id);
-        loadPessoas(); loadRace(); loadLog();
-      };
-    });
-    container.querySelectorAll('.del-btn').forEach(btn => {
-      btn.onclick = async () => {
-        const row = btn.closest('.manage-item');
-        const id = row.dataset.id;
-        if(!confirm('Remover esta pessoa? Os lançamentos dela também serão apagados.')) return;
-        await sb.from('pessoas').delete().eq('id', id);
-        loadManageList(); loadPessoas(); loadRace(); loadLog();
-      };
+  document.getElementById('refresh-btn').onclick = loadAll;
+
+  function loadAll(){
+    document.getElementById('updated-row').textContent = 'Atualizando…';
+    Promise.all(DEPT_ORDER.map(loadDept)).then(() => {
+      const agora = new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+      document.getElementById('updated-row').textContent = 'Última atualização: ' + agora;
     });
   }
 
-  document.getElementById('new-pessoa-btn').onclick = async () => {
-    const input = document.getElementById('new-pessoa');
-    const nome = input.value.trim();
-    if(!nome) return;
-    const { error } = await sb.from('pessoas').insert({ nome, departamento: currentDept });
-    if(!error){ input.value = ''; loadManageList(); loadPessoas(); }
-  };
-
-  // ---- Enviar pontuação ----
-  document.getElementById('f-submit').onclick = async () => {
-    const btn = document.getElementById('f-submit');
-    const msg = document.getElementById('f-msg');
-    msg.className = 'form-msg'; msg.textContent = '';
-
-    const pessoa_id = document.getElementById('f-pessoa').value;
-    const gestor = document.getElementById('f-gestor').value.trim();
-    const os_numero = document.getElementById('f-os').value.trim();
-    const nota_os_fechada = Number(document.getElementById('f-nota1').value);
-    const nota_prazo = Number(document.getElementById('f-nota2').value);
-    const nota_qualidade = Number(document.getElementById('f-nota3').value);
-    const observacao = document.getElementById('f-obs').value.trim();
-
-    if(!pessoa_id){ msg.textContent = 'Selecione uma pessoa.'; msg.className = 'form-msg err'; return; }
-    if(!gestor){ msg.textContent = 'Informe seu nome.'; msg.className = 'form-msg err'; return; }
-
-    btn.disabled = true; btn.textContent = 'Enviando…';
-
-    const { error } = await sb.from('pontuacoes').insert({
-      pessoa_id, gestor, os_numero: os_numero || null,
-      nota_os_fechada, nota_prazo, nota_qualidade,
-      observacao: observacao || null
-    });
-
-    btn.disabled = false; btn.textContent = 'Lançar pontuação';
-
-    if(error){ msg.textContent = 'Erro ao lançar. Tente novamente.'; msg.className = 'form-msg err'; return; }
-
-    msg.textContent = 'Pontuação registrada!'; msg.className = 'form-msg ok';
-    document.getElementById('f-os').value = '';
-    document.getElementById('f-obs').value = '';
-    loadRace(); loadLog();
-  };
-
-  // ---- Corrida (ranking visual) ----
-  async function loadRace(){
-    const container = document.getElementById('race-list');
-    const { data: pessoas, error: e1 } = await sb.from('pessoas').select('id,nome').eq('ativo', true).eq('departamento', currentDept);
-    if(e1 || !pessoas){ container.innerHTML = '<div class="empty">Não foi possível carregar.</div>'; return; }
-
-    if(pessoas.length === 0){
-      container.innerHTML = '<div class="empty">Nenhuma pessoa cadastrada neste departamento ainda.</div>';
-      return;
-    }
-
-    const ids = pessoas.map(p => p.id);
-    const { data: pontuacoes, error: e2 } = await sb.from('pontuacoes').select('pessoa_id,nota_os_fechada,nota_prazo,nota_qualidade').in('pessoa_id', ids);
-    if(e2){ container.innerHTML = '<div class="empty">Não foi possível carregar o ranking.</div>'; return; }
-
-    const byPessoa = {};
-    pessoas.forEach(p => byPessoa[p.id] = { nome: p.nome, total: 0, count: 0 });
-    (pontuacoes || []).forEach(p => {
-      const b = byPessoa[p.pessoa_id];
-      if(!b) return;
-      b.total += (p.nota_os_fechada + p.nota_prazo + p.nota_qualidade) / 3;
-      b.count += 1;
-    });
-
-    const ranked = Object.values(byPessoa)
-      .map(p => ({ ...p, media: p.count ? p.total / p.count : null }))
-      .filter(p => p.count > 0)
-      .sort((a,b) => b.media - a.media);
-
-    if(ranked.length === 0){
-      container.innerHTML = '<div class="empty">Ainda não há pontuações lançadas neste departamento.</div>';
-      return;
-    }
-
-    const max = ranked[0].media;
-    container.innerHTML = ranked.map((p, i) => {
-      const pos = i + 1;
-      const cls = pos === 1 ? 'p1' : pos === 2 ? 'p2' : pos === 3 ? 'p3' : '';
-      const pct = max > 0 ? Math.max(6, (p.media / max) * 100) : 6;
-      return `
-        <div class="race-row ${cls}">
-          <div class="race-top">
-            <div class="race-name"><span class="race-pos">${pos}º</span>${escapeHtml(p.nome)}</div>
-            <div class="race-score">${p.media.toFixed(1)}<span style="color:var(--text-dim); font-weight:500; font-size:11px;"> / 10</span></div>
-          </div>
-          <div class="track">
-            <div class="track-fill" style="width:${pct}%;"></div>
-            <div class="track-rocket" style="left:${pct}%;">🚀</div>
-          </div>
-          <div class="race-meta">${p.count} lançamento${p.count > 1 ? 's' : ''}</div>
-        </div>`;
-    }).join('');
+  function parseCsv(text){
+    const result = Papa.parse(text, { header: true, dynamicTyping: true, skipEmptyLines: true });
+    return result.data;
   }
 
-  // ---- Log de lançamentos ----
-  async function loadLog(){
-    const container = document.getElementById('log-list');
-    const { data: pessoas } = await sb.from('pessoas').select('id').eq('departamento', currentDept);
-    const ids = (pessoas || []).map(p => p.id);
-    if(ids.length === 0){ container.innerHTML = '<div class="empty">Nenhum lançamento ainda</div>'; return; }
+  function findKey(row, ...candidates){
+    const keys = Object.keys(row);
+    for(const cand of candidates){
+      const found = keys.find(k => k.trim().toLowerCase() === cand.toLowerCase());
+      if(found) return found;
+    }
+    return null;
+  }
 
-    const { data, error } = await sb
-      .from('pontuacoes')
-      .select('gestor, os_numero, nota_os_fechada, nota_prazo, nota_qualidade, criado_em, pessoas(nome)')
-      .in('pessoa_id', ids)
-      .order('criado_em', { ascending: false })
-      .limit(8);
+  async function loadDept(dept){
+    const container = document.getElementById('race-' + dept);
+    const countTag = document.getElementById('count-' + dept);
+    try{
+      const res = await fetch(csvUrl(DEPTS[dept].sheet));
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      const text = await res.text();
+      const rows = parseCsv(text);
 
-    if(error || !data || data.length === 0){ container.innerHTML = '<div class="empty">Nenhum lançamento ainda</div>'; return; }
+      if(!rows.length){
+        container.innerHTML = '<div class="empty">Nenhum dado encontrado nesta aba ainda.</div>';
+        document.getElementById('podium-' + dept).innerHTML = '';
+        countTag.textContent = '0 pessoas';
+        return;
+      }
 
-    container.innerHTML = data.map(p => {
-      const media = ((p.nota_os_fechada + p.nota_prazo + p.nota_qualidade) / 3).toFixed(1);
-      const nome = p.pessoas ? p.pessoas.nome : 'Removido';
-      const data_fmt = new Date(p.criado_em).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
-      return `
-        <div class="log-item">
-          <div>
-            <div>${escapeHtml(nome)} ${p.os_numero ? '· ' + escapeHtml(p.os_numero) : ''}</div>
-            <div class="who">lançado por ${escapeHtml(p.gestor)} · ${data_fmt}</div>
-          </div>
-          <div class="val">${media}</div>
-        </div>`;
-    }).join('');
+      const nomeKey = findKey(rows[0], 'Nome');
+      const scoreKey = findKey(rows[0], 'Pontuação Final', 'Pontuacao Final', 'Pontuação  Final');
+
+      const ranked = rows
+        .map(r => ({ nome: nomeKey ? r[nomeKey] : null, media: scoreKey ? r[scoreKey] : null }))
+        .filter(r => r.nome && typeof r.nome === 'string' && r.nome.trim() !== '' && typeof r.media === 'number' && !isNaN(r.media))
+        .sort((a,b) => b.media - a.media);
+
+      countTag.textContent = ranked.length + (ranked.length === 1 ? ' pessoa' : ' pessoas');
+      renderPodium(dept, ranked);
+
+      if(ranked.length === 0){
+        container.innerHTML = '<div class="empty">Preencha os dados na planilha — a corrida aparece assim que houver pontuação.</div>';
+        return;
+      }
+
+      const max = ranked[0].media;
+      container.innerHTML = ranked.map((p, i) => {
+        const pos = i + 1;
+        const cls = pos === 1 ? 'p1' : pos === 2 ? 'p2' : pos === 3 ? 'p3' : '';
+        const pct = max > 0 ? Math.max(6, (p.media / max) * 92) + 4 : 6;
+        return `
+          <div class="race-row ${cls}" style="animation-delay:${i * 0.04}s">
+            <div class="race-top">
+              <div class="race-name"><span class="race-pos">${pos}º</span>${escapeHtml(String(p.nome))}</div>
+              <div class="race-score">${p.media.toFixed(1)}<span style="color:var(--text-dim); font-weight:500; font-size:10.5px;"> / 10</span></div>
+            </div>
+            <div class="track"><div class="track-inner"><div class="track-fill" style="width:${pct}%;"></div></div><div class="track-rocket" style="left:${pct}%;">🚀</div></div>
+          </div>`;
+      }).join('');
+
+    } catch(err){
+      container.innerHTML = '<div class="err-box">Não consegui ler esta aba da planilha. Confirme se o compartilhamento está como "Qualquer pessoa com o link pode visualizar".</div>';
+      document.getElementById('podium-' + dept).innerHTML = '';
+    }
+  }
+
+  function renderPodium(dept, ranked){
+    const podium = document.getElementById('podium-' + dept);
+    const order = [1, 0, 2];
+    const medals = ['🥈','🥇','🥉'];
+    let html = '';
+    order.forEach((idx, slot) => {
+      const p = ranked[idx];
+      const posClass = idx === 0 ? 'p-1' : idx === 1 ? 'p-2' : 'p-3';
+      if(!p){
+        html += `<div class="podium-slot ${posClass} podium-empty"><div class="podium-emoji">${medals[slot]}</div><div class="podium-name">—</div><div class="podium-bar"></div></div>`;
+      } else {
+        html += `<div class="podium-slot ${posClass}"><div class="podium-emoji">${medals[slot]}</div><div class="podium-name">${escapeHtml(String(p.nome))}</div><div class="podium-score">${p.media.toFixed(1)}</div><div class="podium-bar"></div></div>`;
+      }
+    });
+    podium.innerHTML = html;
   }
 
   function escapeHtml(str){ const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
-  function escapeAttr(str){ return escapeHtml(str).replace(/"/g, '&quot;'); }
+
+  loadAll();
+  setInterval(loadAll, AUTO_REFRESH_MINUTES * 60 * 1000);
 </script>
 
 </body>
