@@ -117,21 +117,26 @@
 </div>
 
 <script>
-  // ====== CONFIGURAÇÃO DA PLANILHA ======
-  const SPREADSHEET_ID = "1WssLPScBf4Dnaa9MoEuoxP0yZeblrTZ6a-qaGeN9ux0";
+  // ====== LINKS CSV PUBLICADOS (Google Sheets) ======
+  const CSV_URLS = {
+    campo_tecnico: "https://docs.google.com/spreadsheets/d/e/2PACX-1vToIGrWZlyEKaMcDcjHVCfXhBUfA0i-M3W46HwOjYywdDfwb0aUbFzmS7Q-L2MOK_2W0p_LObYQLt2n/pub?gid=1974176296&single=true&output=csv",
+    supervisores:  "https://docs.google.com/spreadsheets/d/e/2PACX-1vToIGrWZlyEKaMcDcjHVCfXhBUfA0i-M3W46HwOjYywdDfwb0aUbFzmS7Q-L2MOK_2W0p_LObYQLt2n/pub?gid=231248973&single=true&output=csv",
+    cog:           "https://docs.google.com/spreadsheets/d/e/2PACX-1vToIGrWZlyEKaMcDcjHVCfXhBUfA0i-M3W46HwOjYywdDfwb0aUbFzmS7Q-L2MOK_2W0p_LObYQLt2n/pub?gid=750899901&single=true&output=csv",
+    pcm:           "https://docs.google.com/spreadsheets/d/e/2PACX-1vToIGrWZlyEKaMcDcjHVCfXhBUfA0i-M3W46HwOjYywdDfwb0aUbFzmS7Q-L2MOK_2W0p_LObYQLt2n/pub?gid=680953866&single=true&output=csv",
+  };
   const AUTO_REFRESH_MINUTES = 5;
-  // =======================================
+  // ====================================================
 
   const DEPTS = {
-    campo_tecnico: { title: '🔧 Campo Técnico', sheet: 'Tecnicos' },
-    supervisores:  { title: '🧭 Supervisores',   sheet: 'Supervisores' },
-    cog:           { title: '🛰️ COG',            sheet: 'COG' },
-    pcm:           { title: '🗓️ PCM',            sheet: 'PCM' },
+    campo_tecnico: { title: '🔧 Campo Técnico' },
+    supervisores:  { title: '🧭 Supervisores' },
+    cog:           { title: '🛰️ COG' },
+    pcm:           { title: '🗓️ PCM' },
   };
   const DEPT_ORDER = ['campo_tecnico','supervisores','cog','pcm'];
 
-  function csvUrl(sheetName){
-    return `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}&_=${Date.now()}`;
+  function withCacheBust(url){
+    return url + (url.includes('?') ? '&' : '?') + '_=' + Date.now();
   }
 
   // ---- Estrelas de fundo ----
@@ -175,43 +180,56 @@
     });
   }
 
-  function parseCsv(text){
-    const result = Papa.parse(text, { header: true, dynamicTyping: true, skipEmptyLines: true });
-    return result.data;
+  // Converte "9,244444444" (formato PT-BR) ou 9.24 (número normal) em Number
+  function parseNumberBR(val){
+    if(typeof val === 'number') return val;
+    if(typeof val !== 'string') return NaN;
+    const cleaned = val.trim().replace(/\./g, '').replace(',', '.');
+    const n = parseFloat(val.includes(',') ? cleaned : val.trim());
+    return isNaN(n) ? NaN : n;
   }
 
-  function findKey(row, ...candidates){
-    const keys = Object.keys(row);
-    for(const cand of candidates){
-      const found = keys.find(k => k.trim().toLowerCase() === cand.toLowerCase());
-      if(found) return found;
+  // A planilha publicada traz linhas de título/instrução antes da tabela de verdade.
+  // Este parser acha a linha de cabeçalho de verdade (onde a 1ª coluna é "Nome").
+  function parseDeptCsv(text){
+    const parsed = Papa.parse(text, { skipEmptyLines: false });
+    const rows = parsed.data;
+    let headerIdx = -1;
+    for(let i = 0; i < rows.length; i++){
+      if(rows[i] && String(rows[i][0]).trim().toLowerCase() === 'nome'){
+        headerIdx = i;
+        break;
+      }
     }
-    return null;
+    if(headerIdx === -1) return [];
+
+    const headers = rows[headerIdx].map(h => String(h).trim());
+    const nomeCol = headers.findIndex(h => h.toLowerCase() === 'nome');
+    const scoreCol = headers.findIndex(h => h.toLowerCase().replace(/\s+/g,' ').includes('pontuação final') || h.toLowerCase().replace(/\s+/g,' ').includes('pontuacao final'));
+
+    if(nomeCol === -1 || scoreCol === -1) return [];
+
+    const out = [];
+    for(let i = headerIdx + 1; i < rows.length; i++){
+      const row = rows[i];
+      if(!row) continue;
+      const nome = row[nomeCol] ? String(row[nomeCol]).trim() : '';
+      if(!nome) continue;
+      const media = parseNumberBR(row[scoreCol]);
+      if(isNaN(media)) continue;
+      out.push({ nome, media });
+    }
+    return out;
   }
 
   async function loadDept(dept){
     const container = document.getElementById('race-' + dept);
     const countTag = document.getElementById('count-' + dept);
     try{
-      const res = await fetch(csvUrl(DEPTS[dept].sheet));
+      const res = await fetch(withCacheBust(CSV_URLS[dept]));
       if(!res.ok) throw new Error('HTTP ' + res.status);
       const text = await res.text();
-      const rows = parseCsv(text);
-
-      if(!rows.length){
-        container.innerHTML = '<div class="empty">Nenhum dado encontrado nesta aba ainda.</div>';
-        document.getElementById('podium-' + dept).innerHTML = '';
-        countTag.textContent = '0 pessoas';
-        return;
-      }
-
-      const nomeKey = findKey(rows[0], 'Nome');
-      const scoreKey = findKey(rows[0], 'Pontuação Final', 'Pontuacao Final', 'Pontuação  Final');
-
-      const ranked = rows
-        .map(r => ({ nome: nomeKey ? r[nomeKey] : null, media: scoreKey ? r[scoreKey] : null }))
-        .filter(r => r.nome && typeof r.nome === 'string' && r.nome.trim() !== '' && typeof r.media === 'number' && !isNaN(r.media))
-        .sort((a,b) => b.media - a.media);
+      const ranked = parseDeptCsv(text).sort((a,b) => b.media - a.media);
 
       countTag.textContent = ranked.length + (ranked.length === 1 ? ' pessoa' : ' pessoas');
       renderPodium(dept, ranked);
@@ -229,7 +247,7 @@
         return `
           <div class="race-row ${cls}" style="animation-delay:${i * 0.04}s">
             <div class="race-top">
-              <div class="race-name"><span class="race-pos">${pos}º</span>${escapeHtml(String(p.nome))}</div>
+              <div class="race-name"><span class="race-pos">${pos}º</span>${escapeHtml(p.nome)}</div>
               <div class="race-score">${p.media.toFixed(1)}<span style="color:var(--text-dim); font-weight:500; font-size:10.5px;"> / 10</span></div>
             </div>
             <div class="track"><div class="track-inner"><div class="track-fill" style="width:${pct}%;"></div></div><div class="track-rocket" style="left:${pct}%;">🚀</div></div>
@@ -237,7 +255,7 @@
       }).join('');
 
     } catch(err){
-      container.innerHTML = '<div class="err-box">Não consegui ler esta aba da planilha. Confirme se o compartilhamento está como "Qualquer pessoa com o link pode visualizar".</div>';
+      container.innerHTML = '<div class="err-box">Não consegui ler esta aba da planilha. Confirme se ela foi publicada como CSV (Arquivo → Compartilhar → Publicar na Web).</div>';
       document.getElementById('podium-' + dept).innerHTML = '';
     }
   }
@@ -253,7 +271,7 @@
       if(!p){
         html += `<div class="podium-slot ${posClass} podium-empty"><div class="podium-emoji">${medals[slot]}</div><div class="podium-name">—</div><div class="podium-bar"></div></div>`;
       } else {
-        html += `<div class="podium-slot ${posClass}"><div class="podium-emoji">${medals[slot]}</div><div class="podium-name">${escapeHtml(String(p.nome))}</div><div class="podium-score">${p.media.toFixed(1)}</div><div class="podium-bar"></div></div>`;
+        html += `<div class="podium-slot ${posClass}"><div class="podium-emoji">${medals[slot]}</div><div class="podium-name">${escapeHtml(p.nome)}</div><div class="podium-score">${p.media.toFixed(1)}</div><div class="podium-bar"></div></div>`;
       }
     });
     podium.innerHTML = html;
