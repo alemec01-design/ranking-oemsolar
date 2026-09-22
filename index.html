@@ -1025,6 +1025,8 @@ const SHEETS = [
   "PCM"
 ];
 
+let currentData = {};
+
 
 /* ==========================================================
    NORMALIZA TEXTO
@@ -1054,21 +1056,16 @@ function cellValue(cell){
 
   if(
     cell.v !== undefined &&
-    cell.v !== null &&
-    cell.v !== ""
+    cell.v !== null
   ){
-
     return cell.v;
-
   }
 
   if(
     cell.f !== undefined &&
     cell.f !== null
   ){
-
     return cell.f;
-
   }
 
   return "";
@@ -1077,81 +1074,7 @@ function cellValue(cell){
 
 
 /* ==========================================================
-   CONVERSÃO DE NOTA
-========================================================== */
-
-function parseScore(cell){
-
-  if(!cell){
-    return null;
-  }
-
-  let value = cell.v;
-
-  const formatted = cell.f;
-
-
-  /*
-    Se o Google entregar número,
-    usamos diretamente.
-  */
-
-  if(
-    typeof value === "number" &&
-    Number.isFinite(value)
-  ){
-
-    /*
-      Caso v seja 0 mas o valor
-      formatado seja diferente.
-    */
-
-    if(
-      value === 0 &&
-      formatted !== undefined &&
-      formatted !== null &&
-      String(formatted).trim() !== ""
-    ){
-
-      const alternative =
-        parseStringNumber(formatted);
-
-      if(
-        alternative !== null &&
-        alternative !== 0
-      ){
-        return alternative;
-      }
-
-    }
-
-    return value;
-
-  }
-
-
-  /*
-    Fórmulas podem aparecer como texto.
-    Nesse caso usamos o valor formatado.
-  */
-
-  if(
-    typeof value === "string" &&
-    value.trim().startsWith("=")
-  ){
-
-    value = formatted ?? "";
-
-  }
-
-
-  return parseStringNumber(value);
-
-}
-
-
-/* ==========================================================
-   STRING -> NÚMERO
+   CONVERTE TEXTO EM NÚMERO
 ========================================================== */
 
 function parseStringNumber(value){
@@ -1163,15 +1086,14 @@ function parseStringNumber(value){
     return null;
   }
 
-
   let text =
     String(value)
       .trim()
       .replace(/\s/g,"")
       .replace(/R\$/gi,"")
       .replace(/pontos?/gi,"")
-      .replace(/pts?/gi,"");
-
+      .replace(/pts?/gi,"")
+      .replace(/%/g,"");
 
   if(!text){
     return null;
@@ -1179,19 +1101,24 @@ function parseStringNumber(value){
 
 
   /*
-    Ex:
+    9,50
+  */
 
-    9,5
-    9.5
-    10,00
+  if(
+    text.includes(",") &&
+    !text.includes(".")
+  ){
+
+    text =
+      text.replace(",", ".");
+
+  }
+
+  /*
     1.234,56
   */
 
-  text =
-    text.replace("%","");
-
-
-  if(
+  else if(
     text.includes(".") &&
     text.includes(",")
   ){
@@ -1199,17 +1126,15 @@ function parseStringNumber(value){
     text =
       text
         .replace(/\./g,"")
-        .replace(",",".");
-  
-  }else if(
-    text.includes(",")
-  ){
+        .replace(",", ".");
 
-    text =
-      text.replace(",",".");
-  
   }
 
+
+  /*
+    Remove qualquer caractere
+    que não faça parte do número.
+  */
 
   text =
     text.replace(
@@ -1235,54 +1160,89 @@ function parseStringNumber(value){
 
 
 /* ==========================================================
-   ENCONTRA COLUNA
+   CONVERTE NOTA
 ========================================================== */
 
-function findColumn(headers, names){
+function parseScore(cell){
 
-  const normalized =
-    headers.map(normalize);
+  if(!cell){
+    return null;
+  }
 
 
   /*
-    PRIMEIRO:
-    correspondência exata
+    Google normalmente entrega
+    o valor numérico em cell.v.
   */
 
-  for(
-    const name of names
+  if(
+    typeof cell.v === "number" &&
+    Number.isFinite(cell.v)
   ){
 
-    const target =
-      normalize(name);
-
-    const index =
-      normalized.indexOf(target);
-
-    if(index !== -1){
-      return index;
-    }
+    return cell.v;
 
   }
 
 
   /*
-    SEGUNDO:
-    correspondência parcial
+    Se for fórmula, usa o valor
+    formatado pelo Google.
   */
+
+  if(
+    typeof cell.v === "string" &&
+    cell.v.trim().startsWith("=")
+  ){
+
+    return parseStringNumber(
+      cell.f
+    );
+
+  }
+
+
+  /*
+    Caso venha como texto.
+  */
+
+  const fromV =
+    parseStringNumber(
+      cell.v
+    );
+
+
+  if(fromV !== null){
+    return fromV;
+  }
+
+
+  return parseStringNumber(
+    cell.f
+  );
+
+}
+
+
+/* ==========================================================
+   ENCONTRA COLUNA EXATA
+========================================================== */
+
+function findExactColumn(headers, names){
+
+  const normalized =
+    headers.map(normalize);
+
 
   for(
     const name of names
   ){
 
-    const target =
-      normalize(name);
-
     const index =
-      normalized.findIndex(
-        header =>
-          header.includes(target)
+      normalized.indexOf(
+        normalize(name)
       );
+
 
     if(index !== -1){
       return index;
@@ -1297,10 +1257,10 @@ function findColumn(headers, names){
 
 
 /* ==========================================================
-   PARSE SHEET
+   PARSE DA PLANILHA
 ========================================================== */
 
-function parseSheet(data,sheetName){
+function parseSheet(data, sheetName){
 
   if(
     !data ||
@@ -1308,7 +1268,7 @@ function parseSheet(data,sheetName){
   ){
 
     throw new Error(
-      "Google Sheets não retornou dados."
+      "Resposta inválida do Google Sheets."
     );
 
   }
@@ -1318,37 +1278,40 @@ function parseSheet(data,sheetName){
     data.table;
 
 
+  if(
+    !Array.isArray(table.cols)
+  ){
+
+    throw new Error(
+      "Colunas não encontradas."
+    );
+
+  }
+
+
   const headers =
     table.cols.map(
       (column,index) =>
         String(
           column.label ||
           column.id ||
-          `Coluna ${index+1}`
+          `Coluna ${index + 1}`
         ).trim()
     );
-
-
-  console.log(
-    `[${sheetName}] Headers:`,
-    headers
-  );
 
 
   /*
     NOME
 
-    Para a aba Técnicos:
+    Para Técnicos:
     Técnico
 
-    Também aceita:
-    Nome
-    Colaborador
-    Funcionário
+    Para outras abas:
+    aceita Nome/Colaborador/Funcionário.
   */
 
-  const nameColumn =
-    findColumn(
+  let nameColumn =
+    findExactColumn(
       headers,
       [
         "Técnico",
@@ -1364,41 +1327,24 @@ function parseSheet(data,sheetName){
   /*
     PONTUAÇÃO
 
-    EXCLUSIVAMENTE NOTA FINAL
+    PRIORIDADE ABSOLUTA:
+    NOTA FINAL
   */
 
-  const scoreColumn =
-    findColumn(
+  let scoreColumn =
+    findExactColumn(
       headers,
       [
         "NOTA FINAL",
-        "Nota Final",
-        "Pontuação Final",
-        "Pontuacao Final"
+        "Nota Final"
       ]
     );
-
-
-  console.log(
-    `[${sheetName}] Nome:`,
-    nameColumn >= 0
-      ? headers[nameColumn]
-      : "NÃO ENCONTRADO"
-  );
-
-
-  console.log(
-    `[${sheetName}] Nota:`,
-    scoreColumn >= 0
-      ? headers[scoreColumn]
-      : "NÃO ENCONTRADO"
-  );
 
 
   if(nameColumn === -1){
 
     throw new Error(
-      "Coluna Técnico/Nome não encontrada."
+      `${sheetName}: coluna Técnico/Nome não encontrada.`
     );
 
   }
@@ -1407,7 +1353,7 @@ function parseSheet(data,sheetName){
   if(scoreColumn === -1){
 
     throw new Error(
-      "Coluna NOTA FINAL não encontrada."
+      `${sheetName}: coluna NOTA FINAL não encontrada.`
     );
 
   }
@@ -1416,12 +1362,18 @@ function parseSheet(data,sheetName){
   const people = [];
 
 
-  table.rows.forEach(
-    (row,rowIndex)=>{
+  const rows =
+    Array.isArray(table.rows)
+      ? table.rows
+      : [];
+
+
+  rows.forEach(
+    row => {
 
       if(
         !row ||
-        !row.c
+        !Array.isArray(row.c)
       ){
         return;
       }
@@ -1439,41 +1391,34 @@ function parseSheet(data,sheetName){
         );
 
 
-      console.log(
-        `[${sheetName}]`,
-        rowIndex + 2,
-        name,
-        score
-      );
-
-
       /*
-        Sem nome:
-        ignora.
+        Sem nome = ignora.
       */
 
       if(
-        name === null ||
-        name === undefined ||
-        String(name).trim() === ""
+        String(name ?? "").trim() === ""
       ){
         return;
       }
 
 
       /*
-        IMPORTANTE:
-
-        0 é uma nota válida.
-
-        Portanto NÃO usamos:
-        if(!score)
-
-        Usamos:
-        score === null
+        Sem nota = ignora.
       */
 
       if(score === null){
+        return;
+      }
+
+
+      /*
+        Evita valores absurdos.
+        Mantemos 0 como válido.
+      */
+
+      if(
+        !Number.isFinite(score)
+      ){
         return;
       }
 
@@ -1493,7 +1438,7 @@ function parseSheet(data,sheetName){
 
 
   /*
-    MAIOR NOTA PRIMEIRO
+    Ordena da maior para menor.
   */
 
   people.sort(
@@ -1503,22 +1448,14 @@ function parseSheet(data,sheetName){
 
 
   return {
-
-    people,
-
-    nameColumn:
-      headers[nameColumn],
-
-    scoreColumn:
-      headers[scoreColumn]
-
+    people
   };
 
 }
 
 
 /* ==========================================================
-   JSONP GOOGLE SHEETS
+   GOOGLE SHEETS JSONP
 ========================================================== */
 
 function loadSheet(sheetName){
@@ -1527,10 +1464,12 @@ function loadSheet(sheetName){
     (resolve,reject)=>{
 
       const callback =
-        "__sheet_" +
-        sheetName +
+        "__OEM_SHEET_" +
+        Date.now() +
         "_" +
-        Date.now();
+        Math.random()
+          .toString(36)
+          .substring(2,8);
 
 
       const script =
@@ -1542,8 +1481,8 @@ function loadSheet(sheetName){
 
       const timeout =
         setTimeout(
-          ()=>{
-            
+          () => {
+
             if(finished){
               return;
             }
@@ -1554,12 +1493,12 @@ function loadSheet(sheetName){
 
             reject(
               new Error(
-                "Tempo limite ao consultar Google Sheets."
+                `Timeout: ${sheetName}`
               )
             );
 
           },
-          15000
+          10000
         );
 
 
@@ -1567,9 +1506,11 @@ function loadSheet(sheetName){
 
         clearTimeout(timeout);
 
+
         if(script.parentNode){
           script.parentNode.removeChild(script);
         }
+
 
         try{
           delete window[callback];
@@ -1584,6 +1525,7 @@ function loadSheet(sheetName){
           if(finished){
             return;
           }
+
 
           finished = true;
 
@@ -1601,33 +1543,49 @@ function loadSheet(sheetName){
             return;
           }
 
+
           finished = true;
 
           cleanup();
 
           reject(
             new Error(
-              "Erro de conexão com Google Sheets."
+              `Falha de conexão: ${sheetName}`
             )
           );
 
         };
 
 
+      /*
+        IMPORTANTE:
+
+        O tqx precisa ser:
+
+        tqx=out:json;responseHandler:callback
+
+        e NÃO dois tqx separados.
+      */
+
       const url =
         "https://docs.google.com/spreadsheets/d/" +
         SHEET_ID +
         "/gviz/tq" +
-        "?tqx=out:json" +
-        "&sheet=" +
+        "?sheet=" +
         encodeURIComponent(sheetName) +
-        "&tqx=responseHandler:" +
-        callback;
+        "&tqx=" +
+        encodeURIComponent(
+          "out:json;responseHandler:" +
+          callback
+        );
 
 
       script.src = url;
 
-      document.body.appendChild(script);
+
+      document.body.appendChild(
+        script
+      );
 
     }
   );
@@ -1680,7 +1638,7 @@ function initials(name){
 
   return (
     parts[0][0] +
-    parts[parts.length-1][0]
+    parts[parts.length - 1][0]
   ).toUpperCase();
 
 }
@@ -1704,7 +1662,7 @@ function formatScore(score){
 
 
 /* ==========================================================
-   PODIUM
+   PÓDIO
 ========================================================== */
 
 function renderPodium(people){
@@ -1713,12 +1671,6 @@ function renderPodium(people){
     return "";
   }
 
-
-  /*
-    Ordem visual:
-
-    2º | 1º | 3º
-  */
 
   const positions = [
     people[1],
@@ -1732,27 +1684,25 @@ function renderPodium(people){
 
 
   positions.forEach(
-    (person,index)=>{
+    person => {
 
       if(!person){
         return;
       }
 
 
-      const realPosition =
+      const position =
         people.indexOf(person) + 1;
 
 
       html += `
 
         <div class="podium-item ${
-          realPosition === 1
-            ? "first"
-            : ""
+          position === 1 ? "first" : ""
         }">
 
           <div class="podium-position">
-            ${realPosition}º LUGAR
+            ${position}º LUGAR
           </div>
 
           <div class="avatar">
@@ -1794,7 +1744,7 @@ function renderRanking(people){
 
     return `
       <div class="empty">
-        Nenhum dado disponível.
+        Nenhum participante encontrado.
       </div>
     `;
 
@@ -1804,7 +1754,7 @@ function renderRanking(people){
   const max =
     Math.max(
       ...people.map(
-        p => p.score
+        person => person.score
       )
     );
 
@@ -1814,11 +1764,7 @@ function renderRanking(people){
 
 
   people.forEach(
-    (person,index)=>{
-
-      /*
-        Barra proporcional à maior nota.
-      */
+    (person,index) => {
 
       const width =
         max > 0
@@ -1837,7 +1783,7 @@ function renderRanking(people){
         <div class="rank">
 
           <div class="position">
-            #${index+1}
+            #${index + 1}
           </div>
 
           <div class="person">
@@ -1896,25 +1842,30 @@ function renderDepartment(
     );
 
 
-  const debug =
-    document.getElementById(
-      "debug-" + sheetName
-    );
+  if(!container || !status){
+    return;
+  }
 
 
-  if(!result.people.length){
+  if(
+    !result ||
+    !result.people.length
+  ){
 
     container.innerHTML = `
       <div class="empty">
-        Nenhuma NOTA FINAL encontrada.
+        Nenhum participante encontrado.
       </div>
     `;
+
 
     status.textContent =
       "SEM DADOS";
 
+
     status.className =
-      "status error";
+      "status";
+
 
     return;
 
@@ -1931,26 +1882,11 @@ function renderDepartment(
 
 
   status.textContent =
-    `${result.people.length} REGISTROS`;
+    "ONLINE";
+
 
   status.className =
     "status ok";
-
-
-  /*
-    Diagnóstico discreto.
-  */
-
-  debug.innerHTML = `
-    <strong>Fonte:</strong> Google Sheets
-    &nbsp; · &nbsp;
-    <strong>Nome:</strong> ${escapeHTML(result.nameColumn)}
-    &nbsp; · &nbsp;
-    <strong>Pontuação:</strong> ${escapeHTML(result.scoreColumn)}
-  `;
-
-
-  return result;
 
 }
 
@@ -1962,12 +1898,15 @@ function renderDepartment(
 function updateKPIs(allResults){
 
   const valid =
-    allResults.filter(Boolean);
+    allResults.filter(
+      Boolean
+    );
 
 
   const people =
     valid.flatMap(
-      result => result.people
+      result =>
+        result.people
     );
 
 
@@ -1977,25 +1916,25 @@ function updateKPIs(allResults){
     people.length;
 
 
-  const teamsOnline =
-    valid.length;
-
-
   document.getElementById(
     "onlineTeams"
   ).textContent =
-    `${teamsOnline}/4`;
+    `${valid.length}/${SHEETS.length}`;
 
 
   if(!people.length){
 
     document.getElementById(
       "leaderName"
-    ).textContent = "—";
+    ).textContent =
+      "—";
+
 
     document.getElementById(
       "topScore"
-    ).textContent = "—";
+    ).textContent =
+      "—";
+
 
     return;
 
@@ -2003,8 +1942,8 @@ function updateKPIs(allResults){
 
 
   people.sort(
-    (a,b)=>
-      b.score-a.score
+    (a,b) =>
+      b.score - a.score
   );
 
 
@@ -2029,7 +1968,7 @@ function updateKPIs(allResults){
 
 
 /* ==========================================================
-   CARREGA TUDO
+   CARREGAMENTO PRINCIPAL
 ========================================================== */
 
 async function loadAll(){
@@ -2062,12 +2001,13 @@ async function loadAll(){
     "loading"
   );
 
+
   button.textContent =
     "↻ ATUALIZANDO";
 
 
   globalStatus.textContent =
-    "Atualizando...";
+    "Sincronizando";
 
 
   globalDot.className =
@@ -2075,119 +2015,133 @@ async function loadAll(){
 
 
   /*
-    Estado inicial
+    IMPORTANTE:
+
+    Agora as 4 abas são consultadas
+    AO MESMO TEMPO.
+
+    Antes era:
+
+    Tecnicos -> espera
+    Supervisores -> espera
+    COG -> espera
+    PCM -> espera
+
+    Agora:
+
+    Tecnicos
+    Supervisores
+    COG
+    PCM
+
+    simultaneamente.
   */
 
-  SHEETS.forEach(
-    sheetName => {
+  const promises =
+    SHEETS.map(
+      sheetName =>
+        loadSheet(sheetName)
+          .then(
+            data =>
+              ({
+                sheetName,
+                result:
+                  parseSheet(
+                    data,
+                    sheetName
+                  )
+              })
+          )
+          .catch(
+            error =>
+              ({
+                sheetName,
+                error
+              })
+          )
+    );
 
-      document.getElementById(
-        sheetName
-      ).innerHTML = `
-        <div class="empty">
-          <div class="loader"></div>
-          Sincronizando dados...
-        </div>
-      `;
 
-
-      const status =
-        document.getElementById(
-          "status-" + sheetName
-        );
-
-
-      status.textContent =
-        "SINCRONIZANDO";
-
-      status.className =
-        "status";
-
-    }
-  );
+  const responses =
+    await Promise.all(
+      promises
+    );
 
 
   const results = [];
 
 
-  /*
-    Fazemos uma por uma.
+  responses.forEach(
+    response => {
 
-    Isso reduz a chance de problemas
-    de callback JSONP simultâneo.
-  */
+      const sheetName =
+        response.sheetName;
 
-  for(
-    const sheetName of SHEETS
-  ){
 
-    try{
+      if(response.error){
 
-      const data =
-        await loadSheet(
-          sheetName
+        console.error(
+          `[${sheetName}]`,
+          response.error
         );
 
 
-      const result =
-        parseSheet(
-          data,
-          sheetName
-        );
+        const container =
+          document.getElementById(
+            sheetName
+          );
+
+
+        const status =
+          document.getElementById(
+            "status-" +
+            sheetName
+          );
+
+
+        if(container){
+
+          container.innerHTML = `
+            <div class="empty">
+              Dados indisponíveis.
+            </div>
+          `;
+
+        }
+
+
+        if(status){
+
+          status.textContent =
+            "OFFLINE";
+
+          status.className =
+            "status error";
+
+        }
+
+
+        return;
+
+      }
+
+
+      currentData[sheetName] =
+        response.result;
 
 
       renderDepartment(
         sheetName,
-        result
+        response.result
       );
 
 
       results.push(
-        result
+        response.result
       );
-
-
-    }catch(error){
-
-      console.error(
-        `[${sheetName}]`,
-        error
-      );
-
-
-      document.getElementById(
-        sheetName
-      ).innerHTML = `
-        <div class="empty">
-          <div style="font-size:28px;margin-bottom:10px;">
-            ⚠
-          </div>
-          Erro ao carregar esta equipe.
-        </div>
-      `;
-
-
-      const status =
-        document.getElementById(
-          "status-" + sheetName
-        );
-
-
-      status.textContent =
-        "ERRO";
-
-      status.className =
-        "status error";
-
-
-      /*
-        Não colocamos null no ranking
-        global para não quebrar os demais.
-      */
 
     }
-
-  }
+  );
 
 
   updateKPIs(
@@ -2199,26 +2153,37 @@ async function loadAll(){
     results.length;
 
 
-  if(successful === SHEETS.length){
+  if(
+    successful === SHEETS.length
+  ){
 
     globalDot.className =
       "dot online";
+
 
     globalStatus.textContent =
       "Sistema online";
 
-  }else if(successful > 0){
+  }
+
+  else if(
+    successful > 0
+  ){
 
     globalDot.className =
       "dot online";
 
-    globalStatus.textContent =
-      `${successful}/4 equipes online`;
 
-  }else{
+    globalStatus.textContent =
+      `${successful}/${SHEETS.length} equipes online`;
+
+  }
+
+  else{
 
     globalDot.className =
       "dot error";
+
 
     globalStatus.textContent =
       "Sem conexão";
@@ -2236,6 +2201,7 @@ async function loadAll(){
   button.classList.remove(
     "loading"
   );
+
 
   button.textContent =
     "↻ ATUALIZAR";
@@ -2257,12 +2223,19 @@ setInterval(
    PRIMEIRA EXECUÇÃO
 ========================================================== */
 
-window.addEventListener(
-  "load",
-  loadAll
-);
+if(
+  document.readyState === "loading"
+){
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    loadAll
+  );
+
+}else{
+
+  loadAll();
+
+}
 
 </script>
-
-</body>
-</html>
