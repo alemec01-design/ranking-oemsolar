@@ -1,572 +1,684 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Corrida Operacional · O&M Solar</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Corrida Operacional · O&M Solar</title>
 
-<style>
-  :root{
-    --bg: #060A13;
-    --bg-panel: #0F1826;
-    --line: #24344C;
-    --text: #E9F0FA;
-    --text-dim: #7C90AC;
-    --amber: #FFB020;
-    --amber-2: #FF7A1A;
-    --cyan: #4CE0E0;
-    --danger: #FF5D6C;
-    --gold: #FFD166;
-    --silver: #C9D3DE;
-    --bronze: #D8985B;
-    --radius: 16px;
-  }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  *{
-    box-sizing:border-box;
-  }
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  >
 
-  html,body{
-    margin:0;
-    padding:0;
-  }
-
-  body{
-    background:var(--bg);
-    color:var(--text);
-    font-family:'Inter',system-ui,sans-serif;
-    min-height:100vh;
-    line-height:1.5;
-    overflow-x:hidden;
-    position:relative;
-  }
-
-  h1,h2,h3,.digital{
-    font-family:'Orbitron',system-ui,sans-serif;
-  }
-
-  /* FUNDO */
-  #stars{
-    position:fixed;
-    inset:0;
-    z-index:0;
-    overflow:hidden;
-    pointer-events:none;
-  }
-
-  .neb{
-    position:absolute;
-    border-radius:50%;
-    filter:blur(90px);
-    opacity:.28;
-  }
-
-  .neb1{
-    width:520px;
-    height:520px;
-    background:#3A2E86;
-    top:-160px;
-    right:-120px;
-  }
-
-  .neb2{
-    width:420px;
-    height:420px;
-    background:#1A4A5A;
-    bottom:-140px;
-    left:-100px;
-  }
-
-  .star{
-    position:absolute;
-    background:#fff;
-    border-radius:50%;
-    animation:twinkle linear infinite;
-  }
-
-  @keyframes twinkle{
-    0%,100%{
-      opacity:.15;
+  <style>
+    * {
+      box-sizing: border-box;
     }
 
-    50%{
-      opacity:1;
-    }
-  }
-
-  /* CONTAINER */
-  .wrap{
-    max-width:900px;
-    margin:0 auto;
-    padding:32px 20px 90px;
-    position:relative;
-    z-index:1;
-  }
-
-  /* CABEÇALHO */
-  header.top{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:16px;
-    margin-bottom:10px;
-    flex-wrap:wrap;
-  }
-
-  .brand{
-    display:flex;
-    align-items:center;
-    gap:14px;
-  }
-
-  .brand .mark{
-    width:46px;
-    height:46px;
-    border-radius:12px;
-    background:linear-gradient(
-      135deg,
-      var(--amber),
-      var(--amber-2)
-    );
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:22px;
-    flex-shrink:0;
-    box-shadow:0 0 24px rgba(255,176,32,0.45);
-  }
-
-  .brand h1{
-    font-size:21px;
-    margin:0;
-    color:var(--text);
-    font-weight:800;
-    letter-spacing:.03em;
-    text-shadow:0 0 18px rgba(255,176,32,.35);
-  }
-
-  .brand p{
-    margin:3px 0 0;
-    font-size:12px;
-    color:var(--text-dim);
-    letter-spacing:.08em;
-    text-transform:uppercase;
-  }
-
-  .live-badge{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    font-size:12px;
-    font-weight:700;
-    color:#FFB3B3;
-    border:1px solid #6E2530;
-    background:#2A1216;
-    padding:7px 14px;
-    border-radius:999px;
-    letter-spacing:.06em;
-    cursor:pointer;
-    user-select:none;
-  }
-
-  .live-badge:hover{
-    filter:brightness(1.15);
-  }
-
-  .live-dot{
-    width:8px;
-    height:8px;
-    border-radius:50%;
-    background:var(--danger);
-    animation:pulse-dot 1.4s ease-in-out infinite;
-    box-shadow:0 0 10px var(--danger);
-  }
-
-  @keyframes pulse-dot{
-    0%,100%{
-      opacity:1;
-      transform:scale(1);
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background: #05070d;
+      color: #f5f7fb;
+      font-family: Inter, Arial, sans-serif;
     }
 
-    50%{
-      opacity:.4;
-      transform:scale(.7);
-    }
-  }
-
-  .updated-row{
-    font-size:11.5px;
-    color:var(--text-dim);
-    margin-bottom:22px;
-  }
-
-  /* CARDS */
-  .card{
-    background:
-      linear-gradient(
-        180deg,
-        var(--bg-panel),
-        #0B1220
-      );
-
-    border:1px solid var(--line);
-    border-radius:var(--radius);
-    padding:22px;
-    backdrop-filter:blur(6px);
-    margin-bottom:20px;
-  }
-
-  .dept-heading{
-    display:flex;
-    align-items:center;
-    gap:9px;
-    margin-bottom:14px;
-  }
-
-  .dept-heading h2{
-    font-size:16px;
-    margin:0;
-    font-weight:800;
-    letter-spacing:.02em;
-  }
-
-  .dept-heading .count-tag{
-    font-size:10.5px;
-    color:var(--text-dim);
-    background:#0E1826;
-    border:1px solid var(--line);
-    padding:3px 9px;
-    border-radius:999px;
-    margin-left:auto;
-  }
-
-  /* PÓDIO */
-  .podium{
-    display:flex;
-    align-items:flex-end;
-    gap:10px;
-    margin-bottom:22px;
-  }
-
-  .podium-slot{
-    flex:1;
-    text-align:center;
-  }
-
-  .podium-emoji{
-    font-size:22px;
-    margin-bottom:5px;
-  }
-
-  .podium-name{
-    font-size:12px;
-    font-weight:700;
-    margin-bottom:4px;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-  }
-
-  .podium-score{
-    font-family:'Orbitron';
-    font-weight:800;
-    font-size:14px;
-  }
-
-  .podium-bar{
-    border-radius:10px 10px 0 0;
-    margin-top:8px;
-    position:relative;
-    overflow:hidden;
-  }
-
-  .podium-bar::after{
-    content:'';
-    position:absolute;
-    inset:0;
-    background:
-      linear-gradient(
-        180deg,
-        rgba(255,255,255,.18),
-        transparent 60%
-      );
-  }
-
-  .p-1 .podium-bar{
-    height:76px;
-    background:
-      linear-gradient(
-        180deg,
-        #FFD166,
-        #B8891A
-      );
-    box-shadow:
-      0 0 26px rgba(255,209,102,.35);
-  }
-
-  .p-2 .podium-bar{
-    height:54px;
-    background:
-      linear-gradient(
-        180deg,
-        #D8E0EA,
-        #8C9AAC
-      );
-  }
-
-  .p-3 .podium-bar{
-    height:40px;
-    background:
-      linear-gradient(
-        180deg,
-        #E3AD78,
-        #9A5F30
-      );
-  }
-
-  .p-1 .podium-score{
-    color:var(--gold);
-  }
-
-  .p-2 .podium-score{
-    color:var(--silver);
-  }
-
-  .p-3 .podium-score{
-    color:var(--bronze);
-  }
-
-  .podium-empty{
-    opacity:.25;
-  }
-
-  /* CORRIDA */
-  .race-row{
-    margin-bottom:16px;
-  }
-
-  .race-row:last-child{
-    margin-bottom:0;
-  }
-
-  .race-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:baseline;
-    margin-bottom:6px;
-  }
-
-  .race-name{
-    font-weight:700;
-    font-size:14px;
-    display:flex;
-    align-items:center;
-    gap:8px;
-  }
-
-  .race-pos{
-    font-family:'Orbitron';
-    font-weight:800;
-    font-size:12px;
-    color:var(--text-dim);
-    width:20px;
-  }
-
-  .race-row.p1 .race-pos{
-    color:var(--gold);
-  }
-
-  .race-row.p2 .race-pos{
-    color:var(--silver);
-  }
-
-  .race-row.p3 .race-pos{
-    color:var(--bronze);
-  }
-
-  .race-score{
-    font-family:'Orbitron';
-    font-weight:800;
-    font-size:14px;
-    color:var(--amber);
-  }
-
-  .track{
-    position:relative;
-    height:14px;
-    background:
-      linear-gradient(
-        90deg,
-        #0B1220,
-        #131F30
-      );
-    border-radius:999px;
-    border:1px solid var(--line);
-  }
-
-  .track-inner{
-    position:relative;
-    height:100%;
-    border-radius:999px;
-    overflow:hidden;
-  }
-
-  .track-fill{
-    position:absolute;
-    left:0;
-    top:0;
-    height:100%;
-    border-radius:999px;
-    background:
-      linear-gradient(
-        90deg,
-        var(--amber-2),
-        var(--amber)
-      );
-    transition:
-      width 1s cubic-bezier(.2,.8,.2,1);
-    box-shadow:
-      0 0 14px rgba(255,176,32,.5);
-  }
-
-  .track-rocket{
-    position:absolute;
-    top:50%;
-    transform:translate(-50%,-50%);
-    font-size:17px;
-    transition:
-      left 1s cubic-bezier(.2,.8,.2,1);
-    filter:
-      drop-shadow(
-        0 0 6px rgba(255,176,32,.8)
-      );
-    z-index:2;
-  }
-
-  .empty{
-    color:var(--text-dim);
-    font-size:13px;
-    padding:16px 10px;
-    text-align:center;
-  }
-
-  .err-box{
-    color:var(--danger);
-    font-size:12.5px;
-    padding:14px;
-    text-align:center;
-    border:1px dashed #6E2530;
-    border-radius:10px;
-  }
-
-  @keyframes popIn{
-    from{
-      opacity:0;
-      transform:translateY(6px);
+    body {
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(0, 140, 255, 0.12), transparent 28%),
+        radial-gradient(circle at 80% 20%, rgba(140, 0, 255, 0.10), transparent 30%),
+        radial-gradient(circle at 50% 100%, rgba(0, 255, 170, 0.07), transparent 35%),
+        #05070d;
     }
 
-    to{
-      opacity:1;
-      transform:translateY(0);
-    }
-  }
-
-  .race-row{
-    animation:popIn .35s ease both;
-  }
-
-  @media(max-width:600px){
-    .wrap{
-      padding:22px 12px 60px;
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.4;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,.8) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255,255,255,.4) 1px, transparent 1px);
+      background-size: 140px 140px, 230px 230px;
+      background-position: 0 0, 80px 120px;
     }
 
-    .brand h1{
-      font-size:17px;
+    .app {
+      position: relative;
+      width: min(1500px, 94%);
+      margin: 0 auto;
+      padding: 35px 0 60px;
     }
 
-    .brand p{
-      font-size:10px;
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
     }
 
-    .live-badge{
-      font-size:10px;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 15px;
     }
 
-    .card{
-      padding:16px;
+    .brand-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      background: linear-gradient(135deg, #101927, #16263b);
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 0 35px rgba(0,150,255,.12);
     }
-  }
-</style>
+
+    .brand h1 {
+      margin: 0;
+      font-family: Orbitron, sans-serif;
+      font-size: clamp(18px, 3vw, 28px);
+      letter-spacing: 1px;
+    }
+
+    .brand p {
+      margin: 5px 0 0;
+      color: #7f8da3;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.035);
+      border: 1px solid rgba(255,255,255,.08);
+      color: #9ca8ba;
+      font-size: 12px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #25e58b;
+      box-shadow: 0 0 12px #25e58b;
+    }
+
+    .status.loading .status-dot {
+      background: #ffc44d;
+      box-shadow: 0 0 12px #ffc44d;
+    }
+
+    .status.error .status-dot {
+      background: #ff5757;
+      box-shadow: 0 0 12px #ff5757;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      color: white;
+      font-family: Inter, sans-serif;
+    }
+
+    .refresh-btn {
+      padding: 11px 17px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #146eff, #6d3cff);
+      font-weight: 700;
+      font-size: 12px;
+      transition: .2s ease;
+      box-shadow: 0 8px 25px rgba(56,91,255,.18);
+    }
+
+    .refresh-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.1);
+    }
+
+    .hero {
+      margin-bottom: 28px;
+      padding: 25px;
+      border-radius: 22px;
+      background:
+        linear-gradient(135deg, rgba(19,30,47,.95), rgba(10,15,27,.95));
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 25px 80px rgba(0,0,0,.28);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      right: -170px;
+      top: -220px;
+      border-radius: 50%;
+      background: rgba(0,140,255,.12);
+      filter: blur(80px);
+    }
+
+    .hero-title {
+      position: relative;
+      z-index: 1;
+      font-family: Orbitron, sans-serif;
+      font-size: clamp(24px, 4vw, 42px);
+      margin: 0 0 10px;
+      letter-spacing: 2px;
+    }
+
+    .hero-subtitle {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      color: #8997ab;
+      font-size: 14px;
+    }
+
+    .last-update {
+      position: relative;
+      z-index: 1;
+      margin-top: 15px;
+      color: #59677a;
+      font-size: 11px;
+    }
+
+    .departments {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .department {
+      min-width: 0;
+      padding: 22px;
+      border-radius: 20px;
+      background: rgba(11,16,27,.92);
+      border: 1px solid rgba(255,255,255,.07);
+      box-shadow: 0 20px 60px rgba(0,0,0,.22);
+    }
+
+    .department-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 18px;
+    }
+
+    .department-title {
+      margin: 0;
+      font-family: Orbitron, sans-serif;
+      font-size: 16px;
+      letter-spacing: .7px;
+    }
+
+    .department-source {
+      color: #556276;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .podium {
+      display: grid;
+      grid-template-columns: 1fr 1.18fr 1fr;
+      align-items: end;
+      gap: 10px;
+      min-height: 230px;
+      margin-bottom: 22px;
+    }
+
+    .podium-card {
+      position: relative;
+      padding: 16px 10px;
+      border-radius: 15px;
+      background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.018));
+      border: 1px solid rgba(255,255,255,.07);
+      text-align: center;
+      min-width: 0;
+    }
+
+    .podium-card.first {
+      min-height: 205px;
+      padding-top: 20px;
+      background:
+        linear-gradient(180deg, rgba(48,99,170,.20), rgba(255,255,255,.02));
+      border-color: rgba(78,157,255,.25);
+    }
+
+    .podium-card.second {
+      min-height: 170px;
+    }
+
+    .podium-card.third {
+      min-height: 145px;
+    }
+
+    .medal {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .position {
+      color: #657286;
+      font-family: Orbitron, sans-serif;
+      font-size: 10px;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .podium-name {
+      font-weight: 800;
+      font-size: 13px;
+      line-height: 1.25;
+      word-break: break-word;
+    }
+
+    .podium-score {
+      margin-top: 10px;
+      font-family: Orbitron, sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .score-label {
+      margin-top: 3px;
+      color: #657286;
+      font-size: 9px;
+      text-transform: uppercase;
+    }
+
+    .ranking-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #67758a;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 10px;
+    }
+
+    .ranking {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .race-row {
+      display: grid;
+      grid-template-columns: 34px minmax(110px, 170px) 1fr 70px 28px;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 11px;
+      background: rgba(255,255,255,.025);
+      border: 1px solid rgba(255,255,255,.045);
+    }
+
+    .race-position {
+      color: #59677a;
+      font-family: Orbitron, sans-serif;
+      font-size: 10px;
+      text-align: center;
+    }
+
+    .race-name {
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .bar {
+      height: 7px;
+      border-radius: 99px;
+      overflow: hidden;
+      background: rgba(255,255,255,.06);
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #146eff, #8b5cff);
+      transition: width .8s ease;
+    }
+
+    .race-score {
+      text-align: right;
+      font-family: Orbitron, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .rocket {
+      font-size: 18px;
+      text-align: center;
+      filter: drop-shadow(0 0 8px rgba(82,164,255,.5));
+    }
+
+    .empty {
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 10px;
+      color: #66748a;
+      text-align: center;
+      font-size: 12px;
+      padding: 20px;
+    }
+
+    .empty-icon {
+      font-size: 28px;
+      opacity: .7;
+    }
+
+    .error-box {
+      padding: 15px;
+      border-radius: 12px;
+      background: rgba(255,60,60,.07);
+      border: 1px solid rgba(255,60,60,.15);
+      color: #d99090;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .debug {
+      margin-top: 22px;
+      padding: 16px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.025);
+      border: 1px solid rgba(255,255,255,.06);
+    }
+
+    .debug-title {
+      color: #68768b;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .debug-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .debug-item {
+      padding: 7px 10px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.035);
+      font-size: 10px;
+      color: #8b98aa;
+    }
+
+    .debug-item.ok {
+      color: #5be3a1;
+    }
+
+    .debug-item.fail {
+      color: #ff7777;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 35px;
+      color: #3f4a5a;
+      font-size: 10px;
+      letter-spacing: .7px;
+    }
+
+    @media (max-width: 900px) {
+      .departments {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .app {
+        width: 94%;
+        padding-top: 20px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+      }
+
+      .top-actions {
+        width: 100%;
+      }
+
+      .status {
+        flex: 1;
+      }
+
+      .refresh-btn {
+        white-space: nowrap;
+      }
+
+      .hero {
+        padding: 20px;
+      }
+
+      .department {
+        padding: 15px;
+      }
+
+      .podium {
+        gap: 6px;
+      }
+
+      .race-row {
+        grid-template-columns: 27px minmax(80px, 1fr) 70px 55px 22px;
+        gap: 6px;
+      }
+
+      .race-name {
+        font-size: 10px;
+      }
+
+      .race-score {
+        font-size: 10px;
+      }
+
+      .rocket {
+        font-size: 15px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<div id="stars">
-  <div class="neb neb1"></div>
-  <div class="neb neb2"></div>
-</div>
+<div class="app">
 
-<div class="wrap">
-
-  <header class="top">
+  <header class="topbar">
 
     <div class="brand">
-
-      <div class="mark">
-        🚀
-      </div>
+      <div class="brand-icon">🚀</div>
 
       <div>
-        <h1>CORRIDA OPERACIONAL</h1>
-        <p>O&M Solar · Performance em tempo real</p>
+        <h1>O&M SOLAR</h1>
+        <p>Performance operacional</p>
       </div>
-
     </div>
 
-    <div
-      class="live-badge"
-      id="refresh-btn"
-    >
-      <span class="live-dot"></span>
-      AO VIVO · atualizar
+    <div class="top-actions">
+
+      <div class="status loading" id="globalStatus">
+        <span class="status-dot"></span>
+        <span id="globalStatusText">Carregando...</span>
+      </div>
+
+      <button class="refresh-btn" id="refreshBtn">
+        ↻ ATUALIZAR
+      </button>
+
     </div>
 
   </header>
 
-  <div
-    class="updated-row"
-    id="updated-row"
-  >
-    Carregando dados da planilha…
-  </div>
 
-  <div id="departments-overview"></div>
+  <section class="hero">
+
+    <h2 class="hero-title">
+      CORRIDA OPERACIONAL
+    </h2>
+
+    <p class="hero-subtitle">
+      Ranking de desempenho das equipes · dados atualizados diretamente do Google Sheets
+    </p>
+
+    <div class="last-update" id="lastUpdate">
+      Última atualização: aguardando dados...
+    </div>
+
+  </section>
+
+
+  <main class="departments" id="departments">
+
+    <section class="department" data-dept="campo_tecnico">
+
+      <div class="department-header">
+        <div>
+          <h3 class="department-title">Campo Técnico</h3>
+          <div class="department-source">Aba: Tecnicos</div>
+        </div>
+      </div>
+
+      <div class="department-content">
+        <div class="empty">
+          <div class="empty-icon">⏳</div>
+          <div>Carregando dados...</div>
+        </div>
+      </div>
+
+    </section>
+
+
+    <section class="department" data-dept="supervisores">
+
+      <div class="department-header">
+        <div>
+          <h3 class="department-title">Supervisores</h3>
+          <div class="department-source">Aba: Supervisores</div>
+        </div>
+      </div>
+
+      <div class="department-content">
+        <div class="empty">
+          <div class="empty-icon">⏳</div>
+          <div>Carregando dados...</div>
+        </div>
+      </div>
+
+    </section>
+
+
+    <section class="department" data-dept="cog">
+
+      <div class="department-header">
+        <div>
+          <h3 class="department-title">COG</h3>
+          <div class="department-source">Aba: COG</div>
+        </div>
+      </div>
+
+      <div class="department-content">
+        <div class="empty">
+          <div class="empty-icon">⏳</div>
+          <div>Carregando dados...</div>
+        </div>
+      </div>
+
+    </section>
+
+
+    <section class="department" data-dept="pcm">
+
+      <div class="department-header">
+        <div>
+          <h3 class="department-title">PCM</h3>
+          <div class="department-source">Aba: PCM</div>
+        </div>
+      </div>
+
+      <div class="department-content">
+        <div class="empty">
+          <div class="empty-icon">⏳</div>
+          <div>Carregando dados...</div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <section class="debug">
+
+    <div class="debug-title">
+      Status das conexões
+    </div>
+
+    <div class="debug-list" id="debugList">
+      <div class="debug-item">
+        Aguardando conexão...
+      </div>
+    </div>
+
+  </section>
+
+
+  <footer class="footer">
+    O&M SOLAR · CORRIDA OPERACIONAL · ATUALIZAÇÃO AUTOMÁTICA A CADA 5 MINUTOS
+  </footer>
 
 </div>
 
+
 <script>
 
-  /*
-  ============================================================
-  CONFIGURAÇÃO
-  ============================================================
-  */
+  /* =========================================================
+     CONFIGURAÇÃO
+  ========================================================= */
 
   const SPREADSHEET_ID =
     "1HfCVhq4e4odHrJ4N15gjpz5VbwR3arewYElwkYo9h5Q";
 
   const AUTO_REFRESH_MINUTES = 5;
 
-
-  /*
-  ============================================================
-  DEPARTAMENTOS / ABAS
-  ============================================================
-  */
 
   const DEPTS = {
 
@@ -592,102 +704,275 @@
 
   };
 
-  const DEPT_ORDER = [
-    "campo_tecnico",
-    "supervisores",
-    "cog",
-    "pcm"
-  ];
+
+  /* =========================================================
+     ELEMENTOS
+  ========================================================= */
+
+  const globalStatus =
+    document.getElementById("globalStatus");
+
+  const globalStatusText =
+    document.getElementById("globalStatusText");
+
+  const lastUpdate =
+    document.getElementById("lastUpdate");
+
+  const refreshBtn =
+    document.getElementById("refreshBtn");
+
+  const debugList =
+    document.getElementById("debugList");
 
 
-  /*
-  ============================================================
-  GOOGLE SHEETS — JSONP
-  ============================================================
-  */
+  /* =========================================================
+     STATUS
+  ========================================================= */
 
-  function loadSheetJsonp(sheetName){
+  function setGlobalStatus(type, text) {
 
-    return new Promise((resolve,reject)=>{
+    globalStatus.classList.remove(
+      "loading",
+      "error"
+    );
 
-      const cbName =
-        "gcb_" +
+    if (type === "loading") {
+      globalStatus.classList.add("loading");
+    }
+
+    if (type === "error") {
+      globalStatus.classList.add("error");
+    }
+
+    globalStatusText.textContent = text;
+  }
+
+
+  /* =========================================================
+     UTILITÁRIOS
+  ========================================================= */
+
+  function normalizeText(value) {
+
+    return String(value ?? "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+      .toLowerCase();
+
+  }
+
+
+  function parseScore(value) {
+
+    if (
+      value === null ||
+      value === undefined ||
+      value === ""
+    ) {
+      return 0;
+    }
+
+    let text = String(value)
+      .trim()
+      .replace(/\s/g, "");
+
+    /*
+      Trata:
+
+      8
+      8,5
+      8.5
+      8,50
+      R$ 8,50
+      8 pontos
+    */
+
+    text = text
+      .replace(/[^\d,.-]/g, "");
+
+    if (
+      text.includes(",") &&
+      text.includes(".")
+    ) {
+
+      /*
+        Exemplo brasileiro:
+        1.234,56
+      */
+
+      text = text
+        .replace(/\./g, "")
+        .replace(",", ".");
+
+    } else if (text.includes(",")) {
+
+      text = text.replace(",", ".");
+
+    }
+
+    const number =
+      Number.parseFloat(text);
+
+    return Number.isFinite(number)
+      ? number
+      : 0;
+
+  }
+
+
+  function escapeHTML(value) {
+
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  /* =========================================================
+     GOOGLE SHEETS / GVIZ
+  ========================================================= */
+
+  function loadSheetJsonp(sheetName) {
+
+    return new Promise((resolve, reject) => {
+
+      const callbackName =
+        "__sheetCallback_" +
+        Date.now() +
+        "_" +
         Math.random()
           .toString(36)
-          .slice(2);
-
-      const script =
-        document.createElement("script");
-
-      let settled = false;
-
-
-      const cleanup = () => {
-
-        delete window[cbName];
-
-        script.remove();
-
-      };
+          .substring(2, 9);
 
 
       const timeout =
-        setTimeout(()=>{
-
-          if(settled) return;
-
-          settled = true;
-
-          cleanup();
-
-          reject(
-            new Error("timeout")
-          );
-
-        },12000);
-
-
-      window[cbName] =
-        function(response){
-
-          if(settled) return;
-
-          settled = true;
-
-          clearTimeout(timeout);
-
-          cleanup();
-
-          resolve(response);
-
-        };
-
-
-      script.onerror =
-        () => {
-
-          if(settled) return;
-
-          settled = true;
-
-          clearTimeout(timeout);
+        setTimeout(() => {
 
           cleanup();
 
           reject(
             new Error(
-              "script load error"
+              `Tempo esgotado ao acessar a aba "${sheetName}".`
             )
           );
+
+        }, 15000);
+
+
+      function cleanup() {
+
+        clearTimeout(timeout);
+
+        const script =
+          document.getElementById(callbackName);
+
+        if (script) {
+          script.remove();
+        }
+
+        try {
+          delete window[callbackName];
+        } catch (error) {
+          window[callbackName] = undefined;
+        }
+
+      }
+
+
+      window[callbackName] =
+        function(response) {
+
+          cleanup();
+
+          if (!response) {
+
+            reject(
+              new Error(
+                `Google Sheets não retornou dados para "${sheetName}".`
+              )
+            );
+
+            return;
+          }
+
+
+          if (
+            response.status === "error"
+          ) {
+
+            const message =
+              response.errors?.[0]?.detailed_message ||
+              response.errors?.[0]?.message ||
+              "Erro retornado pelo Google Sheets.";
+
+            reject(
+              new Error(message)
+            );
+
+            return;
+          }
+
+
+          if (
+            !response.table
+          ) {
+
+            reject(
+              new Error(
+                `A resposta da aba "${sheetName}" não possui uma tabela válida.`
+              )
+            );
+
+            return;
+          }
+
+
+          resolve(response.table);
 
         };
 
 
-      const url =
-        `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json;responseHandler:${cbName}&sheet=${encodeURIComponent(sheetName)}&_=${Date.now()}`;
+      const script =
+        document.createElement("script");
 
 
-      script.src = url;
+      script.id =
+        callbackName;
+
+
+      const queryURL =
+        "https://docs.google.com/spreadsheets/d/" +
+        encodeURIComponent(SPREADSHEET_ID) +
+        "/gviz/tq" +
+        "?tqx=out:json" +
+        "%3BresponseHandler:" +
+        encodeURIComponent(callbackName) +
+        "&sheet=" +
+        encodeURIComponent(sheetName) +
+        "&_=" +
+        Date.now();
+
+
+      script.src = queryURL;
+
+
+      script.onerror = function() {
+
+        cleanup();
+
+        reject(
+          new Error(
+            `Não foi possível acessar a aba "${sheetName}".`
+          )
+        );
+
+      };
+
 
       document.body.appendChild(script);
 
@@ -696,56 +981,104 @@
   }
 
 
-  /*
-  ============================================================
-  PARSER DA PLANILHA
-  ============================================================
-  */
+  /* =========================================================
+     CONVERSÃO DA TABELA GVIZ
+  ========================================================= */
 
-  function parseGvizTable(table){
+  function parseGvizTable(table) {
 
-    if(
+    if (
       !table ||
-      !table.rows
-    ){
+      !Array.isArray(table.rows)
+    ) {
       return [];
     }
 
 
-    const rows = table.rows;
+    const rows =
+      table.rows.map(row => {
 
-    let headerIdx = -1;
+        return (row.c || []).map(cell => {
+
+          if (!cell) {
+            return "";
+          }
+
+          /*
+            Preferimos o valor formatado quando existir,
+            pois ele preserva números com vírgula etc.
+          */
+
+          return (
+            cell.f !== undefined &&
+            cell.f !== null
+          )
+            ? cell.f
+            : (
+                cell.v !== undefined &&
+                cell.v !== null
+              )
+                ? cell.v
+                : "";
+
+        });
+
+      });
 
 
     /*
-    A planilha possui linhas de instruções
-    antes da tabela.
-
-    Procuramos a linha cuja primeira coluna
-    seja "Nome".
+      Primeiro tentamos localizar uma linha que contenha
+      Nome + Pontuação Final.
     */
 
-    for(
-      let i = 0;
-      i < rows.length;
-      i++
-    ){
+    let headerIndex = -1;
 
-      const c0 =
-        rows[i].c &&
-        rows[i].c[0]
-          ? rows[i].c[0].v
-          : null;
+    let nameColumn = -1;
+
+    let scoreColumn = -1;
 
 
-      if(
-        c0 &&
-        String(c0)
-          .trim()
-          .toLowerCase() === "nome"
-      ){
+    for (
+      let r = 0;
+      r < rows.length;
+      r++
+    ) {
 
-        headerIdx = i;
+      const currentRow =
+        rows[r].map(normalizeText);
+
+
+      const foundName =
+        currentRow.findIndex(
+          value =>
+            value === "nome" ||
+            value === "colaborador" ||
+            value === "tecnico" ||
+            value === "funcionario"
+        );
+
+
+      const foundScore =
+        currentRow.findIndex(
+          value =>
+            value === "pontuacao final" ||
+            value === "pontuacao" ||
+            value === "pontos" ||
+            value === "score" ||
+            value === "pontuacaofinal"
+        );
+
+
+      if (
+        foundName >= 0 &&
+        foundScore >= 0
+      ) {
+
+        headerIndex = r;
+
+        nameColumn = foundName;
+
+        scoreColumn = foundScore;
 
         break;
 
@@ -754,766 +1087,687 @@
     }
 
 
-    if(headerIdx === -1){
+    /*
+      Caso o Google já tenha entregue cabeçalhos
+      na definição da tabela, usamos esses cabeçalhos.
+    */
 
-      return [];
+    if (
+      headerIndex === -1 &&
+      Array.isArray(table.cols)
+    ) {
+
+      const labels =
+        table.cols.map(col =>
+          normalizeText(
+            col.label ||
+            col.id ||
+            ""
+          )
+        );
+
+
+      nameColumn =
+        labels.findIndex(
+          value =>
+            value === "nome" ||
+            value === "colaborador" ||
+            value === "tecnico"
+        );
+
+
+      scoreColumn =
+        labels.findIndex(
+          value =>
+            value === "pontuacao final" ||
+            value === "pontuacao" ||
+            value === "pontos" ||
+            value === "score"
+        );
+
+
+      if (
+        nameColumn >= 0 &&
+        scoreColumn >= 0
+      ) {
+
+        headerIndex = -1;
+
+      }
 
     }
 
 
-    const headerRow =
-      rows[headerIdx].c || [];
+    /*
+      Se ainda não encontrou, fazemos uma tentativa
+      pelo cabeçalho mais provável.
+    */
+
+    if (
+      nameColumn === -1 &&
+      scoreColumn === -1
+    ) {
+
+      if (
+        rows.length > 0
+      ) {
+
+        const firstRow =
+          rows[0].map(normalizeText);
+
+        nameColumn =
+          firstRow.findIndex(
+            value =>
+              value.includes("nome") ||
+              value.includes("colaborador") ||
+              value.includes("tecnico")
+          );
+
+        scoreColumn =
+          firstRow.findIndex(
+            value =>
+              value.includes("pontuacao") ||
+              value.includes("pontos") ||
+              value.includes("score")
+          );
 
 
-    let nomeCol = -1;
-
-    let scoreCol = -1;
-
-
-    headerRow.forEach(
-      (cell,idx)=>{
-
-        const v =
-          cell &&
-          cell.v != null
-            ? String(cell.v)
-                .trim()
-                .toLowerCase()
-            : "";
-
-
-        if(
-          v === "nome"
-        ){
-
-          nomeCol = idx;
-
-        }
-
-
-        if(
-          v.includes(
-            "pontuação final"
-          ) ||
-          v.includes(
-            "pontuacao final"
-          )
-        ){
-
-          scoreCol = idx;
-
+        if (
+          nameColumn >= 0 &&
+          scoreColumn >= 0
+        ) {
+          headerIndex = 0;
         }
 
       }
-    );
-
-
-    if(
-      nomeCol === -1 ||
-      scoreCol === -1
-    ){
-
-      return [];
 
     }
 
 
-    const out = [];
+    /*
+      Se não encontrou as colunas, retornamos erro
+      para facilitar o diagnóstico.
+    */
+
+    if (
+      nameColumn < 0 ||
+      scoreColumn < 0
+    ) {
+
+      throw new Error(
+        "Não encontrei as colunas 'Nome' e 'Pontuação Final'."
+      );
+
+    }
 
 
-    for(
-      let i = headerIdx + 1;
+    const data = [];
+
+
+    const start =
+      headerIndex >= 0
+        ? headerIndex + 1
+        : 0;
+
+
+    for (
+      let i = start;
       i < rows.length;
       i++
-    ){
+    ) {
 
-      const c =
-        rows[i].c;
+      const row =
+        rows[i] || [];
 
 
-      if(!c) continue;
+      const name =
+        String(
+          row[nameColumn] ?? ""
+        ).trim();
 
 
-      const nomeCell =
-        c[nomeCol];
-
-
-      const scoreCell =
-        c[scoreCol];
-
-
-      const nome =
-        nomeCell &&
-        nomeCell.v != null
-          ? String(
-              nomeCell.v
-            ).trim()
-          : "";
-
-
-      if(!nome) continue;
-
-
-      const media =
-        scoreCell &&
-        typeof scoreCell.v === "number"
-          ? scoreCell.v
-          : NaN;
-
-
-      if(isNaN(media)) continue;
-
-
-      out.push({
-
-        nome: nome,
-
-        media: media
-
-      });
-
-    }
-
-
-    return out;
-
-  }
-
-
-  /*
-  ============================================================
-  ESTRELAS
-  ============================================================
-  */
-
-  (function generateStars(){
-
-    const container =
-      document.getElementById(
-        "stars"
-      );
-
-
-    const n =
-      window.innerWidth < 700
-        ? 60
-        : 120;
-
-
-    for(
-      let i = 0;
-      i < n;
-      i++
-    ){
-
-      const s =
-        document.createElement(
-          "div"
-        );
-
-
-      s.className = "star";
-
-
-      const size =
-        Math.random() * 2 + .6;
-
-
-      s.style.width =
-        size + "px";
-
-      s.style.height =
-        size + "px";
-
-
-      s.style.top =
-        Math.random() * 100 + "%";
-
-
-      s.style.left =
-        Math.random() * 100 + "%";
-
-
-      s.style.animationDuration =
-        (
-          Math.random() * 3 + 2
-        ) + "s";
-
-
-      s.style.animationDelay =
-        (
-          Math.random() * 3
-        ) + "s";
-
-
-      container.appendChild(s);
-
-    }
-
-  })();
-
-
-  /*
-  ============================================================
-  CRIA OS BLOCOS DOS DEPARTAMENTOS
-  ============================================================
-  */
-
-  (function buildOverview(){
-
-    const container =
-      document.getElementById(
-        "departments-overview"
-      );
-
-
-    container.innerHTML =
-      DEPT_ORDER
-        .map(key => `
-
-          <div
-            class="card dept-block"
-            data-dept="${key}"
-          >
-
-            <div class="dept-heading">
-
-              <h2>
-                🚀 ${DEPTS[key].title}
-              </h2>
-
-              <span
-                class="count-tag"
-                id="count-${key}"
-              >
-                —
-              </span>
-
-            </div>
-
-
-            <div
-              class="podium"
-              id="podium-${key}"
-            ></div>
-
-
-            <div
-              id="race-${key}"
-            >
-
-              <div class="empty">
-                Carregando…
-              </div>
-
-            </div>
-
-          </div>
-
-        `)
-        .join("");
-
-  })();
-
-
-  /*
-  ============================================================
-  BOTÃO MANUAL
-  ============================================================
-  */
-
-  document
-    .getElementById(
-      "refresh-btn"
-    )
-    .onclick = loadAll;
-
-
-  /*
-  ============================================================
-  CARREGA TODOS
-  ============================================================
-  */
-
-  function loadAll(){
-
-    document
-      .getElementById(
-        "updated-row"
-      )
-      .textContent =
-        "Atualizando…";
-
-
-    Promise
-      .all(
-        DEPT_ORDER.map(
-          loadDept
-        )
-      )
-      .then(()=>{
-
-        const agora =
-          new Date()
-            .toLocaleTimeString(
-              "pt-BR",
-              {
-                hour:"2-digit",
-                minute:"2-digit"
-              }
-            );
-
-
-        document
-          .getElementById(
-            "updated-row"
-          )
-          .textContent =
-            "Última atualização: " +
-            agora;
-
-      });
-
-  }
-
-
-  /*
-  ============================================================
-  CARREGA UM DEPARTAMENTO
-  ============================================================
-  */
-
-  async function loadDept(dept){
-
-    const container =
-      document.getElementById(
-        "race-" + dept
-      );
-
-
-    const countTag =
-      document.getElementById(
-        "count-" + dept
-      );
-
-
-    try{
-
-      const response =
-        await loadSheetJsonp(
-          DEPTS[dept].sheet
-        );
-
-
-      if(
-        !response ||
-        response.status === "error"
-      ){
-
-        throw new Error(
-          "gviz error"
-        );
-
+      if (!name) {
+        continue;
       }
 
 
-      const ranked =
-        parseGvizTable(
-          response.table
-        )
-        .sort(
-          (a,b) =>
-            b.media - a.media
+      /*
+        Evita incluir linhas que eventualmente sejam
+        cabeçalhos repetidos.
+      */
+
+      if (
+        normalizeText(name) === "nome" ||
+        normalizeText(name) === "colaborador"
+      ) {
+        continue;
+      }
+
+
+      const score =
+        parseScore(
+          row[scoreColumn]
         );
 
 
-      /*
-      CONTAGEM
-      */
+      data.push({
+        name,
+        media: score
+      });
 
-      countTag.textContent =
-        ranked.length +
-        (
-          ranked.length === 1
-            ? " pessoa"
-            : " pessoas"
-        );
+    }
 
 
-      /*
-      PÓDIO
-      */
+    return data
+      .filter(item =>
+        item.name &&
+        Number.isFinite(item.media)
+      )
+      .sort(
+        (a, b) =>
+          b.media - a.media
+      );
 
-      renderPodium(
-        dept,
-        ranked
+  }
+
+
+  /* =========================================================
+     RENDERIZAÇÃO
+  ========================================================= */
+
+  function renderDepartment(
+    deptKey,
+    people
+  ) {
+
+    const section =
+      document.querySelector(
+        `.department[data-dept="${deptKey}"]`
       );
 
 
-      /*
-      SEM DADOS
-      */
+    if (!section) {
+      return;
+    }
 
-      if(
-        ranked.length === 0
-      ){
 
-        container.innerHTML = `
-          <div class="empty">
-            Preencha os dados na planilha —
-            a corrida aparece assim que
-            houver pontuação.
+    const content =
+      section.querySelector(
+        ".department-content"
+      );
+
+
+    if (!people.length) {
+
+      content.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">📭</div>
+          <div>Nenhum dado encontrado nesta aba.</div>
+        </div>
+      `;
+
+      return;
+    }
+
+
+    const top3 =
+      people.slice(0, 3);
+
+
+    const first =
+      top3[0];
+
+    const second =
+      top3[1];
+
+    const third =
+      top3[2];
+
+
+    function podiumCard(
+      person,
+      position,
+      medal,
+      className
+    ) {
+
+      if (!person) {
+
+        return `
+          <div class="podium-card ${className}">
+            <div class="position">
+              ${position}º LUGAR
+            </div>
+
+            <div class="podium-name">
+              —
+            </div>
+
+            <div class="podium-score">
+              —
+            </div>
+
+            <div class="score-label">
+              sem dados
+            </div>
           </div>
         `;
 
-        return;
-
       }
 
 
-      /*
-      BARRAS
-      */
+      return `
+        <div class="podium-card ${className}">
 
-      const max =
-        ranked[0].media;
+          <div class="medal">
+            ${medal}
+          </div>
+
+          <div class="position">
+            ${position}º LUGAR
+          </div>
+
+          <div class="podium-name">
+            ${escapeHTML(person.name)}
+          </div>
+
+          <div class="podium-score">
+            ${person.media.toLocaleString(
+              "pt-BR",
+              {
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 2
+              }
+            )}
+          </div>
+
+          <div class="score-label">
+            Pontuação final
+          </div>
+
+        </div>
+      `;
+
+    }
 
 
-      container.innerHTML =
-        ranked
-          .map(
-            (p,i)=>{
+    const podiumHTML = `
 
-              const pos =
-                i + 1;
+      <div class="podium">
+
+        ${podiumCard(
+          second,
+          2,
+          "🥈",
+          "second"
+        )}
+
+        ${podiumCard(
+          first,
+          1,
+          "🥇",
+          "first"
+        )}
+
+        ${podiumCard(
+          third,
+          3,
+          "🥉",
+          "third"
+        )}
+
+      </div>
+
+    `;
 
 
-              const cls =
-                pos === 1
-                  ? "p1"
-                  : pos === 2
-                    ? "p2"
-                    : pos === 3
-                      ? "p3"
-                      : "";
+    const maxScore =
+      Math.max(
+        ...people.map(
+          person => person.media
+        ),
+        1
+      );
 
 
-              const pct =
-                max > 0
-                  ? Math.max(
-                      6,
-                      (p.media / max) * 92
-                    ) + 4
-                  : 6;
+    const rankingHTML = `
+
+      <div class="ranking-title">
+        <span>Classificação</span>
+        <span>${people.length} participantes</span>
+      </div>
+
+      <div class="ranking">
+
+        ${people.map(
+          (person, index) => {
+
+            const width =
+              Math.max(
+                5,
+                Math.min(
+                  100,
+                  (person.media / maxScore) * 100
+                )
+              );
 
 
-              return `
+            return `
+
+              <div class="race-row">
+
+                <div class="race-position">
+                  ${index + 1}
+                </div>
 
                 <div
-                  class="race-row ${cls}"
-                  style="
-                    animation-delay:
-                    ${i * 0.04}s
-                  "
+                  class="race-name"
+                  title="${escapeHTML(person.name)}"
                 >
+                  ${escapeHTML(person.name)}
+                </div>
 
-                  <div class="race-top">
+                <div class="bar">
+                  <div
+                    class="bar-fill"
+                    style="width:${width}%"
+                  ></div>
+                </div>
 
-                    <div class="race-name">
+                <div class="race-score">
+                  ${person.media.toLocaleString(
+                    "pt-BR",
+                    {
+                      minimumFractionDigits: 1,
+                      maximumFractionDigits: 2
+                    }
+                  )}
+                </div>
 
-                      <span
-                        class="race-pos"
-                      >
-                        ${pos}º
-                      </span>
+                <div class="rocket">
+                  ${index < 3 ? "🚀" : "🏁"}
+                </div>
 
-                      ${escapeHtml(
-                        p.nome
-                      )}
+              </div>
 
-                    </div>
+            `;
 
+          }
+        ).join("")}
 
-                    <div class="race-score">
+      </div>
 
-                      ${p.media.toFixed(1)}
-
-                      <span
-                        style="
-                          color:var(--text-dim);
-                          font-weight:500;
-                          font-size:10.5px;
-                        "
-                      >
-                        / 10
-                      </span>
-
-                    </div>
-
-                  </div>
-
-
-                  <div class="track">
-
-                    <div class="track-inner">
-
-                      <div
-                        class="track-fill"
-                        style="
-                          width:${pct}%;
-                        "
-                      ></div>
-
-                    </div>
+    `;
 
 
-                    <div
-                      class="track-rocket"
-                      style="
-                        left:${pct}%;
-                      "
-                    >
-                      🚀
-                    </div>
+    content.innerHTML =
+      podiumHTML +
+      rankingHTML;
 
-                  </div>
+  }
+
+
+  /* =========================================================
+     DEBUG
+  ========================================================= */
+
+  function updateDebug(results) {
+
+    debugList.innerHTML = "";
+
+
+    Object.entries(DEPTS)
+      .forEach(
+        ([key, dept]) => {
+
+          const result =
+            results[key];
+
+
+          const item =
+            document.createElement("div");
+
+
+          item.className =
+            "debug-item " +
+            (
+              result?.ok
+                ? "ok"
+                : "fail"
+            );
+
+
+          if (result?.ok) {
+
+            item.textContent =
+              `✓ ${dept.sheet}: ${result.count} registros`;
+
+          } else {
+
+            item.textContent =
+              `✕ ${dept.sheet}: ${result?.error || "erro"}`;
+
+          }
+
+
+          debugList.appendChild(item);
+
+        }
+      );
+
+  }
+
+
+  /* =========================================================
+     CARREGAMENTO PRINCIPAL
+  ========================================================= */
+
+  async function loadDashboard() {
+
+    setGlobalStatus(
+      "loading",
+      "Atualizando..."
+    );
+
+
+    refreshBtn.disabled = true;
+
+    refreshBtn.style.opacity = ".6";
+
+
+    const results = {};
+
+
+    const entries =
+      Object.entries(DEPTS);
+
+
+    /*
+      Carrega todas as abas em paralelo.
+      Se uma falhar, as outras continuam funcionando.
+    */
+
+    await Promise.all(
+
+      entries.map(
+        async ([key, dept]) => {
+
+          try {
+
+            const table =
+              await loadSheetJsonp(
+                dept.sheet
+              );
+
+
+            const people =
+              parseGvizTable(table);
+
+
+            results[key] = {
+              ok: true,
+              count: people.length
+            };
+
+
+            renderDepartment(
+              key,
+              people
+            );
+
+
+          } catch (error) {
+
+            console.error(
+              `Erro na aba ${dept.sheet}:`,
+              error
+            );
+
+
+            results[key] = {
+              ok: false,
+              error: error.message
+            };
+
+
+            const section =
+              document.querySelector(
+                `.department[data-dept="${key}"]`
+              );
+
+
+            if (section) {
+
+              const content =
+                section.querySelector(
+                  ".department-content"
+                );
+
+
+              content.innerHTML = `
+
+                <div class="error-box">
+
+                  <strong>
+                    Não foi possível ler esta aba.
+                  </strong>
+
+                  <br><br>
+
+                  ${escapeHTML(error.message)}
+
+                  <br><br>
+
+                  Confirme se a aba se chama
+                  <strong>${escapeHTML(dept.sheet)}</strong>
+                  e se a planilha está disponível para leitura.
 
                 </div>
 
               `;
 
             }
-          )
-          .join("");
 
-
-    }
-
-    catch(err){
-
-      container.innerHTML = `
-
-        <div class="err-box">
-
-          Não consegui ler esta aba
-          da planilha.
-
-          <br><br>
-
-          Confirme se o compartilhamento
-          está como
-
-          <strong>
-            "Qualquer pessoa com o link
-            pode visualizar"
-          </strong>
-
-          <br>
-
-          e se a aba se chama
-
-          <strong>
-            "${DEPTS[dept].sheet}"
-          </strong>.
-
-        </div>
-
-      `;
-
-
-      document
-        .getElementById(
-          "podium-" + dept
-        )
-        .innerHTML = "";
-
-    }
-
-  }
-
-
-  /*
-  ============================================================
-  PÓDIO
-  ============================================================
-  */
-
-  function renderPodium(
-    dept,
-    ranked
-  ){
-
-    const podium =
-      document.getElementById(
-        "podium-" + dept
-      );
-
-
-    /*
-    Ordem visual:
-
-    2º | 1º | 3º
-    */
-
-    const order = [
-      1,
-      0,
-      2
-    ];
-
-
-    const medals = [
-      "🥈",
-      "🥇",
-      "🥉"
-    ];
-
-
-    let html = "";
-
-
-    order.forEach(
-      (idx,slot)=>{
-
-        const p =
-          ranked[idx];
-
-
-        const posClass =
-          idx === 0
-            ? "p-1"
-            : idx === 1
-              ? "p-2"
-              : "p-3";
-
-
-        if(!p){
-
-          html += `
-
-            <div
-              class="
-                podium-slot
-                ${posClass}
-                podium-empty
-              "
-            >
-
-              <div
-                class="podium-emoji"
-              >
-                ${medals[slot]}
-              </div>
-
-              <div
-                class="podium-name"
-              >
-                —
-              </div>
-
-              <div
-                class="podium-bar"
-              ></div>
-
-            </div>
-
-          `;
+          }
 
         }
+      )
 
-        else{
-
-          html += `
-
-            <div
-              class="
-                podium-slot
-                ${posClass}
-              "
-            >
-
-              <div
-                class="podium-emoji"
-              >
-                ${medals[slot]}
-              </div>
-
-              <div
-                class="podium-name"
-              >
-                ${escapeHtml(
-                  p.nome
-                )}
-              </div>
-
-              <div
-                class="podium-score"
-              >
-                ${p.media.toFixed(1)}
-              </div>
-
-              <div
-                class="podium-bar"
-              ></div>
-
-            </div>
-
-          `;
-
-        }
-
-      }
     );
 
 
-    podium.innerHTML =
-      html;
-
-  }
+    updateDebug(results);
 
 
-  /*
-  ============================================================
-  SEGURANÇA CONTRA HTML
-  ============================================================
-  */
+    const successCount =
+      Object.values(results)
+        .filter(result => result.ok)
+        .length;
 
-  function escapeHtml(str){
 
-    const div =
-      document.createElement(
-        "div"
+    if (
+      successCount === entries.length
+    ) {
+
+      setGlobalStatus(
+        "ok",
+        "Dados online"
+      );
+
+    } else if (
+      successCount > 0
+    ) {
+
+      setGlobalStatus(
+        "error",
+        `${successCount}/${entries.length} abas online`
+      );
+
+    } else {
+
+      setGlobalStatus(
+        "error",
+        "Erro de conexão"
+      );
+
+    }
+
+
+    const now =
+      new Date();
+
+
+    lastUpdate.textContent =
+      "Última atualização: " +
+      now.toLocaleString(
+        "pt-BR",
+        {
+          dateStyle: "short",
+          timeStyle: "medium"
+        }
       );
 
 
-    div.textContent = str;
+    refreshBtn.disabled = false;
 
-
-    return div.innerHTML;
+    refreshBtn.style.opacity = "1";
 
   }
 
 
-  /*
-  ============================================================
-  INICIALIZAÇÃO
-  ============================================================
-  */
+  /* =========================================================
+     BOTÃO ATUALIZAR
+  ========================================================= */
 
-  loadAll();
+  refreshBtn.addEventListener(
+    "click",
+    () => {
+
+      loadDashboard();
+
+    }
+  );
 
 
-  /*
-  Atualização automática
-  a cada 5 minutos.
-  */
+  /* =========================================================
+     AUTO REFRESH
+  ========================================================= */
 
   setInterval(
-    loadAll,
-    AUTO_REFRESH_MINUTES *
-    60 *
-    1000
+    () => {
+
+      loadDashboard();
+
+    },
+    AUTO_REFRESH_MINUTES * 60 * 1000
   );
+
+
+  /* =========================================================
+     PRIMEIRA CARGA
+  ========================================================= */
+
+  loadDashboard();
 
 </script>
 
