@@ -1,584 +1,72 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Corrida Operacional · O&M Solar</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      min-height: 100vh;
-      font-family: Arial, Helvetica, sans-serif;
-      color: #fff;
-      background:
-        radial-gradient(circle at 15% 15%, rgba(0,130,255,.15), transparent 30%),
-        radial-gradient(circle at 85% 25%, rgba(0,255,170,.08), transparent 30%),
-        radial-gradient(circle at 50% 80%, rgba(100,0,255,.10), transparent 35%),
-        #05070d;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: .12;
-      background-image:
-        radial-gradient(circle, #fff 1px, transparent 1px),
-        radial-gradient(circle, #fff 1px, transparent 1px);
-      background-size: 80px 80px, 140px 140px;
-      background-position: 0 0, 40px 60px;
-    }
-
-    .container {
-      width: min(1450px, 94%);
-      margin: auto;
-      padding: 30px 0 60px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      padding: 20px 24px;
-      margin-bottom: 30px;
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 20px;
-      background: rgba(10,14,25,.78);
-      backdrop-filter: blur(14px);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .brand-icon {
-      font-size: 42px;
-    }
-
-    .brand h1 {
-      font-size: 30px;
-      letter-spacing: 1px;
-    }
-
-    .brand p {
-      color: #8e9bb0;
-      margin-top: 5px;
-      font-size: 14px;
-    }
-
-    .refresh-button {
-      border: 1px solid rgba(0,220,255,.35);
-      background: rgba(0,140,255,.10);
-      color: #fff;
-      padding: 12px 18px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .refresh-button:hover {
-      background: rgba(0,180,255,.20);
-    }
-
-    .refresh-button:disabled {
-      opacity: .5;
-      cursor: wait;
-    }
-
-    .title-area {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .title-area h2 {
-      font-size: clamp(25px,4vw,42px);
-      letter-spacing: 2px;
-    }
-
-    .title-area p {
-      color: #8794a9;
-      margin-top: 8px;
-    }
-
-    .last-update {
-      margin-top: 12px;
-      color: #67e8f9;
-      font-size: 13px;
-    }
-
-    .departments {
-      display: grid;
-      grid-template-columns: repeat(2,1fr);
-      gap: 22px;
-    }
-
-    @media(max-width:900px) {
-      .departments {
-        grid-template-columns: 1fr;
-      }
-
-      .header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-    }
-
-    .department {
-      min-height: 420px;
-      padding: 24px;
-      border-radius: 22px;
-      background:
-        linear-gradient(145deg,rgba(17,24,39,.90),rgba(7,11,20,.95));
-      border: 1px solid rgba(255,255,255,.08);
-      box-shadow: 0 20px 50px rgba(0,0,0,.28);
-      overflow: hidden;
-    }
-
-    .department-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 15px;
-    }
-
-    .department-name {
-      font-size: 22px;
-      font-weight: 800;
-    }
-
-    .department-subtitle {
-      color: #748198;
-      font-size: 12px;
-      margin-top: 5px;
-    }
-
-    .people-count {
-      height: fit-content;
-      padding: 7px 10px;
-      border-radius: 20px;
-      background: rgba(255,255,255,.06);
-      color: #aebbd0;
-      font-size: 12px;
-      white-space: nowrap;
-    }
-
-    .status {
-      margin-top: 14px;
-      font-size: 12px;
-      min-height: 22px;
-    }
-
-    .status.loading {
-      color: #67e8f9;
-    }
-
-    .status.success {
-      color: #65f3b2;
-    }
-
-    .status.error {
-      color: #ff7b8a;
-    }
-
-    .diagnostic {
-      margin-top: 8px;
-      padding: 10px;
-      border-radius: 9px;
-      background: rgba(255,255,255,.035);
-      color: #7f8ba0;
-      font-size: 11px;
-      line-height: 1.5;
-      display: none;
-    }
-
-    .diagnostic.visible {
-      display: block;
-    }
-
-    .podium {
-      display: grid;
-      grid-template-columns: 1fr 1.15fr 1fr;
-      gap: 12px;
-      align-items: end;
-      margin-top: 30px;
-    }
-
-    .podium-item {
-      text-align: center;
-    }
-
-    .medal {
-      font-size: 30px;
-      margin-bottom: 8px;
-    }
-
-    .podium-card {
-      min-height: 90px;
-      padding: 15px 8px;
-      border-radius: 16px 16px 10px 10px;
-      background: rgba(255,255,255,.045);
-      border: 1px solid rgba(255,255,255,.07);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .podium-item.first .podium-card {
-      min-height: 125px;
-      border-color: rgba(255,215,0,.28);
-    }
-
-    .person-name {
-      font-size: 14px;
-      font-weight: 800;
-      word-break: break-word;
-    }
-
-    .empty-name {
-      color: #69758a;
-    }
-
-    .person-score {
-      margin-top: 7px;
-      color: #65e7ff;
-      font-size: 13px;
-      font-weight: bold;
-    }
-
-    .ranking {
-      margin-top: 28px;
-    }
-
-    .ranking-title {
-      display: flex;
-      justify-content: space-between;
-      color: #8f9bb0;
-      font-size: 12px;
-      margin-bottom: 12px;
-    }
-
-    .ranking-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .ranking-row {
-      display: grid;
-      grid-template-columns: 35px minmax(100px,1fr) 90px;
-      gap: 10px;
-      align-items: center;
-      padding: 9px 10px;
-      border-radius: 10px;
-      background: rgba(255,255,255,.025);
-    }
-
-    .ranking-position {
-      color: #68758a;
-      text-align: center;
-      font-size: 12px;
-    }
-
-    .ranking-person-name {
-      font-size: 13px;
-      font-weight: 700;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .bar-container {
-      height: 4px;
-      margin-top: 5px;
-      border-radius: 10px;
-      overflow: hidden;
-      background: rgba(255,255,255,.06);
-    }
-
-    .bar {
-      height: 100%;
-      border-radius: 10px;
-      background: linear-gradient(90deg,#00d4ff,#00ff95);
-    }
-
-    .ranking-score {
-      text-align: right;
-      color: #8ceeff;
-      font-weight: 800;
-      font-size: 12px;
-    }
-
-    .empty-message {
-      text-align: center;
-      padding: 30px 10px;
-      color: #67748a;
-      font-size: 13px;
-    }
-
-    .connections {
-      margin-top: 25px;
-      padding: 18px 20px;
-      border-radius: 18px;
-      background: rgba(8,12,22,.72);
-      border: 1px solid rgba(255,255,255,.07);
-    }
-
-    .connections-title {
-      font-weight: 800;
-      margin-bottom: 12px;
-    }
-
-    .connection-list {
-      display: grid;
-      grid-template-columns: repeat(4,1fr);
-      gap: 10px;
-    }
-
-    @media(max-width:800px) {
-      .connection-list {
-        grid-template-columns: repeat(2,1fr);
-      }
-    }
-
-    @media(max-width:500px) {
-      .connection-list {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .connection {
-      padding: 10px;
-      border-radius: 10px;
-      background: rgba(255,255,255,.035);
-      font-size: 12px;
-    }
-
-    .connection strong {
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .connection.ok {
-      color: #72f3b6;
-    }
-
-    .connection.error {
-      color: #ff7c8a;
-    }
-
-    .connection.loading {
-      color: #67e8f9;
-    }
-
-    footer {
-      text-align: center;
-      color: #4f5b70;
-      font-size: 11px;
-      margin-top: 25px;
-    }
-  </style>
-</head>
-
-<body>
-
-<div class="container">
-
-  <header class="header">
-
-    <div class="brand">
-
-      <div class="brand-icon">
-        🚀
-      </div>
-
-      <div>
-        <h1>O&M SOLAR</h1>
-        <p>Performance operacional</p>
-      </div>
-
-    </div>
-
-    <button
-      id="refreshButton"
-      class="refresh-button"
-      onclick="loadAll()"
-    >
-      ↻ ATUALIZAR
-    </button>
-
-  </header>
-
-
-  <section class="title-area">
-
-    <h2>
-      🏁 CORRIDA OPERACIONAL
-    </h2>
-
-    <p>
-      Ranking de desempenho das equipes · dados atualizados diretamente do Google Sheets
-    </p>
-
-    <div
-      id="lastUpdate"
-      class="last-update"
-    >
-      Aguardando dados...
-    </div>
-
-  </section>
-
-
-  <main
-    id="departments"
-    class="departments"
-  ></main>
-
-
-  <section class="connections">
-
-    <div class="connections-title">
-      Status das conexões
-    </div>
-
-    <div
-      id="connectionList"
-      class="connection-list"
-    ></div>
-
-  </section>
-
-
-  <footer>
-    O&M SOLAR · CORRIDA OPERACIONAL · ATUALIZAÇÃO AUTOMÁTICA A CADA 5 MINUTOS
-  </footer>
-
-</div>
-
-
 <script>
 
 /* =========================================================
-   CONFIGURAÇÃO
+   LEITURA ROBUSTA DA PONTUAÇÃO
    ========================================================= */
-
-const SPREADSHEET_ID =
-  "1HfCVhq4e4odHrJ4N15gjpz5VbwR3arewYElwkYo9h5Q";
-
-
-const DEPARTMENTS = [
-
-  {
-    key: "Tecnicos",
-    name: "🚀 Campo Técnico",
-    sheet: "Tecnicos"
-  },
-
-  {
-    key: "Supervisores",
-    name: "🚀 Supervisores",
-    sheet: "Supervisores"
-  },
-
-  {
-    key: "COG",
-    name: "🚀 COG",
-    sheet: "COG"
-  },
-
-  {
-    key: "PCM",
-    name: "🚀 PCM",
-    sheet: "PCM"
-  }
-
-];
-
-
-const REFRESH_INTERVAL =
-  5 * 60 * 1000;
-
-
-let loading = false;
-
-
-/* =========================================================
-   UTILITÁRIOS
-   ========================================================= */
-
-function normalizeText(value) {
-
-  return String(value ?? "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g,"")
-    .trim()
-    .toLowerCase();
-
-}
-
-
-function escapeHTML(value) {
-
-  return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-
-}
-
 
 function parseScore(value) {
 
   if (
     value === null ||
-    value === undefined ||
-    value === ""
+    value === undefined
   ) {
     return 0;
   }
 
+  /*
+     Se o Google já entregou como número,
+     usamos diretamente.
+  */
 
   if (typeof value === "number") {
+
     return Number.isFinite(value)
       ? value
       : 0;
+
   }
 
 
   let text =
     String(value)
-      .trim()
-      .replace(/\s/g,"");
+      .trim();
+
+
+  if (!text) {
+    return 0;
+  }
 
 
   /*
-     Remove símbolos comuns.
+     Remove espaços.
   */
 
   text =
-    text.replace(/[R$%]/g,"");
+    text.replace(/\s/g, "");
 
 
   /*
-     Exemplo:
+     Remove textos comuns.
+     
+     Exemplos:
+     "150 pontos"
+     "150 pts"
+     "150pt"
+     "150%"
+  */
 
-     1.234,56
-     vira
-     1234.56
+  text =
+    text
+      .replace(/pontos?/gi, "")
+      .replace(/pts?/gi, "")
+      .replace(/%/g, "");
+
+
+  /*
+     Caso brasileiro:
+
+     1.250,50
+     -> 1250.50
   */
 
   if (
@@ -593,264 +81,124 @@ function parseScore(value) {
 
       text =
         text
-          .replace(/\./g,"")
-          .replace(",",".");
+          .replace(/\./g, "")
+          .replace(",", ".");
+
     }
 
     else {
 
       text =
-        text.replace(/,/g,"");
+        text.replace(/,/g, "");
 
     }
 
   }
 
+  /*
+     Caso:
+
+     1250,50
+  */
+
   else if (
     text.includes(",")
   ) {
 
+    /*
+       Se houver somente uma vírgula,
+       tratamos como decimal.
+    */
+
     text =
-      text.replace(",",".");
-  }
-
-
-  const number =
-    parseFloat(text);
-
-
-  return Number.isFinite(number)
-    ? number
-    : 0;
-
-}
-
-
-function formatScore(value) {
-
-  return Number(value)
-    .toLocaleString(
-      "pt-BR",
-      {
-        maximumFractionDigits: 2
-      }
-    );
-
-}
-
-
-/* =========================================================
-   CARDS
-   ========================================================= */
-
-function initializeDashboard() {
-
-  document.getElementById(
-    "departments"
-  ).innerHTML =
-
-    DEPARTMENTS
-      .map(department => `
-
-        <section
-          class="department"
-          id="department-${department.key}"
-        >
-
-          <div class="department-header">
-
-            <div>
-
-              <div class="department-name">
-                ${department.name}
-              </div>
-
-              <div class="department-subtitle">
-                Aba: ${department.sheet}
-              </div>
-
-            </div>
-
-            <div
-              class="people-count"
-              id="count-${department.key}"
-            >
-              0 pessoas
-            </div>
-
-          </div>
-
-
-          <div
-            class="status loading"
-            id="status-${department.key}"
-          >
-            ⏳ Carregando...
-          </div>
-
-
-          <div
-            class="diagnostic"
-            id="diagnostic-${department.key}"
-          ></div>
-
-
-          <div
-            class="podium"
-            id="podium-${department.key}"
-          ></div>
-
-
-          <div
-            class="ranking"
-            id="ranking-${department.key}"
-          ></div>
-
-        </section>
-
-      `)
-      .join("");
-
-}
-
-
-/* =========================================================
-   GOOGLE SHEETS
-   ========================================================= */
-
-async function loadSheet(sheetName) {
-
-  const url =
-    "https://docs.google.com/spreadsheets/d/" +
-    SPREADSHEET_ID +
-    "/gviz/tq" +
-    "?tqx=out:json" +
-    "&sheet=" +
-    encodeURIComponent(sheetName) +
-    "&headers=1" +
-    "&_=" +
-    Date.now();
-
-
-  const response =
-    await fetch(
-      url,
-      {
-        method: "GET",
-        cache: "no-store"
-      }
-    );
-
-
-  if (!response.ok) {
-
-    throw new Error(
-      "HTTP " + response.status
-    );
+      text.replace(",", ".");
 
   }
 
+  /*
+     Caso:
 
-  const raw =
-    await response.text();
+     1.250
+
+     Aqui existe uma ambiguidade:
+
+     1.250 pode significar 1250
+     ou 1,25.
+
+     Como estamos tratando pontuação,
+     assumimos milhar quando houver
+     exatamente 3 números após o ponto.
+  */
+
+  else if (
+    text.includes(".")
+  ) {
+
+    const parts =
+      text.split(".");
 
 
-  if (!raw) {
+    if (
+      parts.length === 2 &&
+      parts[1].length === 3
+    ) {
 
-    throw new Error(
-      "Resposta vazia do Google Sheets."
-    );
+      text =
+        parts[0] +
+        parts[1];
+
+    }
 
   }
 
 
   /*
-     Localiza o primeiro {
-
-     Isso remove:
-
-     google.visualization.Query.setResponse(
+     Mantém apenas números,
+     ponto decimal e sinal.
   */
 
-  const firstBrace =
-    raw.indexOf("{");
+  text =
+    text.replace(
+      /[^0-9.-]/g,
+      ""
+    );
 
 
-  const lastBrace =
-    raw.lastIndexOf("}");
+  const number =
+    Number(text);
 
 
   if (
-    firstBrace === -1 ||
-    lastBrace === -1
+    Number.isFinite(number)
   ) {
 
-    throw new Error(
-      "Google Sheets não retornou JSON."
-    );
+    return number;
 
   }
 
 
-  const jsonString =
-    raw.substring(
-      firstBrace,
-      lastBrace + 1
-    );
-
-
-  let data;
-
-
-  try {
-
-    data =
-      JSON.parse(jsonString);
-
-  }
-
-  catch(error) {
-
-    console.error(
-      "Resposta Google Sheets:",
-      raw
-    );
-
-    throw new Error(
-      "JSON inválido retornado pelo Google Sheets."
-    );
-
-  }
-
-
-  if (
-    data.status &&
-    data.status !== "ok"
-  ) {
-
-    throw new Error(
-      "Google Sheets retornou erro."
-    );
-
-  }
-
-
-  if (!data.table) {
-
-    throw new Error(
-      "Tabela não encontrada."
-    );
-
-  }
-
-
-  return data.table;
+  return 0;
 
 }
 
 
 /* =========================================================
-   DETECTA COLUNAS AUTOMATICAMENTE
+   NORMALIZAÇÃO
+   ========================================================= */
+
+function normalizeText(value) {
+
+  return String(value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toLowerCase();
+
+}
+
+
+/* =========================================================
+   DETECÇÃO DAS COLUNAS
    ========================================================= */
 
 function findColumns(table) {
@@ -861,91 +209,80 @@ function findColumns(table) {
 
   const headers =
     cols.map(
-      (column,index) =>
-        String(
+      (column, index) => {
+
+        return String(
           column.label ||
           column.id ||
           `Coluna ${index + 1}`
-        ).trim()
+        ).trim();
+
+      }
     );
 
 
   console.log(
-    "Cabeçalhos encontrados:",
+    "===================================="
+  );
+
+  console.log(
+    "COLUNAS RECEBIDAS:",
     headers
   );
 
 
   /*
-     Candidatos para NOME
+     Possíveis nomes para pessoa.
   */
 
-  const nameCandidates = [
+  const nameKeywords = [
 
     "nome",
-
     "nomes",
-
     "tecnico",
-
     "tecnicos",
-
-    "tecnico nome",
-
     "colaborador",
-
-    "colaborador nome",
-
+    "colaboradores",
     "funcionario",
-
     "funcionarios",
-
-    "profissional",
-
-    "pessoa",
-
     "responsavel",
-
-    "responsável",
-
+    "responsáveis",
+    "profissional",
+    "pessoa",
     "usuario",
-
-    "usuário",
-
-    "apelido"
+    "usuario",
+    "matricula"
 
   ];
 
 
   /*
-     Candidatos para PONTUAÇÃO
+     Possíveis nomes para pontuação.
+
+     Incluímos palavras parciais porque
+     sua planilha pode ter algo como:
+
+     Pontuação Final Atual
+     Pontuação Geral
+     Pontuação Equipe
+     Score Final
+     Pontos Totais
+     etc.
   */
 
-  const scoreCandidates = [
-
-    "pontuacao final",
+  const scoreKeywords = [
 
     "pontuacao",
-
-    "pontuacao total",
-
+    "pontuação",
+    "ponto",
     "pontos",
-
-    "pontos finais",
-
     "score",
-
-    "scores",
-
-    "total",
-
-    "resultado",
-
     "nota",
-
-    "ranking",
-
-    "performance"
+    "performance",
+    "desempenho",
+    "resultado",
+    "total",
+    "final"
 
   ];
 
@@ -956,88 +293,61 @@ function findColumns(table) {
 
 
   /*
-     Busca exata.
+     Primeiro tenta identificar pelo nome
+     completo do cabeçalho.
   */
 
-  for (
-    let i = 0;
-    i < headers.length;
-    i++
-  ) {
+  headers.forEach(
+    (header, index) => {
 
-    const normalized =
-      normalizeText(
-        headers[i]
-      );
+      const normalized =
+        normalizeText(header);
 
 
-    if (
-      nameIndex === -1 &&
-      nameCandidates.includes(
-        normalized
-      )
-    ) {
+      /*
+         Nome
+      */
 
-      nameIndex = i;
+      if (
+        nameIndex === -1 &&
+        nameKeywords.some(
+          keyword =>
+            normalized ===
+            normalizeText(keyword)
+        )
+      ) {
+
+        nameIndex = index;
+
+      }
+
+
+      /*
+         Pontuação
+      */
+
+      if (
+        scoreIndex === -1 &&
+        (
+          normalized.includes("pontu") ||
+          normalized.includes("score") ||
+          normalized.includes("ponto") ||
+          normalized.includes("performance") ||
+          normalized.includes("desempenho")
+        )
+      ) {
+
+        scoreIndex = index;
+
+      }
 
     }
-
-
-    if (
-      scoreIndex === -1 &&
-      scoreCandidates.includes(
-        normalized
-      )
-    ) {
-
-      scoreIndex = i;
-
-    }
-
-  }
+  );
 
 
   /*
-     Busca parcial.
-  */
-
-  if (nameIndex === -1) {
-
-    nameIndex =
-      headers.findIndex(
-        header =>
-          normalizeText(header)
-            .includes("nome")
-      );
-
-  }
-
-
-  if (scoreIndex === -1) {
-
-    scoreIndex =
-      headers.findIndex(
-        header => {
-
-          const h =
-            normalizeText(header);
-
-          return (
-            h.includes("pontu") ||
-            h.includes("ponto") ||
-            h.includes("score") ||
-            h.includes("nota")
-          );
-
-        }
-      );
-
-  }
-
-
-  /*
-     Se ainda não encontrou o nome,
-     assumimos primeira coluna.
+     Se não encontrou nome,
+     primeira coluna.
   */
 
   if (
@@ -1051,9 +361,9 @@ function findColumns(table) {
 
 
   /*
-     Se ainda não encontrou pontuação,
-     procura a primeira coluna que
-     contenha números nos dados.
+     Se não encontrou pontuação,
+     vamos analisar o conteúdo de cada
+     coluna.
   */
 
   if (
@@ -1064,63 +374,117 @@ function findColumns(table) {
       table.rows || [];
 
 
+    let bestColumn = -1;
+
+    let bestNumericCount = 0;
+
+
     for (
       let columnIndex = 0;
       columnIndex < headers.length;
       columnIndex++
     ) {
 
+      /*
+         Nunca usamos a coluna do nome
+         como coluna de pontuação.
+      */
+
+      if (
+        columnIndex === nameIndex
+      ) {
+
+        continue;
+
+      }
+
+
       let numericCount = 0;
 
 
-      rows.forEach(row => {
+      rows.forEach(
+        row => {
 
-        const cell =
-          row.c?.[columnIndex];
+          const cell =
+            row.c?.[columnIndex];
 
 
-        if (!cell) {
-          return;
+          if (!cell) {
+            return;
+          }
+
+
+          const rawValue =
+            cell.v ??
+            cell.f;
+
+
+          if (
+            rawValue === null ||
+            rawValue === undefined ||
+            rawValue === ""
+          ) {
+
+            return;
+
+          }
+
+
+          const parsed =
+            parseScore(rawValue);
+
+
+          /*
+             Considera válido inclusive
+             quando o valor é 0.
+          */
+
+          if (
+            !isNaN(parsed) &&
+            String(rawValue)
+              .trim() !== ""
+          ) {
+
+            numericCount++;
+
+          }
+
         }
+      );
 
 
-        const value =
-          cell.v ??
-          cell.f;
-
-
-        if (
-          value !== null &&
-          value !== undefined &&
-          value !== "" &&
-          !isNaN(
-            parseScore(value)
-          )
-        ) {
-
-          numericCount++;
-
-        }
-
-      });
+      console.log(
+        "Coluna",
+        columnIndex,
+        headers[columnIndex],
+        "→",
+        numericCount,
+        "valores numéricos"
+      );
 
 
       if (
-        numericCount >=
-        Math.max(
-          1,
-          Math.floor(
-            rows.length * 0.5
-          )
-        )
+        numericCount >
+        bestNumericCount
       ) {
 
-        scoreIndex =
+        bestNumericCount =
+          numericCount;
+
+        bestColumn =
           columnIndex;
 
-        break;
-
       }
+
+    }
+
+
+    if (
+      bestColumn !== -1
+    ) {
+
+      scoreIndex =
+        bestColumn;
 
     }
 
@@ -1129,7 +493,6 @@ function findColumns(table) {
 
   /*
      Último fallback:
-
      segunda coluna.
   */
 
@@ -1143,47 +506,55 @@ function findColumns(table) {
   }
 
 
-  return {
-    headers,
-    nameIndex,
-    scoreIndex
-  };
-
-}
-
-
-/* =========================================================
-   TRANSFORMA DADOS
-   ========================================================= */
-
-function parseSheet(table) {
-
-  const {
-    headers,
-    nameIndex,
-    scoreIndex
-  } =
-    findColumns(table);
-
-
   console.log(
-    "Coluna nome:",
+    "COLUNA NOME:",
     nameIndex,
     headers[nameIndex]
   );
 
 
   console.log(
-    "Coluna pontuação:",
+    "COLUNA PONTUAÇÃO:",
     scoreIndex,
     headers[scoreIndex]
   );
 
 
-  /*
-     Se não houver duas colunas,
-     mostra diagnóstico.
-  */
+  console.log(
+    "===================================="
+  );
+
+
+  return {
+
+    headers,
+
+    nameIndex,
+
+    scoreIndex
+
+  };
+
+}
+
+
+/* =========================================================
+   CONVERTE A PLANILHA EM RANKING
+   ========================================================= */
+
+function parseSheet(table) {
+
+  const columns =
+    findColumns(table);
+
+
+  const {
+    headers,
+    nameIndex,
+    scoreIndex
+  } =
+    columns;
+
 
   if (
     nameIndex === -1 ||
@@ -1204,90 +575,98 @@ function parseSheet(table) {
   const people = [];
 
 
-  rows.forEach(row => {
+  rows.forEach(
+    (row, rowIndex) => {
 
-    const cells =
-      row.c || [];
-
-
-    const nameCell =
-      cells[nameIndex];
+      const cells =
+        row.c || [];
 
 
-    const scoreCell =
-      cells[scoreIndex];
+      const nameCell =
+        cells[nameIndex];
 
 
-    const name =
-      nameCell?.v ??
-      nameCell?.f ??
-      "";
+      const scoreCell =
+        cells[scoreIndex];
 
 
-    const score =
-      scoreCell?.v ??
-      scoreCell?.f ??
-      "";
+      if (!nameCell) {
+        return;
+      }
 
 
-    const cleanName =
-      String(name).trim();
+      const rawName =
+        nameCell.v ??
+        nameCell.f ??
+        "";
 
 
-    if (!cleanName) {
-      return;
+      const rawScore =
+        scoreCell?.v ??
+        scoreCell?.f ??
+        "";
+
+
+      const name =
+        String(rawName).trim();
+
+
+      if (!name) {
+        return;
+      }
+
+
+      /*
+         Não adiciona linha que seja
+         o próprio cabeçalho.
+      */
+
+      const normalizedName =
+        normalizeText(name);
+
+
+      if (
+        normalizedName === "nome" ||
+        normalizedName === "tecnico" ||
+        normalizedName === "colaborador"
+      ) {
+
+        return;
+
+      }
+
+
+      const score =
+        parseScore(rawScore);
+
+
+      console.log(
+        "LINHA",
+        rowIndex + 1,
+        "→",
+        name,
+        "→",
+        rawScore,
+        "→",
+        score
+      );
+
+
+      people.push({
+
+        name,
+
+        score
+
+      });
+
     }
+  );
 
 
-    /*
-       Ignora possíveis cabeçalhos
-       dentro dos dados.
-    */
-
-    const normalizedName =
-      normalizeText(cleanName);
-
-
-    if (
-      normalizedName === "nome" ||
-      normalizedName === "tecnico" ||
-      normalizedName === "colaborador" ||
-      normalizedName === "funcionario"
-    ) {
-
-      return;
-
-    }
-
-
-    const numericScore =
-      parseScore(score);
-
-
-    /*
-       Se a pontuação não é numérica,
-       ignora a linha.
-    */
-
-    if (
-      score !== "" &&
-      isNaN(
-        parseScore(score)
-      )
-    ) {
-
-      return;
-
-    }
-
-
-    people.push({
-      name: cleanName,
-      score: numericScore
-    });
-
-  });
-
+  /*
+     Ordenação decrescente.
+  */
 
   people.sort(
     (a,b) =>
@@ -1296,606 +675,17 @@ function parseSheet(table) {
 
 
   return {
+
     people,
-    headers,
+
     nameColumn:
-      headers[nameIndex] ||
-      `Coluna ${nameIndex + 1}`,
+      headers[nameIndex],
+
     scoreColumn:
-      headers[scoreIndex] ||
-      `Coluna ${scoreIndex + 1}`
+      headers[scoreIndex]
+
   };
 
 }
 
-
-/* =========================================================
-   PODIUM
-   ========================================================= */
-
-function renderPodium(
-  key,
-  people
-) {
-
-  const podium =
-    document.getElementById(
-      `podium-${key}`
-    );
-
-
-  const positions = [
-
-    {
-      className: "second",
-      medal: "🥈",
-      index: 1
-    },
-
-    {
-      className: "first",
-      medal: "🥇",
-      index: 0
-    },
-
-    {
-      className: "third",
-      medal: "🥉",
-      index: 2
-    }
-
-  ];
-
-
-  podium.innerHTML =
-    positions.map(
-      position => {
-
-        const person =
-          people[position.index];
-
-
-        if (!person) {
-
-          return `
-
-            <div
-              class="podium-item ${position.className}"
-            >
-
-              <div class="medal">
-                ${position.medal}
-              </div>
-
-              <div class="podium-card">
-
-                <div class="person-name empty-name">
-                  —
-                </div>
-
-                <div class="person-score">
-                  —
-                </div>
-
-              </div>
-
-            </div>
-
-          `;
-
-        }
-
-
-        return `
-
-          <div
-            class="podium-item ${position.className}"
-          >
-
-            <div class="medal">
-              ${position.medal}
-            </div>
-
-            <div class="podium-card">
-
-              <div class="person-name">
-                ${escapeHTML(person.name)}
-              </div>
-
-              <div class="person-score">
-                ${formatScore(person.score)}
-              </div>
-
-            </div>
-
-          </div>
-
-        `;
-
-      }
-    ).join("");
-
-}
-
-
-/* =========================================================
-   RANKING
-   ========================================================= */
-
-function renderRanking(
-  key,
-  people
-) {
-
-  const ranking =
-    document.getElementById(
-      `ranking-${key}`
-    );
-
-
-  if (!people.length) {
-
-    ranking.innerHTML = `
-
-      <div class="empty-message">
-
-        Nenhuma pontuação encontrada.
-
-      </div>
-
-    `;
-
-    return;
-
-  }
-
-
-  const maxScore =
-    Math.max(
-      ...people.map(
-        p => p.score
-      ),
-      1
-    );
-
-
-  ranking.innerHTML = `
-
-    <div class="ranking-title">
-
-      <span>
-        CLASSIFICAÇÃO
-      </span>
-
-      <span>
-        PONTUAÇÃO
-      </span>
-
-    </div>
-
-
-    <div class="ranking-list">
-
-      ${
-        people
-          .slice(0,10)
-          .map(
-            (person,index) => {
-
-              const width =
-                Math.max(
-                  3,
-                  (
-                    person.score /
-                    maxScore
-                  ) * 100
-                );
-
-
-              return `
-
-                <div class="ranking-row">
-
-                  <div class="ranking-position">
-                    #${index + 1}
-                  </div>
-
-
-                  <div>
-
-                    <div class="ranking-person-name">
-                      ${escapeHTML(person.name)}
-                    </div>
-
-                    <div class="bar-container">
-
-                      <div
-                        class="bar"
-                        style="width:${width}%"
-                      ></div>
-
-                    </div>
-
-                  </div>
-
-
-                  <div class="ranking-score">
-                    ${formatScore(person.score)}
-                  </div>
-
-                </div>
-
-              `;
-
-            }
-          )
-          .join("")
-      }
-
-    </div>
-
-  `;
-
-}
-
-
-/* =========================================================
-   CONEXÃO
-   ========================================================= */
-
-function updateConnection(
-  key,
-  name,
-  type,
-  message
-) {
-
-  let element =
-    document.getElementById(
-      `connection-${key}`
-    );
-
-
-  if (!element) {
-
-    element =
-      document.createElement(
-        "div"
-      );
-
-    element.id =
-      `connection-${key}`;
-
-
-    document.getElementById(
-      "connectionList"
-    ).appendChild(
-      element
-    );
-
-  }
-
-
-  element.className =
-    `connection ${type}`;
-
-
-  element.innerHTML = `
-
-    <strong>
-      ${escapeHTML(name)}
-    </strong>
-
-    ${escapeHTML(message)}
-
-  `;
-
-}
-
-
-/* =========================================================
-   DEPARTAMENTO
-   ========================================================= */
-
-async function loadDepartment(
-  department
-) {
-
-  const status =
-    document.getElementById(
-      `status-${department.key}`
-    );
-
-
-  const diagnostic =
-    document.getElementById(
-      `diagnostic-${department.key}`
-    );
-
-
-  status.className =
-    "status loading";
-
-
-  status.textContent =
-    "⏳ Consultando Google Sheets...";
-
-
-  diagnostic.classList.remove(
-    "visible"
-  );
-
-
-  updateConnection(
-    department.key,
-    department.name,
-    "loading",
-    "Conectando..."
-  );
-
-
-  try {
-
-    const table =
-      await loadSheet(
-        department.sheet
-      );
-
-
-    const parsed =
-      parseSheet(table);
-
-
-    const people =
-      parsed.people;
-
-
-    /*
-       Quantidade
-    */
-
-    document.getElementById(
-      `count-${department.key}`
-    ).textContent =
-      `${people.length} ${
-        people.length === 1
-          ? "pessoa"
-          : "pessoas"
-      }`;
-
-
-    /*
-       Ranking
-    */
-
-    renderPodium(
-      department.key,
-      people
-    );
-
-
-    renderRanking(
-      department.key,
-      people
-    );
-
-
-    /*
-       Status
-    */
-
-    status.className =
-      "status success";
-
-
-    status.innerHTML =
-      `🟢 Conectado · ${people.length} registros encontrados`;
-
-
-    /*
-       Diagnóstico das colunas
-    */
-
-    diagnostic.classList.add(
-      "visible"
-    );
-
-
-    diagnostic.innerHTML =
-      `
-        Coluna identificada para nome:
-        <strong>${escapeHTML(parsed.nameColumn)}</strong>
-        <br>
-        Coluna identificada para pontuação:
-        <strong>${escapeHTML(parsed.scoreColumn)}</strong>
-      `;
-
-
-    updateConnection(
-      department.key,
-      department.name,
-      "ok",
-      `${people.length} registros · ${parsed.nameColumn} / ${parsed.scoreColumn}`
-    );
-
-
-    return true;
-
-  }
-
-  catch(error) {
-
-    console.error(
-      department.sheet,
-      error
-    );
-
-
-    status.className =
-      "status error";
-
-
-    status.innerHTML =
-      `🔴 ${escapeHTML(error.message)}`;
-
-
-    diagnostic.classList.add(
-      "visible"
-    );
-
-
-    diagnostic.innerHTML =
-      `
-        O sistema não conseguiu identificar
-        corretamente os dados desta aba.
-        <br><br>
-        Abra o console do navegador
-        (F12 → Console) para visualizar
-        os cabeçalhos recebidos do Google Sheets.
-      `;
-
-
-    updateConnection(
-      department.key,
-      department.name,
-      "error",
-      error.message
-    );
-
-
-    return false;
-
-  }
-
-}
-
-
-/* =========================================================
-   CARREGAMENTO GERAL
-   ========================================================= */
-
-async function loadAll() {
-
-  if (loading) {
-    return;
-  }
-
-
-  loading = true;
-
-
-  const button =
-    document.getElementById(
-      "refreshButton"
-    );
-
-
-  button.disabled = true;
-
-
-  button.textContent =
-    "↻ ATUALIZANDO...";
-
-
-  document.getElementById(
-    "connectionList"
-  ).innerHTML = "";
-
-
-  const results =
-    await Promise.all(
-      DEPARTMENTS.map(
-        department =>
-          loadDepartment(
-            department
-          )
-      )
-    );
-
-
-  const successful =
-    results.filter(Boolean).length;
-
-
-  const now =
-    new Date();
-
-
-  const formattedDate =
-    now.toLocaleString(
-      "pt-BR"
-    );
-
-
-  document.getElementById(
-    "lastUpdate"
-  ).textContent =
-    `Última atualização: ${formattedDate}`;
-
-
-  if (
-    successful ===
-    DEPARTMENTS.length
-  ) {
-
-    document.getElementById(
-      "lastUpdate"
-    ).textContent +=
-      " · 🟢 Todas as abas conectadas";
-
-  }
-
-  else if (
-    successful > 0
-  ) {
-
-    document.getElementById(
-      "lastUpdate"
-    ).textContent +=
-      ` · 🟡 ${successful}/${DEPARTMENTS.length} abas conectadas`;
-
-  }
-
-  else {
-
-    document.getElementById(
-      "lastUpdate"
-    ).textContent +=
-      " · 🔴 Nenhuma aba conectada";
-
-  }
-
-
-  button.disabled = false;
-
-  button.textContent =
-    "↻ ATUALIZAR";
-
-
-  loading = false;
-
-}
-
-
-/* =========================================================
-   START
-   ========================================================= */
-
-initializeDashboard();
-
-loadAll();
-
-
-/*
-   Atualização automática.
-*/
-
-setInterval(
-  loadAll,
-  REFRESH_INTERVAL
-);
-
 </script>
-
-</body>
-</html>
