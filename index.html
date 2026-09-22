@@ -1,397 +1,1009 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Corrida Operacional | O&M Solar</title>
+<title>Corrida Operacional | O&M Solar</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+:root{
+  --bg:#030712;
+  --panel:rgba(10,17,32,.82);
+  --panel2:rgba(15,25,45,.72);
+  --line:rgba(120,170,255,.14);
+  --text:#eef5ff;
+  --muted:#7e8ca8;
+  --cyan:#19d9ff;
+  --blue:#397cff;
+  --violet:#795cff;
+  --green:#35e69a;
+  --yellow:#ffd45c;
+  --red:#ff5f70;
+  --shadow:0 25px 80px rgba(0,0,0,.45);
+}
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      min-height: 100%;
-      font-family: Arial, Helvetica, sans-serif;
-      background:
-        radial-gradient(circle at 20% 20%, rgba(40, 80, 160, .18), transparent 30%),
-        radial-gradient(circle at 80% 70%, rgba(80, 40, 160, .15), transparent 30%),
-        #050814;
-      color: #fff;
-    }
+*{
+  box-sizing:border-box;
+}
 
-    body {
-      overflow-x: hidden;
-    }
+html{
+  scroll-behavior:smooth;
+}
 
-    .container {
-      width: 94%;
-      max-width: 1500px;
-      margin: auto;
-      padding: 25px 0 50px;
-    }
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(circle at 10% 0%,rgba(30,110,255,.18),transparent 28%),
+    radial-gradient(circle at 90% 10%,rgba(121,92,255,.14),transparent 25%),
+    radial-gradient(circle at 50% 100%,rgba(25,217,255,.08),transparent 35%),
+    #030712;
+  overflow-x:hidden;
+}
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-      margin-bottom: 25px;
-      padding: 20px 25px;
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 18px;
-      background: rgba(10,15,30,.82);
-      backdrop-filter: blur(12px);
-      box-shadow: 0 10px 40px rgba(0,0,0,.35);
-    }
+/* GRID DIGITAL */
 
-    .brand h1 {
-      margin: 0;
-      font-size: 30px;
-      letter-spacing: 2px;
-    }
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.22;
+  background-image:
+    linear-gradient(rgba(90,150,255,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(90,150,255,.035) 1px,transparent 1px);
+  background-size:40px 40px;
+  mask-image:linear-gradient(to bottom,black,transparent);
+}
 
-    .brand h1 span {
-      color: #4da3ff;
-    }
+/* SCANLINE */
 
-    .brand p {
-      margin: 7px 0 0;
-      color: #9da9c7;
-      font-size: 14px;
-    }
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.025;
+  background:repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    #fff 4px
+  );
+}
 
-    button {
-      border: 0;
-      border-radius: 10px;
-      padding: 12px 20px;
-      cursor: pointer;
-      background: linear-gradient(135deg, #1677ff, #5c3dff);
-      color: #fff;
-      font-weight: bold;
-      font-size: 14px;
-      box-shadow: 0 5px 20px rgba(30,100,255,.3);
-      transition: .2s;
-    }
+/* CONTAINER */
 
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(30,100,255,.45);
-    }
+.app{
+  width:min(1500px,94%);
+  margin:auto;
+  padding:24px 0 55px;
+}
 
-    .update-info {
-      color: #8490ad;
-      font-size: 12px;
-      margin-top: 10px;
-    }
+/* HEADER */
 
-    .title-section {
-      margin: 30px 0 20px;
-    }
+.topbar{
+  position:relative;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  padding:22px 24px;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:linear-gradient(
+    135deg,
+    rgba(12,22,42,.92),
+    rgba(5,11,23,.88)
+  );
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
 
-    .title-section h2 {
-      margin: 0;
-      font-size: 25px;
-      letter-spacing: 1px;
-    }
+.topbar::before{
+  content:"";
+  position:absolute;
+  width:350px;
+  height:2px;
+  left:0;
+  top:0;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    var(--cyan),
+    transparent
+  );
+  animation:scan 4s linear infinite;
+}
 
-    .title-section p {
-      margin: 6px 0 0;
-      color: #7e8aa7;
-      font-size: 13px;
-    }
+@keyframes scan{
+  0%{transform:translateX(-400px)}
+  100%{transform:translateX(1500px)}
+}
 
-    .departments {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 22px;
-    }
+.brand{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
 
-    .department {
-      background: rgba(9,14,28,.88);
-      border: 1px solid rgba(255,255,255,.07);
-      border-radius: 18px;
-      padding: 20px;
-      min-height: 360px;
-      box-shadow: 0 15px 50px rgba(0,0,0,.35);
-    }
+.logo{
+  width:54px;
+  height:54px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:16px;
+  font-size:26px;
+  background:
+    radial-gradient(circle,#153c68,#081426 70%);
+  border:1px solid rgba(25,217,255,.3);
+  box-shadow:
+    0 0 30px rgba(25,217,255,.15),
+    inset 0 0 20px rgba(25,217,255,.08);
+}
 
-    .department-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(255,255,255,.07);
-      padding-bottom: 15px;
-      margin-bottom: 18px;
-    }
+.brand h1{
+  margin:0;
+  font-size:25px;
+  letter-spacing:3px;
+}
 
-    .department-name {
-      font-size: 18px;
-      font-weight: bold;
-    }
+.brand h1 span{
+  color:var(--cyan);
+  text-shadow:0 0 18px rgba(25,217,255,.45);
+}
 
-    .status {
-      font-size: 11px;
-      padding: 5px 9px;
-      border-radius: 20px;
-      background: rgba(255,255,255,.06);
-      color: #9aa5bd;
-    }
+.brand p{
+  margin:5px 0 0;
+  color:var(--muted);
+  font-size:12px;
+  letter-spacing:1px;
+}
 
-    .status.ok {
-      background: rgba(0,210,130,.12);
-      color: #4dffb0;
-    }
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
 
-    .status.error {
-      background: rgba(255,70,70,.12);
-      color: #ff7676;
-    }
+.connection{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#8d9bb6;
+  font-size:11px;
+}
 
-    .podium {
-      display: flex;
-      justify-content: center;
-      align-items: end;
-      gap: 12px;
-      height: 150px;
-      margin-bottom: 20px;
-    }
+.dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#66738b;
+}
 
-    .podium-item {
-      width: 30%;
-      text-align: center;
-    }
+.dot.online{
+  background:var(--green);
+  box-shadow:0 0 14px var(--green);
+}
 
-    .podium-avatar {
-      width: 48px;
-      height: 48px;
-      margin: auto;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #243653, #10192d);
-      border: 2px solid rgba(255,255,255,.12);
-      font-weight: bold;
-      font-size: 15px;
-    }
+.dot.error{
+  background:var(--red);
+  box-shadow:0 0 14px var(--red);
+}
 
-    .first .podium-avatar {
-      width: 62px;
-      height: 62px;
-      border-color: #ffd45a;
-      box-shadow: 0 0 25px rgba(255,212,90,.22);
-    }
+.refresh{
+  border:1px solid rgba(25,217,255,.3);
+  border-radius:11px;
+  padding:11px 16px;
+  color:#fff;
+  background:linear-gradient(
+    135deg,
+    rgba(25,217,255,.16),
+    rgba(57,124,255,.18)
+  );
+  cursor:pointer;
+  font-weight:700;
+  transition:.2s;
+}
 
-    .podium-name {
-      margin-top: 7px;
-      font-size: 12px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+.refresh:hover{
+  transform:translateY(-2px);
+  border-color:rgba(25,217,255,.65);
+  box-shadow:0 0 25px rgba(25,217,255,.15);
+}
 
-    .podium-score {
-      margin-top: 4px;
-      font-weight: bold;
-      color: #65aaff;
-    }
+.refresh.loading{
+  opacity:.6;
+  pointer-events:none;
+}
 
-    .ranking {
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
-    }
+/* HERO */
 
-    .rank-row {
-      display: grid;
-      grid-template-columns: 35px 1fr 60px;
-      align-items: center;
-      gap: 10px;
-      padding: 9px 10px;
-      border-radius: 9px;
-      background: rgba(255,255,255,.025);
-    }
+.hero{
+  margin:26px 0 18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:20px;
+}
 
-    .rank-position {
-      color: #697590;
-      font-size: 12px;
-      font-weight: bold;
-    }
+.hero h2{
+  margin:0;
+  font-size:30px;
+  letter-spacing:1px;
+}
 
-    .person {
-      min-width: 0;
-    }
+.hero h2 span{
+  color:var(--cyan);
+}
 
-    .person-name {
-      font-size: 13px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+.hero p{
+  margin:8px 0 0;
+  color:var(--muted);
+  font-size:13px;
+}
 
-    .bar-container {
-      margin-top: 5px;
-      height: 4px;
-      background: rgba(255,255,255,.06);
-      border-radius: 10px;
-      overflow: hidden;
-    }
+.last-update{
+  text-align:right;
+  color:#65738e;
+  font-size:11px;
+}
 
-    .bar {
-      height: 100%;
-      border-radius: 10px;
-      background: linear-gradient(90deg, #1877ff, #753cff);
-    }
+/* KPI */
 
-    .score {
-      text-align: right;
-      font-weight: bold;
-      font-size: 14px;
-      color: #66adff;
-    }
+.kpis{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin-bottom:22px;
+}
 
-    .empty {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 200px;
-      text-align: center;
-      color: #707c96;
-      font-size: 13px;
-    }
+.kpi{
+  position:relative;
+  padding:16px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:rgba(7,14,27,.72);
+  overflow:hidden;
+}
 
-    .debug {
-      margin-top: 15px;
-      padding: 8px 10px;
-      border-radius: 8px;
-      background: rgba(0,0,0,.25);
-      color: #66728d;
-      font-size: 10px;
-      line-height: 1.5;
-    }
+.kpi::after{
+  content:"";
+  position:absolute;
+  width:70px;
+  height:70px;
+  right:-30px;
+  bottom:-35px;
+  border-radius:50%;
+  background:var(--cyan);
+  filter:blur(35px);
+  opacity:.12;
+}
 
-    .debug strong {
-      color: #8b97b1;
-    }
+.kpi-label{
+  color:#70809e;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+}
 
-    .loading {
-      animation: pulse 1.5s infinite;
-    }
+.kpi-value{
+  margin-top:7px;
+  font-size:25px;
+  font-weight:800;
+}
 
-    @keyframes pulse {
-      0%,100% { opacity: .45; }
-      50% { opacity: 1; }
-    }
+.kpi-value.cyan{
+  color:var(--cyan);
+}
 
-    @media (max-width: 900px) {
-      .departments {
-        grid-template-columns: 1fr;
-      }
+.kpi-value.green{
+  color:var(--green);
+}
 
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-    }
+.kpi-value.yellow{
+  color:var(--yellow);
+}
 
-    @media (max-width: 500px) {
-      .container {
-        width: 96%;
-      }
+.kpi-value.violet{
+  color:#a18cff;
+}
 
-      .department {
-        padding: 15px;
-      }
-    }
-  </style>
+/* DEPARTAMENTOS */
+
+.departments{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:18px;
+}
+
+/* CARD */
+
+.department{
+  position:relative;
+  min-height:430px;
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(11,21,40,.9),
+      rgba(4,10,21,.92)
+    );
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.department::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  right:0;
+  height:1px;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    var(--cyan),
+    transparent
+  );
+  opacity:.65;
+}
+
+.card-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 20px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+.card-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.card-icon{
+  width:35px;
+  height:35px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:10px;
+  background:rgba(25,217,255,.08);
+  border:1px solid rgba(25,217,255,.15);
+}
+
+.card-name{
+  font-size:15px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+.card-sub{
+  margin-top:3px;
+  color:#61708d;
+  font-size:10px;
+}
+
+.status{
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:10px;
+  color:#7886a0;
+  background:rgba(255,255,255,.04);
+}
+
+.status.ok{
+  color:var(--green);
+  background:rgba(53,230,154,.07);
+  border:1px solid rgba(53,230,154,.12);
+}
+
+.status.error{
+  color:var(--red);
+  background:rgba(255,95,112,.07);
+}
+
+/* CONTENT */
+
+.card-content{
+  padding:17px 20px 20px;
+}
+
+/* PODIUM */
+
+.podium{
+  height:160px;
+  display:flex;
+  justify-content:center;
+  align-items:end;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.podium-item{
+  width:30%;
+  text-align:center;
+}
+
+.podium-position{
+  color:#66748f;
+  font-size:9px;
+  margin-bottom:5px;
+}
+
+.avatar{
+  width:45px;
+  height:45px;
+  margin:auto;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+  font-weight:800;
+  background:
+    radial-gradient(circle at 35% 30%,#284a76,#091426);
+  border:1px solid rgba(255,255,255,.13);
+}
+
+.first .avatar{
+  width:62px;
+  height:62px;
+  font-size:16px;
+  border-color:rgba(255,212,92,.65);
+  box-shadow:
+    0 0 25px rgba(255,212,92,.16),
+    inset 0 0 20px rgba(255,212,92,.06);
+}
+
+.podium-name{
+  margin-top:6px;
+  color:#dce6f7;
+  font-size:11px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.podium-score{
+  margin-top:4px;
+  color:var(--cyan);
+  font-size:14px;
+  font-weight:900;
+}
+
+/* RANKING */
+
+.ranking{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  max-height:250px;
+  overflow:auto;
+  padding-right:3px;
+}
+
+.ranking::-webkit-scrollbar{
+  width:3px;
+}
+
+.ranking::-webkit-scrollbar-thumb{
+  background:#263756;
+  border-radius:10px;
+}
+
+.rank{
+  display:grid;
+  grid-template-columns:32px minmax(0,1fr) 55px;
+  gap:9px;
+  align-items:center;
+  padding:9px 10px;
+  border-radius:10px;
+  background:rgba(255,255,255,.025);
+  border:1px solid transparent;
+  transition:.2s;
+}
+
+.rank:hover{
+  border-color:rgba(25,217,255,.12);
+  background:rgba(25,217,255,.035);
+  transform:translateX(2px);
+}
+
+.position{
+  color:#5d6c87;
+  font-size:10px;
+  font-weight:800;
+}
+
+.person{
+  min-width:0;
+}
+
+.person-name{
+  color:#dbe5f5;
+  font-size:12px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.progress{
+  height:3px;
+  margin-top:5px;
+  background:rgba(255,255,255,.06);
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.progress span{
+  display:block;
+  height:100%;
+  border-radius:10px;
+  background:linear-gradient(
+    90deg,
+    var(--blue),
+    var(--cyan)
+  );
+  box-shadow:0 0 8px rgba(25,217,255,.35);
+}
+
+.score{
+  text-align:right;
+  color:#82caff;
+  font-size:13px;
+  font-weight:900;
+}
+
+/* EMPTY */
+
+.empty{
+  min-height:280px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  color:#66738d;
+  font-size:12px;
+}
+
+.loader{
+  width:32px;
+  height:32px;
+  border:2px solid rgba(255,255,255,.08);
+  border-top-color:var(--cyan);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+  margin-bottom:12px;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+/* DEBUG */
+
+.debug{
+  padding:0 20px 15px;
+  color:#45536e;
+  font-size:9px;
+  line-height:1.5;
+}
+
+.debug strong{
+  color:#667590;
+}
+
+/* FOOTER */
+
+.footer{
+  margin-top:22px;
+  padding:14px;
+  text-align:center;
+  color:#3f4c65;
+  font-size:10px;
+  letter-spacing:1px;
+}
+
+/* RESPONSIVO */
+
+@media(max-width:1000px){
+
+  .departments{
+    grid-template-columns:1fr;
+  }
+
+  .kpis{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+}
+
+@media(max-width:650px){
+
+  .app{
+    width:94%;
+    padding-top:12px;
+  }
+
+  .topbar{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .header-actions{
+    width:100%;
+    justify-content:space-between;
+  }
+
+  .hero{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .last-update{
+    text-align:left;
+  }
+
+  .kpis{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .hero h2{
+    font-size:24px;
+  }
+
+}
+</style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="app">
 
-  <header>
+  <!-- HEADER -->
+
+  <header class="topbar">
+
     <div class="brand">
-      <h1>O&M <span>SOLAR</span></h1>
-      <p>Performance operacional</p>
-      <div class="update-info" id="lastUpdate">
-        Última atualização: aguardando dados...
+
+      <div class="logo">
+        ☀
       </div>
+
+      <div>
+        <h1>O&M <span>SOLAR</span></h1>
+        <p>OPERATIONAL INTELLIGENCE CENTER</p>
+      </div>
+
     </div>
 
-    <button onclick="loadAll()">
-      ↻ ATUALIZAR
-    </button>
+    <div class="header-actions">
+
+      <div class="connection">
+        <span class="dot" id="globalDot"></span>
+        <span id="globalStatus">Conectando...</span>
+      </div>
+
+      <button
+        class="refresh"
+        id="refreshButton"
+        onclick="loadAll()"
+      >
+        ↻ ATUALIZAR
+      </button>
+
+    </div>
+
   </header>
 
 
-  <div class="title-section">
-    <h2>🚀 CORRIDA OPERACIONAL</h2>
-    <p>Ranking baseado exclusivamente na coluna NOTA FINAL da planilha.</p>
-  </div>
+  <!-- HERO -->
+
+  <section class="hero">
+
+    <div>
+      <h2>
+        🚀 CORRIDA <span>OPERACIONAL</span>
+      </h2>
+
+      <p>
+        Performance das equipes · ranking em tempo real
+      </p>
+    </div>
+
+    <div
+      class="last-update"
+      id="lastUpdate"
+    >
+      Última atualização: aguardando dados...
+    </div>
+
+  </section>
 
 
-  <div class="departments">
+  <!-- KPIs -->
 
-    <div class="department">
-      <div class="department-header">
-        <div class="department-name">👷 TÉCNICOS</div>
-        <div class="status" id="status-Tecnicos">⏳ Aguardando</div>
+  <section class="kpis">
+
+    <div class="kpi">
+      <div class="kpi-label">
+        Colaboradores
       </div>
 
-      <div id="Tecnicos">
-        <div class="empty loading">Carregando dados...</div>
+      <div
+        class="kpi-value cyan"
+        id="totalPeople"
+      >
+        —
       </div>
-
-      <div class="debug" id="debug-Tecnicos"></div>
     </div>
 
 
-    <div class="department">
-      <div class="department-header">
-        <div class="department-name">🧭 SUPERVISORES</div>
-        <div class="status" id="status-Supervisores">⏳ Aguardando</div>
+    <div class="kpi">
+      <div class="kpi-label">
+        Líder atual
       </div>
 
-      <div id="Supervisores">
-        <div class="empty loading">Carregando dados...</div>
+      <div
+        class="kpi-value green"
+        id="leaderName"
+      >
+        —
       </div>
-
-      <div class="debug" id="debug-Supervisores"></div>
     </div>
 
 
-    <div class="department">
-      <div class="department-header">
-        <div class="department-name">🖥️ COG</div>
-        <div class="status" id="status-COG">⏳ Aguardando</div>
+    <div class="kpi">
+      <div class="kpi-label">
+        Maior nota
       </div>
 
-      <div id="COG">
-        <div class="empty loading">Carregando dados...</div>
+      <div
+        class="kpi-value yellow"
+        id="topScore"
+      >
+        —
       </div>
-
-      <div class="debug" id="debug-COG"></div>
     </div>
 
 
-    <div class="department">
-      <div class="department-header">
-        <div class="department-name">📊 PCM</div>
-        <div class="status" id="status-PCM">⏳ Aguardando</div>
+    <div class="kpi">
+      <div class="kpi-label">
+        Equipes online
       </div>
 
-      <div id="PCM">
-        <div class="empty loading">Carregando dados...</div>
+      <div
+        class="kpi-value violet"
+        id="onlineTeams"
+      >
+        0/4
       </div>
-
-      <div class="debug" id="debug-PCM"></div>
     </div>
 
+  </section>
+
+
+  <!-- DEPARTAMENTOS -->
+
+  <section class="departments">
+
+    <!-- TECNICOS -->
+
+    <article class="department">
+
+      <div class="card-header">
+
+        <div class="card-title">
+
+          <div class="card-icon">
+            ⚙
+          </div>
+
+          <div>
+            <div class="card-name">
+              CAMPO TÉCNICO
+            </div>
+
+            <div class="card-sub">
+              ABA: TECNICOS
+            </div>
+          </div>
+
+        </div>
+
+        <div
+          class="status"
+          id="status-Tecnicos"
+        >
+          AGUARDANDO
+        </div>
+
+      </div>
+
+      <div
+        class="card-content"
+        id="Tecnicos"
+      >
+        <div class="empty">
+          <div class="loader"></div>
+          Carregando dados...
+        </div>
+      </div>
+
+      <div
+        class="debug"
+        id="debug-Tecnicos"
+      ></div>
+
+    </article>
+
+
+    <!-- SUPERVISORES -->
+
+    <article class="department">
+
+      <div class="card-header">
+
+        <div class="card-title">
+
+          <div class="card-icon">
+            🧭
+          </div>
+
+          <div>
+            <div class="card-name">
+              SUPERVISORES
+            </div>
+
+            <div class="card-sub">
+              ABA: SUPERVISORES
+            </div>
+          </div>
+
+        </div>
+
+        <div
+          class="status"
+          id="status-Supervisores"
+        >
+          AGUARDANDO
+        </div>
+
+      </div>
+
+      <div
+        class="card-content"
+        id="Supervisores"
+      >
+        <div class="empty">
+          <div class="loader"></div>
+          Carregando dados...
+        </div>
+      </div>
+
+      <div
+        class="debug"
+        id="debug-Supervisores"
+      ></div>
+
+    </article>
+
+
+    <!-- COG -->
+
+    <article class="department">
+
+      <div class="card-header">
+
+        <div class="card-title">
+
+          <div class="card-icon">
+            🖥
+          </div>
+
+          <div>
+            <div class="card-name">
+              COG
+            </div>
+
+            <div class="card-sub">
+              ABA: COG
+            </div>
+          </div>
+
+        </div>
+
+        <div
+          class="status"
+          id="status-COG"
+        >
+          AGUARDANDO
+        </div>
+
+      </div>
+
+      <div
+        class="card-content"
+        id="COG"
+      >
+        <div class="empty">
+          <div class="loader"></div>
+          Carregando dados...
+        </div>
+      </div>
+
+      <div
+        class="debug"
+        id="debug-COG"
+      ></div>
+
+    </article>
+
+
+    <!-- PCM -->
+
+    <article class="department">
+
+      <div class="card-header">
+
+        <div class="card-title">
+
+          <div class="card-icon">
+            📡
+          </div>
+
+          <div>
+            <div class="card-name">
+              PCM
+            </div>
+
+            <div class="card-sub">
+              ABA: PCM
+            </div>
+          </div>
+
+        </div>
+
+        <div
+          class="status"
+          id="status-PCM"
+        >
+          AGUARDANDO
+        </div>
+
+      </div>
+
+      <div
+        class="card-content"
+        id="PCM"
+      >
+        <div class="empty">
+          <div class="loader"></div>
+          Carregando dados...
+        </div>
+      </div>
+
+      <div
+        class="debug"
+        id="debug-PCM"
+      ></div>
+
+    </article>
+
+  </section>
+
+
+  <div class="footer">
+    O&M SOLAR · CORRIDA OPERACIONAL · GOOGLE SHEETS · AUTO REFRESH 5 MIN
   </div>
 
 </div>
@@ -399,7 +1011,12 @@
 
 <script>
 
-const SHEET_ID = "1HfCVhq4e4odHrJ4N15gjpz5VbwR3arewYElwkYo9h5Q";
+/* ==========================================================
+   CONFIGURAÇÃO
+========================================================== */
+
+const SHEET_ID =
+"1HfCVhq4e4odHrJ4N15gjpz5VbwR3arewYElwkYo9h5Q";
 
 const SHEETS = [
   "Tecnicos",
@@ -409,295 +1026,329 @@ const SHEETS = [
 ];
 
 
-// ============================================================
-// NORMALIZA TEXTO
-// ============================================================
+/* ==========================================================
+   NORMALIZA TEXTO
+========================================================== */
 
-function normalizeText(value) {
+function normalize(value){
 
   return String(value ?? "")
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\s+/g, " ")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/\s+/g," ")
     .trim()
     .toLowerCase();
 
 }
 
 
-// ============================================================
-// EXTRAI VALOR DA CÉLULA GVIZ
-// ============================================================
+/* ==========================================================
+   VALOR DA CÉLULA
+========================================================== */
 
-function getCellValue(cell) {
+function cellValue(cell){
 
-  if (!cell) return "";
+  if(!cell){
+    return "";
+  }
 
-  /*
-    Google GViz normalmente entrega:
+  if(
+    cell.v !== undefined &&
+    cell.v !== null &&
+    cell.v !== ""
+  ){
 
-    cell.v = valor real
-    cell.f = valor formatado
+    return cell.v;
 
-    Exemplo:
+  }
 
-    v: 9.5
-    f: "9,5"
-  */
+  if(
+    cell.f !== undefined &&
+    cell.f !== null
+  ){
+
+    return cell.f;
+
+  }
+
+  return "";
+
+}
+
+
+/* ==========================================================
+   CONVERSÃO DE NOTA
+========================================================== */
+
+function parseScore(cell){
+
+  if(!cell){
+    return null;
+  }
 
   let value = cell.v;
 
-  // Se não existir valor real, utiliza o formatado.
-  if (
-    value === null ||
-    value === undefined ||
-    value === ""
-  ) {
-    value = cell.f ?? "";
-  }
+  const formatted = cell.f;
+
 
   /*
-    Em algumas situações uma fórmula pode retornar
-    valor estranho em v, mas o f contém o valor exibido.
+    Se o Google entregar número,
+    usamos diretamente.
   */
 
-  if (
-    typeof value === "string" &&
-    value.trim().startsWith("=")
-  ) {
-    value = cell.f ?? "";
-  }
-
-  return value;
-
-}
-
-
-// ============================================================
-// CONVERTE PONTUAÇÃO
-// ============================================================
-
-function parseScore(cell) {
-
-  if (!cell) return null;
-
-  const rawV = cell.v;
-  const rawF = cell.f;
-
-  let value = getCellValue(cell);
-
-  // Número real do GViz
-  if (typeof value === "number" && Number.isFinite(value)) {
+  if(
+    typeof value === "number" &&
+    Number.isFinite(value)
+  ){
 
     /*
-      Se v = 0 mas f possui outro número,
-      damos preferência ao valor formatado.
-      Isso ajuda em algumas fórmulas/formatos.
+      Caso v seja 0 mas o valor
+      formatado seja diferente.
     */
 
-    if (
+    if(
       value === 0 &&
-      rawF !== undefined &&
-      rawF !== null &&
-      String(rawF).trim() !== ""
-    ) {
+      formatted !== undefined &&
+      formatted !== null &&
+      String(formatted).trim() !== ""
+    ){
 
-      const formatted = parseNumberString(rawF);
+      const alternative =
+        parseStringNumber(formatted);
 
-      if (
-        formatted !== null &&
-        formatted !== 0
-      ) {
-        return formatted;
+      if(
+        alternative !== null &&
+        alternative !== 0
+      ){
+        return alternative;
       }
+
     }
 
     return value;
+
   }
 
-  return parseNumberString(value);
+
+  /*
+    Fórmulas podem aparecer como texto.
+    Nesse caso usamos o valor formatado.
+  */
+
+  if(
+    typeof value === "string" &&
+    value.trim().startsWith("=")
+  ){
+
+    value = formatted ?? "";
+
+  }
+
+
+  return parseStringNumber(value);
 
 }
 
 
-// ============================================================
-// CONVERTE STRING NUMÉRICA
-// ============================================================
+/* ==========================================================
+   STRING -> NÚMERO
+========================================================== */
 
-function parseNumberString(value) {
+function parseStringNumber(value){
 
-  if (
-    value === null ||
+  if(
     value === undefined ||
-    String(value).trim() === ""
-  ) {
+    value === null
+  ){
     return null;
   }
 
-  let str = String(value)
-    .trim()
-    .replace(/\s/g, "")
-    .replace(/R\$/gi, "")
-    .replace(/pts?/gi, "")
-    .replace(/pontos?/gi, "");
 
-  const isPercent = str.includes("%");
+  let text =
+    String(value)
+      .trim()
+      .replace(/\s/g,"")
+      .replace(/R\$/gi,"")
+      .replace(/pontos?/gi,"")
+      .replace(/pts?/gi,"");
 
-  str = str.replace("%", "");
+
+  if(!text){
+    return null;
+  }
+
 
   /*
-    Formato brasileiro:
+    Ex:
 
-    1.234,56
     9,5
-    10,00
-
-    Formato americano:
-
-    1234.56
     9.5
+    10,00
+    1.234,56
   */
 
-  if (
-    str.includes(".") &&
-    str.includes(",")
-  ) {
+  text =
+    text.replace("%","");
 
-    // ponto = milhar
-    // vírgula = decimal
-    str = str.replace(/\./g, "");
-    str = str.replace(",", ".");
 
-  } else if (str.includes(",")) {
+  if(
+    text.includes(".") &&
+    text.includes(",")
+  ){
 
-    // vírgula decimal
-    str = str.replace(",", ".");
+    text =
+      text
+        .replace(/\./g,"")
+        .replace(",",".");
+  
+  }else if(
+    text.includes(",")
+  ){
 
-  } else {
-
-    // mantém ponto decimal
+    text =
+      text.replace(",",".");
+  
   }
 
-  /*
-    Retira qualquer caractere restante,
-    preservando números, ponto e sinal.
-  */
 
-  str = str.replace(/[^0-9.-]/g, "");
+  text =
+    text.replace(
+      /[^0-9.-]/g,
+      ""
+    );
 
-  if (!str) return null;
 
-  const number = Number(str);
-
-  if (!Number.isFinite(number)) {
+  if(!text){
     return null;
   }
 
-  return number;
+
+  const number =
+    Number(text);
+
+
+  return Number.isFinite(number)
+    ? number
+    : null;
 
 }
 
 
-// ============================================================
-// ENCONTRA COLUNA
-// ============================================================
+/* ==========================================================
+   ENCONTRA COLUNA
+========================================================== */
 
-function findColumn(headers, possibleNames) {
+function findColumn(headers, names){
 
-  const normalizedHeaders = headers.map(h =>
-    normalizeText(h)
-  );
+  const normalized =
+    headers.map(normalize);
 
-  // Primeiro procura correspondência exata
-  for (const name of possibleNames) {
 
-    const normalizedName = normalizeText(name);
+  /*
+    PRIMEIRO:
+    correspondência exata
+  */
 
-    const index = normalizedHeaders.indexOf(
-      normalizedName
-    );
+  for(
+    const name of names
+  ){
 
-    if (index !== -1) {
+    const target =
+      normalize(name);
+
+    const index =
+      normalized.indexOf(target);
+
+    if(index !== -1){
       return index;
     }
 
   }
 
 
-  // Depois procura se o nome está contido
-  for (const name of possibleNames) {
+  /*
+    SEGUNDO:
+    correspondência parcial
+  */
 
-    const normalizedName = normalizeText(name);
+  for(
+    const name of names
+  ){
 
-    const index = normalizedHeaders.findIndex(
-      h =>
-        h.includes(normalizedName) ||
-        normalizedName.includes(h)
-    );
+    const target =
+      normalize(name);
 
-    if (index !== -1) {
+    const index =
+      normalized.findIndex(
+        header =>
+          header.includes(target)
+      );
+
+    if(index !== -1){
       return index;
     }
 
   }
+
 
   return -1;
 
 }
 
 
-// ============================================================
-// PARSE DA PLANILHA
-// ============================================================
+/* ==========================================================
+   PARSE SHEET
+========================================================== */
 
-function parseSheet(data, sheetName) {
+function parseSheet(data,sheetName){
 
-  try {
+  if(
+    !data ||
+    !data.table
+  ){
 
-    const table = data.table;
+    throw new Error(
+      "Google Sheets não retornou dados."
+    );
 
-    if (
-      !table ||
-      !table.cols ||
-      !table.rows
-    ) {
-      throw new Error(
-        "Google Sheets não retornou dados."
-      );
-    }
+  }
 
 
-    // --------------------------------------------------------
-    // CABEÇALHOS
-    // --------------------------------------------------------
-
-    const headers = table.cols.map((col, index) => {
-
-      /*
-        GViz pode trazer label vazio em determinadas
-        estruturas. Nesse caso usamos id.
-      */
-
-      return (
-        col.label ||
-        col.id ||
-        `Coluna ${index + 1}`
-      ).trim();
-
-    });
+  const table =
+    data.table;
 
 
-    console.log(
-      `[${sheetName}] Cabeçalhos:`,
-      headers
+  const headers =
+    table.cols.map(
+      (column,index) =>
+        String(
+          column.label ||
+          column.id ||
+          `Coluna ${index+1}`
+        ).trim()
     );
 
 
-    // --------------------------------------------------------
-    // NOME
-    // --------------------------------------------------------
+  console.log(
+    `[${sheetName}] Headers:`,
+    headers
+  );
 
-    const nameColumn = findColumn(
+
+  /*
+    NOME
+
+    Para a aba Técnicos:
+    Técnico
+
+    Também aceita:
+    Nome
+    Colaborador
+    Funcionário
+  */
+
+  const nameColumn =
+    findColumn(
       headers,
       [
         "Técnico",
@@ -705,27 +1356,19 @@ function parseSheet(data, sheetName) {
         "Nome",
         "Colaborador",
         "Funcionário",
-        "Funcionario",
-        "Pessoa"
+        "Funcionario"
       ]
     );
 
 
-    // --------------------------------------------------------
-    // PONTUAÇÃO
-    // --------------------------------------------------------
+  /*
+    PONTUAÇÃO
 
-    /*
-      IMPORTANTE:
+    EXCLUSIVAMENTE NOTA FINAL
+  */
 
-      A pontuação do ranking é EXCLUSIVAMENTE:
-
-      NOTA FINAL
-
-      Não vamos usar SLA %, Fechamento %, etc.
-    */
-
-    const scoreColumn = findColumn(
+  const scoreColumn =
+    findColumn(
       headers,
       [
         "NOTA FINAL",
@@ -736,100 +1379,101 @@ function parseSheet(data, sheetName) {
     );
 
 
-    console.log(
-      `[${sheetName}] Coluna Nome:`,
-      nameColumn,
-      nameColumn >= 0 ? headers[nameColumn] : "NÃO ENCONTRADA"
+  console.log(
+    `[${sheetName}] Nome:`,
+    nameColumn >= 0
+      ? headers[nameColumn]
+      : "NÃO ENCONTRADO"
+  );
+
+
+  console.log(
+    `[${sheetName}] Nota:`,
+    scoreColumn >= 0
+      ? headers[scoreColumn]
+      : "NÃO ENCONTRADO"
+  );
+
+
+  if(nameColumn === -1){
+
+    throw new Error(
+      "Coluna Técnico/Nome não encontrada."
     );
 
-    console.log(
-      `[${sheetName}] Coluna Pontuação:`,
-      scoreColumn,
-      scoreColumn >= 0 ? headers[scoreColumn] : "NÃO ENCONTRADA"
+  }
+
+
+  if(scoreColumn === -1){
+
+    throw new Error(
+      "Coluna NOTA FINAL não encontrada."
     );
 
-
-    if (nameColumn === -1) {
-
-      throw new Error(
-        "Não encontrei a coluna Técnico/Nome."
-      );
-
-    }
+  }
 
 
-    if (scoreColumn === -1) {
-
-      throw new Error(
-        "Não encontrei a coluna NOTA FINAL."
-      );
-
-    }
+  const people = [];
 
 
-    // --------------------------------------------------------
-    // LINHAS
-    // --------------------------------------------------------
+  table.rows.forEach(
+    (row,rowIndex)=>{
 
-    const people = [];
-
-
-    table.rows.forEach((row, rowIndex) => {
-
-      if (!row || !row.c) return;
-
-
-      const nameCell =
-        row.c[nameColumn];
-
-      const scoreCell =
-        row.c[scoreColumn];
+      if(
+        !row ||
+        !row.c
+      ){
+        return;
+      }
 
 
       const name =
-        getCellValue(nameCell);
+        cellValue(
+          row.c[nameColumn]
+        );
 
 
       const score =
-        parseScore(scoreCell);
+        parseScore(
+          row.c[scoreColumn]
+        );
 
 
       console.log(
-        `[${sheetName}] Linha ${rowIndex + 2}:`,
-        {
-          nome: name,
-          valorOriginal: scoreCell,
-          pontuacao: score
-        }
+        `[${sheetName}]`,
+        rowIndex + 2,
+        name,
+        score
       );
 
 
       /*
-        Ignora linhas sem nome.
+        Sem nome:
+        ignora.
       */
 
-      if (
+      if(
         name === null ||
         name === undefined ||
         String(name).trim() === ""
-      ) {
+      ){
         return;
       }
 
 
       /*
-        Ignora linhas que não possuem
-        pontuação válida.
+        IMPORTANTE:
 
-        ATENÇÃO:
+        0 é uma nota válida.
 
-        score === 0 É VÁLIDO.
+        Portanto NÃO usamos:
+        if(!score)
 
-        Portanto usamos score === null
-        e não !score.
+        Usamos:
+        score === null
       */
 
-      if (score === null) {
+      if(score === null){
         return;
       }
 
@@ -844,259 +1488,275 @@ function parseSheet(data, sheetName) {
 
       });
 
-    });
+    }
+  );
 
 
-    // --------------------------------------------------------
-    // ORDENAÇÃO
-    // --------------------------------------------------------
+  /*
+    MAIOR NOTA PRIMEIRO
+  */
 
-    people.sort(
-      (a, b) => b.score - a.score
-    );
+  people.sort(
+    (a,b) =>
+      b.score - a.score
+  );
 
 
-    return {
+  return {
 
-      people,
+    people,
 
-      nameColumn:
-        headers[nameColumn],
+    nameColumn:
+      headers[nameColumn],
 
-      scoreColumn:
-        headers[scoreColumn],
+    scoreColumn:
+      headers[scoreColumn]
 
-      headers
-
-    };
-
-  } catch (error) {
-
-    console.error(
-      `[${sheetName}] Erro:`,
-      error
-    );
-
-    throw error;
-
-  }
+  };
 
 }
 
 
-// ============================================================
-// JSONP
-// ============================================================
+/* ==========================================================
+   JSONP GOOGLE SHEETS
+========================================================== */
 
-function loadSheet(sheetName) {
+function loadSheet(sheetName){
 
-  return new Promise((resolve, reject) => {
+  return new Promise(
+    (resolve,reject)=>{
 
-    const callbackName =
-      "googleSheetCallback_" +
-      sheetName +
-      "_" +
-      Date.now();
-
-
-    const script =
-      document.createElement("script");
+      const callback =
+        "__sheet_" +
+        sheetName +
+        "_" +
+        Date.now();
 
 
-    const timeout =
-      setTimeout(() => {
+      const script =
+        document.createElement("script");
 
-        cleanup();
 
-        reject(
-          new Error(
-            "Tempo limite excedido ao consultar a planilha."
-          )
+      let finished = false;
+
+
+      const timeout =
+        setTimeout(
+          ()=>{
+            
+            if(finished){
+              return;
+            }
+
+            finished = true;
+
+            cleanup();
+
+            reject(
+              new Error(
+                "Tempo limite ao consultar Google Sheets."
+              )
+            );
+
+          },
+          15000
         );
 
-      }, 15000);
 
+      function cleanup(){
 
-    function cleanup() {
+        clearTimeout(timeout);
 
-      clearTimeout(timeout);
+        if(script.parentNode){
+          script.parentNode.removeChild(script);
+        }
 
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
+        try{
+          delete window[callback];
+        }catch(e){}
+
       }
 
-      try {
-        delete window[callbackName];
-      } catch(e) {}
+
+      window[callback] =
+        function(data){
+
+          if(finished){
+            return;
+          }
+
+          finished = true;
+
+          cleanup();
+
+          resolve(data);
+
+        };
+
+
+      script.onerror =
+        function(){
+
+          if(finished){
+            return;
+          }
+
+          finished = true;
+
+          cleanup();
+
+          reject(
+            new Error(
+              "Erro de conexão com Google Sheets."
+            )
+          );
+
+        };
+
+
+      const url =
+        "https://docs.google.com/spreadsheets/d/" +
+        SHEET_ID +
+        "/gviz/tq" +
+        "?tqx=out:json" +
+        "&sheet=" +
+        encodeURIComponent(sheetName) +
+        "&tqx=responseHandler:" +
+        callback;
+
+
+      script.src = url;
+
+      document.body.appendChild(script);
 
     }
-
-
-    window[callbackName] =
-      function(data) {
-
-        cleanup();
-
-        resolve(data);
-
-      };
-
-
-    script.onerror =
-      function() {
-
-        cleanup();
-
-        reject(
-          new Error(
-            "Erro de conexão com Google Sheets."
-          )
-        );
-
-      };
-
-
-    const url =
-      "https://docs.google.com/spreadsheets/d/" +
-      SHEET_ID +
-      "/gviz/tq" +
-      "?tqx=out:json" +
-      "&sheet=" +
-      encodeURIComponent(sheetName) +
-      "&tqx=responseHandler:" +
-      callbackName;
-
-
-    console.log(
-      `[${sheetName}] URL:`,
-      url
-    );
-
-
-    script.src = url;
-
-    document.body.appendChild(script);
-
-  });
+  );
 
 }
 
 
-// ============================================================
-// RENDER
-// ============================================================
+/* ==========================================================
+   ESCAPE HTML
+========================================================== */
 
-function renderDepartment(
-  sheetName,
-  result
-) {
+function escapeHTML(value){
 
-  const container =
-    document.getElementById(sheetName);
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 
-  const status =
-    document.getElementById(
-      "status-" + sheetName
-    );
-
-  const debug =
-    document.getElementById(
-      "debug-" + sheetName
-    );
+}
 
 
-  if (!result.people.length) {
+/* ==========================================================
+   INICIAIS
+========================================================== */
 
-    container.innerHTML = `
-      <div class="empty">
-        Nenhum colaborador com NOTA FINAL válida.
-      </div>
-    `;
+function initials(name){
 
-    status.textContent =
-      "⚠ Sem dados";
+  const parts =
+    String(name)
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
 
-    status.className =
-      "status error";
 
-    debug.innerHTML = `
-      <strong>Diagnóstico:</strong><br>
-      Coluna nome: ${result.nameColumn}<br>
-      Coluna pontuação: ${result.scoreColumn}<br>
-      Registros encontrados: 0
-    `;
+  if(!parts.length){
+    return "?";
+  }
 
-    return;
+
+  if(parts.length === 1){
+
+    return parts[0]
+      .substring(0,2)
+      .toUpperCase();
 
   }
 
 
-  status.textContent =
-    `✓ ${result.people.length} registros`;
+  return (
+    parts[0][0] +
+    parts[parts.length-1][0]
+  ).toUpperCase();
 
-  status.className =
-    "status ok";
-
-
-  // ----------------------------------------------------------
-  // MAIOR NOTA
-  // ----------------------------------------------------------
-
-  const maxScore =
-    Math.max(
-      ...result.people.map(
-        p => p.score
-      )
-    );
+}
 
 
-  // ----------------------------------------------------------
-  // PODIUM
-  // ----------------------------------------------------------
+/* ==========================================================
+   FORMATA NOTA
+========================================================== */
 
-  const podiumPeople =
-    result.people.slice(0, 3);
+function formatScore(score){
 
+  return Number(score).toLocaleString(
+    "pt-BR",
+    {
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
+    }
+  );
 
-  let podiumHTML = "";
-
-
-  if (podiumPeople.length) {
-
-    podiumHTML =
-      `<div class="podium">`;
-
-
-    /*
-      Para manter o visual tradicional:
-
-      2º | 1º | 3º
-    */
-
-    const order = [
-      podiumPeople[1],
-      podiumPeople[0],
-      podiumPeople[2]
-    ];
+}
 
 
-    order.forEach((person, index) => {
+/* ==========================================================
+   PODIUM
+========================================================== */
 
-      if (!person) return;
+function renderPodium(people){
+
+  if(!people.length){
+    return "";
+  }
 
 
-      const isFirst =
-        person === podiumPeople[0];
+  /*
+    Ordem visual:
+
+    2º | 1º | 3º
+  */
+
+  const positions = [
+    people[1],
+    people[0],
+    people[2]
+  ];
 
 
-      podiumHTML += `
+  let html =
+    `<div class="podium">`;
+
+
+  positions.forEach(
+    (person,index)=>{
+
+      if(!person){
+        return;
+      }
+
+
+      const realPosition =
+        people.indexOf(person) + 1;
+
+
+      html += `
 
         <div class="podium-item ${
-          isFirst ? "first" : ""
+          realPosition === 1
+            ? "first"
+            : ""
         }">
 
-          <div class="podium-avatar">
-            ${getInitials(person.name)}
+          <div class="podium-position">
+            ${realPosition}º LUGAR
+          </div>
+
+          <div class="avatar">
+            ${initials(person.name)}
           </div>
 
           <div class="podium-name">
@@ -1111,43 +1771,73 @@ function renderDepartment(
 
       `;
 
-    });
+    }
+  );
 
 
-    podiumHTML += `</div>`;
+  html +=
+    `</div>`;
+
+
+  return html;
+
+}
+
+
+/* ==========================================================
+   RANKING
+========================================================== */
+
+function renderRanking(people){
+
+  if(!people.length){
+
+    return `
+      <div class="empty">
+        Nenhum dado disponível.
+      </div>
+    `;
 
   }
 
 
-  // ----------------------------------------------------------
-  // RANKING
-  // ----------------------------------------------------------
+  const max =
+    Math.max(
+      ...people.map(
+        p => p.score
+      )
+    );
 
-  let rankingHTML =
+
+  let html =
     `<div class="ranking">`;
 
 
-  result.people.forEach(
-    (person, index) => {
+  people.forEach(
+    (person,index)=>{
 
-      const percentage =
-        maxScore > 0
-          ? Math.max(
-              0,
-              Math.min(
-                100,
-                (person.score / maxScore) * 100
+      /*
+        Barra proporcional à maior nota.
+      */
+
+      const width =
+        max > 0
+          ? Math.min(
+              100,
+              Math.max(
+                0,
+                person.score / max * 100
               )
             )
           : 0;
 
 
-      rankingHTML += `
+      html += `
 
-        <div class="rank-row">
+        <div class="rank">
 
-          <div class="rank-position">
-            #${index + 1}
+          <div class="position">
+            #${index+1}
           </div>
 
           <div class="person">
@@ -1156,11 +1846,10 @@ function renderDepartment(
               ${escapeHTML(person.name)}
             </div>
 
-            <div class="bar-container">
-              <div
-                class="bar"
-                style="width:${percentage}%"
-              ></div>
+            <div class="progress">
+              <span
+                style="width:${width}%"
+              ></span>
             </div>
 
           </div>
@@ -1177,176 +1866,267 @@ function renderDepartment(
   );
 
 
-  rankingHTML +=
+  html +=
     `</div>`;
 
 
+  return html;
+
+}
+
+
+/* ==========================================================
+   RENDER DEPARTAMENTO
+========================================================== */
+
+function renderDepartment(
+  sheetName,
+  result
+){
+
+  const container =
+    document.getElementById(
+      sheetName
+    );
+
+
+  const status =
+    document.getElementById(
+      "status-" + sheetName
+    );
+
+
+  const debug =
+    document.getElementById(
+      "debug-" + sheetName
+    );
+
+
+  if(!result.people.length){
+
+    container.innerHTML = `
+      <div class="empty">
+        Nenhuma NOTA FINAL encontrada.
+      </div>
+    `;
+
+    status.textContent =
+      "SEM DADOS";
+
+    status.className =
+      "status error";
+
+    return;
+
+  }
+
+
   container.innerHTML =
-    podiumHTML +
-    rankingHTML;
+    renderPodium(
+      result.people
+    ) +
+    renderRanking(
+      result.people
+    );
 
 
-  // ----------------------------------------------------------
-  // DEBUG
-  // ----------------------------------------------------------
+  status.textContent =
+    `${result.people.length} REGISTROS`;
 
-  const sample =
-    result.people
-      .slice(0, 5)
-      .map(
-        p =>
-          `${escapeHTML(p.name)} = ${formatScore(p.score)}`
-      )
-      .join(" | ");
+  status.className =
+    "status ok";
 
+
+  /*
+    Diagnóstico discreto.
+  */
 
   debug.innerHTML = `
     <strong>Fonte:</strong> Google Sheets
-    &nbsp; | &nbsp;
+    &nbsp; · &nbsp;
     <strong>Nome:</strong> ${escapeHTML(result.nameColumn)}
-    &nbsp; | &nbsp;
+    &nbsp; · &nbsp;
     <strong>Pontuação:</strong> ${escapeHTML(result.scoreColumn)}
-    <br>
-    <strong>Amostra:</strong> ${sample}
   `;
+
+
+  return result;
 
 }
 
 
-// ============================================================
-// FORMATA NOTA
-// ============================================================
+/* ==========================================================
+   KPIs
+========================================================== */
 
-function formatScore(score) {
+function updateKPIs(allResults){
 
-  if (
-    score === null ||
-    score === undefined ||
-    !Number.isFinite(score)
-  ) {
-    return "0,00";
+  const valid =
+    allResults.filter(Boolean);
+
+
+  const people =
+    valid.flatMap(
+      result => result.people
+    );
+
+
+  document.getElementById(
+    "totalPeople"
+  ).textContent =
+    people.length;
+
+
+  const teamsOnline =
+    valid.length;
+
+
+  document.getElementById(
+    "onlineTeams"
+  ).textContent =
+    `${teamsOnline}/4`;
+
+
+  if(!people.length){
+
+    document.getElementById(
+      "leaderName"
+    ).textContent = "—";
+
+    document.getElementById(
+      "topScore"
+    ).textContent = "—";
+
+    return;
+
   }
 
 
-  return Number(score).toLocaleString(
-    "pt-BR",
-    {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+  people.sort(
+    (a,b)=>
+      b.score-a.score
+  );
+
+
+  const leader =
+    people[0];
+
+
+  document.getElementById(
+    "leaderName"
+  ).textContent =
+    leader.name;
+
+
+  document.getElementById(
+    "topScore"
+  ).textContent =
+    formatScore(
+      leader.score
+    );
+
+}
+
+
+/* ==========================================================
+   CARREGA TUDO
+========================================================== */
+
+async function loadAll(){
+
+  const button =
+    document.getElementById(
+      "refreshButton"
+    );
+
+
+  const globalDot =
+    document.getElementById(
+      "globalDot"
+    );
+
+
+  const globalStatus =
+    document.getElementById(
+      "globalStatus"
+    );
+
+
+  const lastUpdate =
+    document.getElementById(
+      "lastUpdate"
+    );
+
+
+  button.classList.add(
+    "loading"
+  );
+
+  button.textContent =
+    "↻ ATUALIZANDO";
+
+
+  globalStatus.textContent =
+    "Atualizando...";
+
+
+  globalDot.className =
+    "dot";
+
+
+  /*
+    Estado inicial
+  */
+
+  SHEETS.forEach(
+    sheetName => {
+
+      document.getElementById(
+        sheetName
+      ).innerHTML = `
+        <div class="empty">
+          <div class="loader"></div>
+          Sincronizando dados...
+        </div>
+      `;
+
+
+      const status =
+        document.getElementById(
+          "status-" + sheetName
+        );
+
+
+      status.textContent =
+        "SINCRONIZANDO";
+
+      status.className =
+        "status";
+
     }
   );
 
-}
+
+  const results = [];
 
 
-// ============================================================
-// INICIAIS
-// ============================================================
+  /*
+    Fazemos uma por uma.
 
-function getInitials(name) {
+    Isso reduz a chance de problemas
+    de callback JSONP simultâneo.
+  */
 
-  const parts =
-    String(name)
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean);
+  for(
+    const sheetName of SHEETS
+  ){
 
-
-  if (!parts.length) {
-    return "?";
-  }
-
-
-  if (parts.length === 1) {
-
-    return parts[0]
-      .substring(0, 2)
-      .toUpperCase();
-
-  }
-
-
-  return (
-    parts[0][0] +
-    parts[parts.length - 1][0]
-  ).toUpperCase();
-
-}
-
-
-// ============================================================
-// ESCAPA HTML
-// ============================================================
-
-function escapeHTML(value) {
-
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-
-}
-
-
-// ============================================================
-// CARREGA TUDO
-// ============================================================
-
-async function loadAll() {
-
-  const lastUpdate =
-    document.getElementById("lastUpdate");
-
-
-  lastUpdate.textContent =
-    "Última atualização: carregando...";
-
-
-  SHEETS.forEach(sheetName => {
-
-    const container =
-      document.getElementById(sheetName);
-
-    const status =
-      document.getElementById(
-        "status-" + sheetName
-      );
-
-    const debug =
-      document.getElementById(
-        "debug-" + sheetName
-      );
-
-
-    container.innerHTML =
-      `<div class="empty loading">
-        ⏳ Carregando dados...
-      </div>`;
-
-
-    status.textContent =
-      "⏳ Carregando";
-
-    status.className =
-      "status";
-
-
-    debug.innerHTML = "";
-
-  });
-
-
-  let successCount = 0;
-
-
-  for (const sheetName of SHEETS) {
-
-    try {
+    try{
 
       const data =
-        await loadSheet(sheetName);
+        await loadSheet(
+          sheetName
+        );
 
 
       const result =
@@ -1362,21 +2142,29 @@ async function loadAll() {
       );
 
 
-      successCount++;
+      results.push(
+        result
+      );
 
 
-    } catch (error) {
+    }catch(error){
 
       console.error(
-        `Erro na aba ${sheetName}:`,
+        `[${sheetName}]`,
         error
       );
 
 
-      const container =
-        document.getElementById(
-          sheetName
-        );
+      document.getElementById(
+        sheetName
+      ).innerHTML = `
+        <div class="empty">
+          <div style="font-size:28px;margin-bottom:10px;">
+            ⚠
+          </div>
+          Erro ao carregar esta equipe.
+        </div>
+      `;
 
 
       const status =
@@ -1385,53 +2173,79 @@ async function loadAll() {
         );
 
 
-      const debug =
-        document.getElementById(
-          "debug-" + sheetName
-        );
-
-
-      container.innerHTML = `
-        <div class="empty">
-          ❌ Erro ao carregar dados
-        </div>
-      `;
-
-
       status.textContent =
-        "✕ Erro";
+        "ERRO";
 
       status.className =
         "status error";
 
 
-      debug.innerHTML = `
-        <strong>Erro:</strong>
-        ${escapeHTML(error.message)}
-      `;
+      /*
+        Não colocamos null no ranking
+        global para não quebrar os demais.
+      */
 
     }
 
   }
 
 
-  const now =
-    new Date();
+  updateKPIs(
+    results
+  );
+
+
+  const successful =
+    results.length;
+
+
+  if(successful === SHEETS.length){
+
+    globalDot.className =
+      "dot online";
+
+    globalStatus.textContent =
+      "Sistema online";
+
+  }else if(successful > 0){
+
+    globalDot.className =
+      "dot online";
+
+    globalStatus.textContent =
+      `${successful}/4 equipes online`;
+
+  }else{
+
+    globalDot.className =
+      "dot error";
+
+    globalStatus.textContent =
+      "Sem conexão";
+
+  }
 
 
   lastUpdate.textContent =
     "Última atualização: " +
-    now.toLocaleString(
+    new Date().toLocaleString(
       "pt-BR"
-    ) +
-    ` | ${successCount}/${SHEETS.length} abas carregadas`;
+    );
+
+
+  button.classList.remove(
+    "loading"
+  );
+
+  button.textContent =
+    "↻ ATUALIZAR";
 
 }
 
 
-// ============================================================
-// AUTO REFRESH — 5 MINUTOS
-// ============================================================
+/* ==========================================================
+   AUTO REFRESH
+========================================================== */
 
 setInterval(
   loadAll,
@@ -1439,9 +2253,9 @@ setInterval(
 );
 
 
-// ============================================================
-// PRIMEIRA CARGA
-// ============================================================
+/* ==========================================================
+   PRIMEIRA EXECUÇÃO
+========================================================== */
 
 window.addEventListener(
   "load",
