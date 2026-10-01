@@ -3,14 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Corrida Operacional | O&M Solar</title>
 
 <style>
 :root{
   --bg:#030712;
-  --panel:rgba(10,17,32,.82);
-  --panel2:rgba(15,25,45,.72);
   --line:rgba(120,170,255,.14);
   --text:#eef5ff;
   --muted:#7e8ca8;
@@ -22,19 +19,10 @@
   --red:#ff5f70;
   --shadow:0 25px 80px rgba(0,0,0,.45);
 }
-
-*{
-  box-sizing:border-box;
-}
-
-html{
-  scroll-behavior:smooth;
-}
-
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
 body{
-  margin:0;
-  min-height:100vh;
-  color:var(--text);
+  margin:0;min-height:100vh;color:var(--text);
   font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;
   background:
     radial-gradient(circle at 10% 0%,rgba(30,110,255,.18),transparent 28%),
@@ -43,2199 +31,721 @@ body{
     #030712;
   overflow-x:hidden;
 }
-
-/* GRID DIGITAL */
-
 body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  opacity:.22;
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;
   background-image:
     linear-gradient(rgba(90,150,255,.035) 1px,transparent 1px),
     linear-gradient(90deg,rgba(90,150,255,.035) 1px,transparent 1px);
   background-size:40px 40px;
   mask-image:linear-gradient(to bottom,black,transparent);
 }
-
-/* SCANLINE */
-
 body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  opacity:.025;
-  background:repeating-linear-gradient(
-    to bottom,
-    transparent 0px,
-    transparent 3px,
-    #fff 4px
-  );
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.025;
+  background:repeating-linear-gradient(to bottom,transparent 0px,transparent 3px,#fff 4px);
 }
-
-/* CONTAINER */
-
-.app{
-  width:min(1500px,94%);
-  margin:auto;
-  padding:24px 0 55px;
-}
+.app{width:min(1500px,94%);margin:auto;padding:24px 0 55px;}
 
 /* HEADER */
-
 .topbar{
-  position:relative;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:20px;
-  padding:22px 24px;
-  border:1px solid var(--line);
-  border-radius:22px;
-  background:linear-gradient(
-    135deg,
-    rgba(12,22,42,.92),
-    rgba(5,11,23,.88)
-  );
-  box-shadow:var(--shadow);
-  overflow:hidden;
+  position:relative;display:flex;justify-content:space-between;align-items:center;gap:20px;
+  padding:22px 24px;border:1px solid var(--line);border-radius:22px;
+  background:linear-gradient(135deg,rgba(12,22,42,.92),rgba(5,11,23,.88));
+  box-shadow:var(--shadow);overflow:hidden;
 }
-
 .topbar::before{
-  content:"";
-  position:absolute;
-  width:350px;
-  height:2px;
-  left:0;
-  top:0;
-  background:linear-gradient(
-    90deg,
-    transparent,
-    var(--cyan),
-    transparent
-  );
+  content:"";position:absolute;width:350px;height:2px;left:0;top:0;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
   animation:scan 4s linear infinite;
 }
-
-@keyframes scan{
-  0%{transform:translateX(-400px)}
-  100%{transform:translateX(1500px)}
-}
-
-.brand{
-  display:flex;
-  align-items:center;
-  gap:15px;
-}
-
+@keyframes scan{0%{transform:translateX(-400px)}100%{transform:translateX(1500px)}}
+.brand{display:flex;align-items:center;gap:15px;}
 .logo{
-  width:54px;
-  height:54px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:16px;
-  font-size:26px;
-  background:
-    radial-gradient(circle,#153c68,#081426 70%);
+  width:54px;height:54px;display:flex;align-items:center;justify-content:center;
+  border-radius:16px;font-size:26px;
+  background:radial-gradient(circle,#153c68,#081426 70%);
   border:1px solid rgba(25,217,255,.3);
-  box-shadow:
-    0 0 30px rgba(25,217,255,.15),
-    inset 0 0 20px rgba(25,217,255,.08);
+  box-shadow:0 0 30px rgba(25,217,255,.15),inset 0 0 20px rgba(25,217,255,.08);
 }
-
-.brand h1{
-  margin:0;
-  font-size:25px;
-  letter-spacing:3px;
-}
-
-.brand h1 span{
-  color:var(--cyan);
-  text-shadow:0 0 18px rgba(25,217,255,.45);
-}
-
-.brand p{
-  margin:5px 0 0;
-  color:var(--muted);
-  font-size:12px;
-  letter-spacing:1px;
-}
-
-.header-actions{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.connection{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  color:#8d9bb6;
-  font-size:11px;
-}
-
-.dot{
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:#66738b;
-}
-
-.dot.online{
-  background:var(--green);
-  box-shadow:0 0 14px var(--green);
-}
-
-.dot.error{
-  background:var(--red);
-  box-shadow:0 0 14px var(--red);
-}
-
+.brand h1{margin:0;font-size:25px;letter-spacing:3px;}
+.brand h1 span{color:var(--cyan);text-shadow:0 0 18px rgba(25,217,255,.45);}
+.brand p{margin:5px 0 0;color:var(--muted);font-size:12px;letter-spacing:1px;}
+.header-actions{display:flex;align-items:center;gap:12px;}
+.connection{display:flex;align-items:center;gap:8px;color:#8d9bb6;font-size:11px;}
+.dot{width:8px;height:8px;border-radius:50%;background:#66738b;}
+.dot.online{background:var(--green);box-shadow:0 0 14px var(--green);}
+.dot.warn{background:var(--yellow);box-shadow:0 0 14px var(--yellow);}
+.dot.error{background:var(--red);box-shadow:0 0 14px var(--red);}
 .refresh{
-  border:1px solid rgba(25,217,255,.3);
-  border-radius:11px;
-  padding:11px 16px;
-  color:#fff;
-  background:linear-gradient(
-    135deg,
-    rgba(25,217,255,.16),
-    rgba(57,124,255,.18)
-  );
-  cursor:pointer;
-  font-weight:700;
-  transition:.2s;
+  border:1px solid rgba(25,217,255,.3);border-radius:11px;padding:11px 16px;color:#fff;
+  background:linear-gradient(135deg,rgba(25,217,255,.16),rgba(57,124,255,.18));
+  cursor:pointer;font-weight:700;transition:.2s;
 }
-
-.refresh:hover{
-  transform:translateY(-2px);
-  border-color:rgba(25,217,255,.65);
-  box-shadow:0 0 25px rgba(25,217,255,.15);
-}
-
-.refresh.loading{
-  opacity:.6;
-  pointer-events:none;
-}
+.refresh:hover{transform:translateY(-2px);border-color:rgba(25,217,255,.65);box-shadow:0 0 25px rgba(25,217,255,.15);}
+.refresh.loading{opacity:.6;pointer-events:none;}
 
 /* HERO */
-
-.hero{
-  margin:26px 0 18px;
-  display:flex;
-  justify-content:space-between;
-  align-items:end;
-  gap:20px;
-}
-
-.hero h2{
-  margin:0;
-  font-size:30px;
-  letter-spacing:1px;
-}
-
-.hero h2 span{
-  color:var(--cyan);
-}
-
-.hero p{
-  margin:8px 0 0;
-  color:var(--muted);
-  font-size:13px;
-}
-
-.last-update{
-  text-align:right;
-  color:#65738e;
-  font-size:11px;
+.hero{margin:26px 0 18px;display:flex;justify-content:space-between;align-items:end;gap:20px;}
+.hero h2{margin:0;font-size:30px;letter-spacing:1px;}
+.hero h2 span{color:var(--cyan);}
+.hero p{margin:8px 0 0;color:var(--muted);font-size:13px;}
+.last-update{text-align:right;color:#65738e;font-size:11px;}
+.badge{
+  display:inline-block;margin-top:6px;padding:4px 10px;border-radius:20px;font-size:10px;letter-spacing:.5px;
+  color:var(--yellow);background:rgba(255,212,92,.07);border:1px solid rgba(255,212,92,.2);
 }
 
 /* KPI */
-
-.kpis{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:14px;
-  margin-bottom:22px;
-}
-
-.kpi{
-  position:relative;
-  padding:16px;
-  border:1px solid var(--line);
-  border-radius:15px;
-  background:rgba(7,14,27,.72);
-  overflow:hidden;
-}
-
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.kpi{position:relative;padding:16px;border:1px solid var(--line);border-radius:15px;background:rgba(7,14,27,.72);overflow:hidden;}
 .kpi::after{
-  content:"";
-  position:absolute;
-  width:70px;
-  height:70px;
-  right:-30px;
-  bottom:-35px;
-  border-radius:50%;
-  background:var(--cyan);
-  filter:blur(35px);
-  opacity:.12;
+  content:"";position:absolute;width:70px;height:70px;right:-30px;bottom:-35px;border-radius:50%;
+  background:var(--cyan);filter:blur(35px);opacity:.12;
 }
+.kpi-label{color:#70809e;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;}
+.kpi-value{margin-top:7px;font-size:25px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.kpi-value.cyan{color:var(--cyan);}
+.kpi-value.green{color:var(--green);}
+.kpi-value.yellow{color:var(--yellow);}
+.kpi-value.violet{color:#a18cff;}
+.kpi-value.red{color:var(--red);}
+.kpi-value.white{color:#dbe5f5;}
 
-.kpi-label{
-  color:#70809e;
-  font-size:10px;
-  text-transform:uppercase;
-  letter-spacing:1.5px;
-}
-
-.kpi-value{
-  margin-top:7px;
-  font-size:25px;
-  font-weight:800;
-}
-
-.kpi-value.cyan{
-  color:var(--cyan);
-}
-
-.kpi-value.green{
-  color:var(--green);
-}
-
-.kpi-value.yellow{
-  color:var(--yellow);
-}
-
-.kpi-value.violet{
-  color:#a18cff;
-}
-
-/* DEPARTAMENTOS */
-
-.departments{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:18px;
-}
-
-/* CARD */
+/* LAYOUT */
+.main{display:grid;grid-template-columns:1.25fr 1fr;gap:18px;align-items:start;}
+.side{display:flex;flex-direction:column;gap:18px;}
 
 .department{
-  position:relative;
-  min-height:430px;
-  border:1px solid var(--line);
-  border-radius:20px;
-  background:
-    linear-gradient(
-      145deg,
-      rgba(11,21,40,.9),
-      rgba(4,10,21,.92)
-    );
-  box-shadow:var(--shadow);
-  overflow:hidden;
+  position:relative;border:1px solid var(--line);border-radius:20px;
+  background:linear-gradient(145deg,rgba(11,21,40,.9),rgba(4,10,21,.92));
+  box-shadow:var(--shadow);overflow:hidden;
 }
-
 .department::before{
-  content:"";
-  position:absolute;
-  left:0;
-  top:0;
-  right:0;
-  height:1px;
-  background:linear-gradient(
-    90deg,
-    transparent,
-    var(--cyan),
-    transparent
-  );
-  opacity:.65;
+  content:"";position:absolute;left:0;top:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.65;
 }
-
-.card-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:18px 20px;
-  border-bottom:1px solid rgba(255,255,255,.06);
-}
-
-.card-title{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
+.card-header{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.06);}
+.card-title{display:flex;align-items:center;gap:10px;}
 .card-icon{
-  width:35px;
-  height:35px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:10px;
-  background:rgba(25,217,255,.08);
-  border:1px solid rgba(25,217,255,.15);
+  width:35px;height:35px;display:flex;align-items:center;justify-content:center;border-radius:10px;
+  background:rgba(25,217,255,.08);border:1px solid rgba(25,217,255,.15);
 }
-
-.card-name{
-  font-size:15px;
-  font-weight:800;
-  letter-spacing:1px;
-}
-
-.card-sub{
-  margin-top:3px;
-  color:#61708d;
-  font-size:10px;
-}
-
-.status{
-  padding:5px 9px;
-  border-radius:20px;
-  font-size:10px;
-  color:#7886a0;
-  background:rgba(255,255,255,.04);
-}
-
-.status.ok{
-  color:var(--green);
-  background:rgba(53,230,154,.07);
-  border:1px solid rgba(53,230,154,.12);
-}
-
-.status.error{
-  color:var(--red);
-  background:rgba(255,95,112,.07);
-}
-
-/* CONTENT */
-
-.card-content{
-  padding:17px 20px 20px;
-}
+.card-name{font-size:15px;font-weight:800;letter-spacing:1px;}
+.card-sub{margin-top:3px;color:#61708d;font-size:10px;}
+.status{padding:5px 9px;border-radius:20px;font-size:10px;color:#7886a0;background:rgba(255,255,255,.04);}
+.status.ok{color:var(--green);background:rgba(53,230,154,.07);border:1px solid rgba(53,230,154,.12);}
+.status.warn{color:var(--yellow);background:rgba(255,212,92,.07);border:1px solid rgba(255,212,92,.15);}
+.status.error{color:var(--red);background:rgba(255,95,112,.07);}
+.card-content{padding:17px 20px 20px;}
 
 /* PODIUM */
-
-.podium{
-  height:160px;
-  display:flex;
-  justify-content:center;
-  align-items:end;
-  gap:10px;
-  margin-bottom:10px;
-}
-
-.podium-item{
-  width:30%;
-  text-align:center;
-}
-
-.podium-position{
-  color:#66748f;
-  font-size:9px;
-  margin-bottom:5px;
-}
-
+.podium{height:170px;display:flex;justify-content:center;align-items:end;gap:10px;margin-bottom:10px;}
+.podium-item{width:30%;text-align:center;}
+.podium-position{color:#66748f;font-size:9px;margin-bottom:5px;}
 .avatar{
-  width:45px;
-  height:45px;
-  margin:auto;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:12px;
-  font-weight:800;
-  background:
-    radial-gradient(circle at 35% 30%,#284a76,#091426);
+  width:45px;height:45px;margin:auto;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:800;background:radial-gradient(circle at 35% 30%,#284a76,#091426);
   border:1px solid rgba(255,255,255,.13);
 }
-
 .first .avatar{
-  width:62px;
-  height:62px;
-  font-size:16px;
-  border-color:rgba(255,212,92,.65);
-  box-shadow:
-    0 0 25px rgba(255,212,92,.16),
-    inset 0 0 20px rgba(255,212,92,.06);
+  width:62px;height:62px;font-size:16px;border-color:rgba(255,212,92,.65);
+  box-shadow:0 0 25px rgba(255,212,92,.16),inset 0 0 20px rgba(255,212,92,.06);
 }
-
-.podium-name{
-  margin-top:6px;
-  color:#dce6f7;
-  font-size:11px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.podium-score{
-  margin-top:4px;
-  color:var(--cyan);
-  font-size:14px;
-  font-weight:900;
-}
+.podium-name{margin-top:6px;color:#dce6f7;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.podium-score{margin-top:4px;color:var(--cyan);font-size:14px;font-weight:900;}
 
 /* RANKING */
-
-.ranking{
-  display:flex;
-  flex-direction:column;
-  gap:7px;
-  max-height:250px;
-  overflow:auto;
-  padding-right:3px;
-}
-
-.ranking::-webkit-scrollbar{
-  width:3px;
-}
-
-.ranking::-webkit-scrollbar-thumb{
-  background:#263756;
-  border-radius:10px;
-}
-
+.ranking{display:flex;flex-direction:column;gap:7px;max-height:560px;overflow:auto;padding-right:3px;}
+.ranking::-webkit-scrollbar{width:3px;}
+.ranking::-webkit-scrollbar-thumb{background:#263756;border-radius:10px;}
 .rank{
-  display:grid;
-  grid-template-columns:32px minmax(0,1fr) 55px;
-  gap:9px;
-  align-items:center;
-  padding:9px 10px;
-  border-radius:10px;
-  background:rgba(255,255,255,.025);
-  border:1px solid transparent;
-  transition:.2s;
+  display:grid;grid-template-columns:32px minmax(0,1fr) 55px;gap:9px;align-items:center;
+  padding:9px 10px;border-radius:10px;background:rgba(255,255,255,.025);border:1px solid transparent;transition:.2s;
 }
-
-.rank:hover{
-  border-color:rgba(25,217,255,.12);
-  background:rgba(25,217,255,.035);
-  transform:translateX(2px);
-}
-
-.position{
-  color:#5d6c87;
-  font-size:10px;
-  font-weight:800;
-}
-
-.person{
-  min-width:0;
-}
-
-.person-name{
-  color:#dbe5f5;
-  font-size:12px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.progress{
-  height:3px;
-  margin-top:5px;
-  background:rgba(255,255,255,.06);
-  border-radius:10px;
-  overflow:hidden;
-}
-
+.rank:hover{border-color:rgba(25,217,255,.12);background:rgba(25,217,255,.035);transform:translateX(2px);}
+.position{color:#5d6c87;font-size:10px;font-weight:800;}
+.person{min-width:0;}
+.person-name{color:#dbe5f5;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.person-meta{margin-top:2px;color:#5d6c87;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.person-meta b{color:#8a9ab5;font-weight:600;}
+.progress{height:3px;margin-top:5px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden;}
 .progress span{
-  display:block;
-  height:100%;
-  border-radius:10px;
-  background:linear-gradient(
-    90deg,
-    var(--blue),
-    var(--cyan)
-  );
-  box-shadow:0 0 8px rgba(25,217,255,.35);
+  display:block;height:100%;border-radius:10px;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));box-shadow:0 0 8px rgba(25,217,255,.35);
 }
+.progress.warn span{background:linear-gradient(90deg,#c98a1a,var(--yellow));box-shadow:0 0 8px rgba(255,212,92,.3);}
+.progress.bad span{background:linear-gradient(90deg,#c43a4b,var(--red));box-shadow:0 0 8px rgba(255,95,112,.3);}
+.score{text-align:right;color:#82caff;font-size:13px;font-weight:900;}
 
-.score{
-  text-align:right;
-  color:#82caff;
-  font-size:13px;
-  font-weight:900;
-}
+/* BARRAS GENÉRICAS (tipos / backlog) */
+.bars{display:flex;flex-direction:column;gap:10px;}
+.bar-row{display:grid;grid-template-columns:minmax(0,150px) 1fr 48px;gap:10px;align-items:center;font-size:11px;color:#b9c6dc;}
+.bar-row .lbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar-row .val{text-align:right;font-weight:800;color:#82caff;}
+.bar-track{height:6px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden;}
+.bar-track span{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,var(--violet),var(--cyan));}
+.bar-track.red span{background:linear-gradient(90deg,#c43a4b,var(--red));}
 
-/* EMPTY */
+.chips{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{padding:6px 11px;border-radius:20px;font-size:11px;color:#8d9bb6;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);}
 
-.empty{
-  min-height:280px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  color:#66738d;
-  font-size:12px;
-}
+.empty{min-height:120px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;color:#66738d;font-size:12px;}
+.loader{width:32px;height:32px;border:2px solid rgba(255,255,255,.08);border-top-color:var(--cyan);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:12px;}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-.loader{
-  width:32px;
-  height:32px;
-  border:2px solid rgba(255,255,255,.08);
-  border-top-color:var(--cyan);
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-  margin-bottom:12px;
-}
+.rule{padding:0 20px 18px;color:#4f5d78;font-size:10px;line-height:1.6;}
+.rule strong{color:#7d8ba6;}
 
-@keyframes spin{
-  to{transform:rotate(360deg)}
-}
-
-/* DEBUG */
-
-.debug{
-  padding:0 20px 15px;
-  color:#45536e;
-  font-size:9px;
-  line-height:1.5;
-}
-
-.debug strong{
-  color:#667590;
-}
-
-/* FOOTER */
-
-.footer{
-  margin-top:22px;
-  padding:14px;
-  text-align:center;
-  color:#3f4c65;
-  font-size:10px;
-  letter-spacing:1px;
-}
-
-/* RESPONSIVO */
+.footer{margin-top:22px;padding:14px;text-align:center;color:#3f4c65;font-size:10px;letter-spacing:1px;}
 
 @media(max-width:1000px){
-
-  .departments{
-    grid-template-columns:1fr;
-  }
-
-  .kpis{
-    grid-template-columns:repeat(2,1fr);
-  }
-
+  .main{grid-template-columns:1fr;}
+  .kpis{grid-template-columns:repeat(2,1fr);}
 }
-
 @media(max-width:650px){
-
-  .app{
-    width:94%;
-    padding-top:12px;
-  }
-
-  .topbar{
-    align-items:flex-start;
-    flex-direction:column;
-  }
-
-  .header-actions{
-    width:100%;
-    justify-content:space-between;
-  }
-
-  .hero{
-    flex-direction:column;
-    align-items:flex-start;
-  }
-
-  .last-update{
-    text-align:left;
-  }
-
-  .kpis{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .hero h2{
-    font-size:24px;
-  }
-
+  .app{width:94%;padding-top:12px;}
+  .topbar{align-items:flex-start;flex-direction:column;}
+  .header-actions{width:100%;justify-content:space-between;}
+  .hero{flex-direction:column;align-items:flex-start;}
+  .last-update{text-align:left;}
+  .hero h2{font-size:24px;}
+  .bar-row{grid-template-columns:minmax(0,110px) 1fr 42px;}
 }
 </style>
 </head>
 
 <body>
-
 <div class="app">
 
-  <!-- HEADER -->
-
   <header class="topbar">
-
     <div class="brand">
-
-      <div class="logo">
-        ☀
-      </div>
-
+      <div class="logo">☀</div>
       <div>
         <h1>O&M <span>SOLAR</span></h1>
         <p>OPERATIONAL INTELLIGENCE CENTER</p>
       </div>
-
     </div>
-
     <div class="header-actions">
-
       <div class="connection">
         <span class="dot" id="globalDot"></span>
         <span id="globalStatus">Conectando...</span>
       </div>
-
-      <button
-        class="refresh"
-        id="refreshButton"
-        onclick="loadAll()"
-      >
-        ↻ ATUALIZAR
-      </button>
-
+      <button class="refresh" id="refreshButton" onclick="loadAll()">↻ ATUALIZAR</button>
     </div>
-
   </header>
 
-
-  <!-- HERO -->
-
   <section class="hero">
-
     <div>
-      <h2>
-        🚀 CORRIDA <span>OPERACIONAL</span>
-      </h2>
-
-      <p>
-        Performance das equipes · ranking em tempo real
-      </p>
+      <h2>🚀 CORRIDA <span>OPERACIONAL</span></h2>
+      <p>Ranking das usinas · <span id="periodo">Setembro 2026</span></p>
+      <span class="badge" id="notaBadge">NOTA PROVISÓRIA — SLA PENDENTE</span>
     </div>
-
-    <div
-      class="last-update"
-      id="lastUpdate"
-    >
-      Última atualização: aguardando dados...
-    </div>
-
+    <div class="last-update" id="lastUpdate">Última atualização: aguardando dados...</div>
   </section>
-
-
-  <!-- KPIs -->
 
   <section class="kpis">
-
-    <div class="kpi">
-      <div class="kpi-label">
-        Colaboradores
-      </div>
-
-      <div
-        class="kpi-value cyan"
-        id="totalPeople"
-      >
-        —
-      </div>
-    </div>
-
-
-    <div class="kpi">
-      <div class="kpi-label">
-        Líder atual
-      </div>
-
-      <div
-        class="kpi-value green"
-        id="leaderName"
-      >
-        —
-      </div>
-    </div>
-
-
-    <div class="kpi">
-      <div class="kpi-label">
-        Maior nota
-      </div>
-
-      <div
-        class="kpi-value yellow"
-        id="topScore"
-      >
-        —
-      </div>
-    </div>
-
-
-    <div class="kpi">
-      <div class="kpi-label">
-        Equipes online
-      </div>
-
-      <div
-        class="kpi-value violet"
-        id="onlineTeams"
-      >
-        0/4
-      </div>
-    </div>
-
+    <div class="kpi"><div class="kpi-label">Usinas na disputa</div><div class="kpi-value cyan" id="kpiUsinas">—</div></div>
+    <div class="kpi"><div class="kpi-label">Vencedor do mês</div><div class="kpi-value green" id="kpiLider">—</div></div>
+    <div class="kpi"><div class="kpi-label">Maior nota</div><div class="kpi-value yellow" id="kpiTop">—</div></div>
+    <div class="kpi"><div class="kpi-label">% Fechamento geral</div><div class="kpi-value violet" id="kpiFech">—</div></div>
+    <div class="kpi"><div class="kpi-label">SS recebidas</div><div class="kpi-value white" id="kpiRec">—</div></div>
+    <div class="kpi"><div class="kpi-label">SS encerradas</div><div class="kpi-value green" id="kpiEnc">—</div></div>
+    <div class="kpi"><div class="kpi-label">SS abertas / pendentes</div><div class="kpi-value yellow" id="kpiAbe">—</div></div>
+    <div class="kpi"><div class="kpi-label">SS reabertas</div><div class="kpi-value red" id="kpiReab">—</div></div>
   </section>
 
+  <section class="main">
 
-  <!-- DEPARTAMENTOS -->
-
-  <section class="departments">
-
-    <!-- TECNICOS -->
-
+    <!-- RANKING -->
     <article class="department">
-
       <div class="card-header">
-
         <div class="card-title">
-
-          <div class="card-icon">
-            ⚙
-          </div>
-
+          <div class="card-icon">🏆</div>
           <div>
-            <div class="card-name">
-              CAMPO TÉCNICO
-            </div>
-
-            <div class="card-sub">
-              ABA: TECNICOS
-            </div>
+            <div class="card-name">RANKING DE USINAS</div>
+            <div class="card-sub">NOTA FINAL (0–10)</div>
           </div>
-
         </div>
-
-        <div
-          class="status"
-          id="status-Tecnicos"
-        >
-          AGUARDANDO
-        </div>
-
+        <div class="status" id="status-ranking">AGUARDANDO</div>
       </div>
-
-      <div
-        class="card-content"
-        id="Tecnicos"
-      >
-        <div class="empty">
-          <div class="loader"></div>
-          Carregando dados...
-        </div>
+      <div class="card-content" id="ranking">
+        <div class="empty"><div class="loader"></div>Carregando dados...</div>
       </div>
-
-      <div
-        class="debug"
-        id="debug-Tecnicos"
-      ></div>
-
+      <div class="rule">
+        <strong>Regra:</strong> Fechamento × 50% + Retrabalho × 30% (+ SLA × 20% quando disponível).
+        Nota Fechamento = % fechamento × 10 · Nota Retrabalho = 10 − (% retrabalho × 50).
+        Usina sem SS recebida não pontua. Empate: maior volume de SS.
+      </div>
     </article>
 
+    <div class="side">
 
-    <!-- SUPERVISORES -->
-
-    <article class="department">
-
-      <div class="card-header">
-
-        <div class="card-title">
-
-          <div class="card-icon">
-            🧭
-          </div>
-
-          <div>
-            <div class="card-name">
-              SUPERVISORES
-            </div>
-
-            <div class="card-sub">
-              ABA: SUPERVISORES
+      <article class="department">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-icon">📊</div>
+            <div>
+              <div class="card-name">TIPOS DE SS</div>
+              <div class="card-sub">TOTAL DAS USINAS</div>
             </div>
           </div>
-
         </div>
+        <div class="card-content" id="tipos"></div>
+      </article>
 
-        <div
-          class="status"
-          id="status-Supervisores"
-        >
-          AGUARDANDO
-        </div>
-
-      </div>
-
-      <div
-        class="card-content"
-        id="Supervisores"
-      >
-        <div class="empty">
-          <div class="loader"></div>
-          Carregando dados...
-        </div>
-      </div>
-
-      <div
-        class="debug"
-        id="debug-Supervisores"
-      ></div>
-
-    </article>
-
-
-    <!-- COG -->
-
-    <article class="department">
-
-      <div class="card-header">
-
-        <div class="card-title">
-
-          <div class="card-icon">
-            🖥
-          </div>
-
-          <div>
-            <div class="card-name">
-              COG
-            </div>
-
-            <div class="card-sub">
-              ABA: COG
+      <article class="department">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-icon">⚠</div>
+            <div>
+              <div class="card-name">MAIOR BACKLOG</div>
+              <div class="card-sub">SS ABERTAS / PENDENTES</div>
             </div>
           </div>
-
         </div>
+        <div class="card-content" id="backlog"></div>
+      </article>
 
-        <div
-          class="status"
-          id="status-COG"
-        >
-          AGUARDANDO
-        </div>
-
-      </div>
-
-      <div
-        class="card-content"
-        id="COG"
-      >
-        <div class="empty">
-          <div class="loader"></div>
-          Carregando dados...
-        </div>
-      </div>
-
-      <div
-        class="debug"
-        id="debug-COG"
-      ></div>
-
-    </article>
-
-
-    <!-- PCM -->
-
-    <article class="department">
-
-      <div class="card-header">
-
-        <div class="card-title">
-
-          <div class="card-icon">
-            📡
-          </div>
-
-          <div>
-            <div class="card-name">
-              PCM
-            </div>
-
-            <div class="card-sub">
-              ABA: PCM
+      <article class="department">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-icon">🚫</div>
+            <div>
+              <div class="card-name">FORA DA DISPUTA</div>
+              <div class="card-sub">SEM SS NO PERÍODO</div>
             </div>
           </div>
-
         </div>
+        <div class="card-content" id="fora"></div>
+      </article>
 
-        <div
-          class="status"
-          id="status-PCM"
-        >
-          AGUARDANDO
-        </div>
-
-      </div>
-
-      <div
-        class="card-content"
-        id="PCM"
-      >
-        <div class="empty">
-          <div class="loader"></div>
-          Carregando dados...
-        </div>
-      </div>
-
-      <div
-        class="debug"
-        id="debug-PCM"
-      ></div>
-
-    </article>
-
+    </div>
   </section>
 
-
-  <div class="footer">
-    O&M SOLAR · CORRIDA OPERACIONAL · GOOGLE SHEETS · AUTO REFRESH 5 MIN
-  </div>
-
+  <div class="footer">O&M SOLAR · CORRIDA OPERACIONAL · GOOGLE SHEETS · AUTO REFRESH 5 MIN</div>
 </div>
 
-
 <script>
-
 /* ==========================================================
    CONFIGURAÇÃO
+   1) Suba o .xlsx no Google Drive e abra como Google Planilhas
+   2) Compartilhe: "Qualquer pessoa com o link" (leitor)
+   3) Cole o ID da planilha abaixo (trecho entre /d/ e /edit na URL)
+   Enquanto o ID não for preenchido, o painel usa o SNAPSHOT
+   embutido (dados de Setembro/2026 do arquivo enviado).
 ========================================================== */
+const SHEET_ID  = "COLE_AQUI_O_ID_DA_NOVA_PLANILHA";
+const SHEET_TAB = "Indicadores por Usina";
+const PERIODO   = "Setembro 2026";
 
-const SHEET_ID =
-"1HfCVhq4e4odHrJ4N15gjpz5VbwR3arewYElwkYo9h5Q";
+/* Pesos da regra de pontuação */
+const PESO_FECH = 0.50;
+const PESO_RETR = 0.30;
+const PESO_SLA  = 0.20;
 
-const SHEETS = [
-  "Tecnicos",
-  "Supervisores",
-  "COG",
-  "PCM"
+const TIPOS_NOMES = [
+  "Preventiva",
+  "Diagnóstico de Falha - Perda de Geração",
+  "Zeladoria",
+  "Corretiva",
+  "Inspeção Preditiva",
+  "Garantia",
+  "Inconformidade"
 ];
 
-let currentData = {};
+/* Snapshot — Indicadores por Usina (Setembro/2026) */
+const SNAPSHOT = [{"usina": "BSL400", "rec": 36, "enc": 12, "abe": 24, "fech": 0.3333333333333333, "reab": 1, "retr": 0.02777777777777778, "tipos": [24, 1, 5, 2, 4, 0, 0], "elegivel": "SIM"}, {"usina": "PBE100", "rec": 23, "enc": 23, "abe": 0, "fech": 1, "reab": 1, "retr": 0.04347826086956522, "tipos": [13, 3, 4, 1, 2, 0, 0], "elegivel": "SIM"}, {"usina": "Balsas", "rec": 0, "enc": 0, "abe": 0, "fech": null, "reab": 0, "retr": null, "tipos": [0, 0, 0, 0, 0, 0, 0], "elegivel": "NÃO"}, {"usina": "Cedro I", "rec": 0, "enc": 0, "abe": 0, "fech": null, "reab": 0, "retr": null, "tipos": [0, 0, 0, 0, 0, 0, 0], "elegivel": "NÃO"}, {"usina": "Goianésia", "rec": 18, "enc": 18, "abe": 0, "fech": 1, "reab": 0, "retr": 0, "tipos": [9, 2, 5, 1, 1, 0, 0], "elegivel": "SIM"}, {"usina": "Guaíba", "rec": 31, "enc": 25, "abe": 6, "fech": 0.8064516129032258, "reab": 0, "retr": 0, "tipos": [15, 4, 5, 2, 5, 0, 0], "elegivel": "SIM"}, {"usina": "Icó", "rec": 15, "enc": 14, "abe": 1, "fech": 0.9333333333333333, "reab": 0, "retr": 0, "tipos": [8, 0, 5, 0, 1, 0, 1], "elegivel": "SIM"}, {"usina": "Iranduba", "rec": 43, "enc": 39, "abe": 4, "fech": 0.9069767441860465, "reab": 3, "retr": 0.06976744186046512, "tipos": [13, 13, 6, 3, 5, 3, 0], "elegivel": "SIM"}, {"usina": "Itacoatiara", "rec": 53, "enc": 53, "abe": 0, "fech": 1, "reab": 1, "retr": 0.01886792452830189, "tipos": [12, 25, 5, 8, 2, 1, 0], "elegivel": "SIM"}, {"usina": "Jaicós", "rec": 96, "enc": 94, "abe": 2, "fech": 0.9791666666666666, "reab": 0, "retr": 0, "tipos": [13, 65, 5, 6, 7, 0, 0], "elegivel": "SIM"}, {"usina": "Juazeiro", "rec": 29, "enc": 28, "abe": 1, "fech": 0.9655172413793104, "reab": 5, "retr": 0.1724137931034483, "tipos": [17, 2, 5, 3, 2, 0, 0], "elegivel": "SIM"}, {"usina": "Matrinchã", "rec": 69, "enc": 64, "abe": 5, "fech": 0.927536231884058, "reab": 6, "retr": 0.08695652173913043, "tipos": [14, 41, 5, 8, 1, 0, 0], "elegivel": "SIM"}, {"usina": "Milagres", "rec": 30, "enc": 21, "abe": 9, "fech": 0.7, "reab": 3, "retr": 0.1, "tipos": [22, 2, 4, 1, 1, 0, 0], "elegivel": "SIM"}, {"usina": "Mondaí", "rec": 27, "enc": 24, "abe": 3, "fech": 0.8888888888888888, "reab": 3, "retr": 0.1111111111111111, "tipos": [9, 5, 5, 3, 5, 0, 0], "elegivel": "SIM"}, {"usina": "Santa Cruz do Sul", "rec": 32, "enc": 9, "abe": 23, "fech": 0.28125, "reab": 0, "retr": 0, "tipos": [14, 6, 6, 2, 3, 1, 0], "elegivel": "SIM"}, {"usina": "Sentinela I", "rec": 36, "enc": 28, "abe": 8, "fech": 0.7777777777777778, "reab": 0, "retr": 0, "tipos": [15, 7, 5, 6, 3, 0, 0], "elegivel": "SIM"}, {"usina": "Sentinela II", "rec": 36, "enc": 29, "abe": 7, "fech": 0.8055555555555556, "reab": 2, "retr": 0.05555555555555555, "tipos": [15, 3, 5, 7, 5, 0, 1], "elegivel": "SIM"}, {"usina": "Venâncio I", "rec": 31, "enc": 6, "abe": 25, "fech": 0.1935483870967742, "reab": 0, "retr": 0, "tipos": [13, 4, 8, 3, 3, 0, 0], "elegivel": "SIM"}, {"usina": "Venâncio III", "rec": 25, "enc": 3, "abe": 22, "fech": 0.12, "reab": 0, "retr": 0, "tipos": [14, 1, 5, 2, 3, 0, 0], "elegivel": "SIM"}];
+
+let currentRows = [];
 
 
 /* ==========================================================
-   NORMALIZA TEXTO
+   UTILITÁRIOS
 ========================================================== */
-
 function normalize(value){
-
   return String(value ?? "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g,"")
-    .replace(/\s+/g," ")
-    .trim()
-    .toLowerCase();
-
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/\s+/g," ").trim().toLowerCase();
 }
-
-
-/* ==========================================================
-   VALOR DA CÉLULA
-========================================================== */
-
-function cellValue(cell){
-
-  if(!cell){
-    return "";
-  }
-
-  if(
-    cell.v !== undefined &&
-    cell.v !== null
-  ){
-    return cell.v;
-  }
-
-  if(
-    cell.f !== undefined &&
-    cell.f !== null
-  ){
-    return cell.f;
-  }
-
-  return "";
-
-}
-
-
-/* ==========================================================
-   CONVERTE TEXTO EM NÚMERO
-========================================================== */
 
 function parseStringNumber(value){
-
-  if(
-    value === undefined ||
-    value === null
-  ){
-    return null;
-  }
-
-  let text =
-    String(value)
-      .trim()
-      .replace(/\s/g,"")
-      .replace(/R\$/gi,"")
-      .replace(/pontos?/gi,"")
-      .replace(/pts?/gi,"")
-      .replace(/%/g,"");
-
-  if(!text){
-    return null;
-  }
-
-
-  /*
-    9,50
-  */
-
-  if(
-    text.includes(",") &&
-    !text.includes(".")
-  ){
-
-    text =
-      text.replace(",", ".");
-
-  }
-
-  /*
-    1.234,56
-  */
-
-  else if(
-    text.includes(".") &&
-    text.includes(",")
-  ){
-
-    text =
-      text
-        .replace(/\./g,"")
-        .replace(",", ".");
-
-  }
-
-
-  /*
-    Remove qualquer caractere
-    que não faça parte do número.
-  */
-
-  text =
-    text.replace(
-      /[^0-9.-]/g,
-      ""
-    );
-
-
-  if(!text){
-    return null;
-  }
-
-
-  const number =
-    Number(text);
-
-
-  return Number.isFinite(number)
-    ? number
-    : null;
-
+  if(value === undefined || value === null) return null;
+  let text = String(value).trim().replace(/\s/g,"").replace(/%/g,"");
+  if(!text) return null;
+  if(text.includes(",") && !text.includes(".")) text = text.replace(",",".");
+  else if(text.includes(".") && text.includes(",")) text = text.replace(/\./g,"").replace(",",".");
+  text = text.replace(/[^0-9.-]/g,"");
+  if(!text) return null;
+  const n = Number(text);
+  return Number.isFinite(n) ? n : null;
 }
 
-
-/* ==========================================================
-   CONVERTE NOTA
-========================================================== */
-
-function parseScore(cell){
-
-  if(!cell){
-    return null;
-  }
-
-
-  /*
-    Google normalmente entrega
-    o valor numérico em cell.v.
-  */
-
-  if(
-    typeof cell.v === "number" &&
-    Number.isFinite(cell.v)
-  ){
-
-    return cell.v;
-
-  }
-
-
-  /*
-    Se for fórmula, usa o valor
-    formatado pelo Google.
-  */
-
-  if(
-    typeof cell.v === "string" &&
-    cell.v.trim().startsWith("=")
-  ){
-
-    return parseStringNumber(
-      cell.f
-    );
-
-  }
-
-
-  /*
-    Caso venha como texto.
-  */
-
-  const fromV =
-    parseStringNumber(
-      cell.v
-    );
-
-
-  if(fromV !== null){
-    return fromV;
-  }
-
-
-  return parseStringNumber(
-    cell.f
-  );
-
+function cellNumber(cell){
+  if(!cell) return null;
+  if(typeof cell.v === "number" && Number.isFinite(cell.v)) return cell.v;
+  const a = parseStringNumber(cell.v);
+  if(a !== null) return a;
+  return parseStringNumber(cell.f);
 }
 
+function cellText(cell){
+  if(!cell) return "";
+  if(cell.v !== undefined && cell.v !== null) return String(cell.v).trim();
+  if(cell.f !== undefined && cell.f !== null) return String(cell.f).trim();
+  return "";
+}
 
-/* ==========================================================
-   ENCONTRA COLUNA EXATA
-========================================================== */
-
-function findExactColumn(headers, names){
-
-  const normalized =
-    headers.map(normalize);
-
-
-  for(
-    const name of names
-  ){
-
-    const index =
-      normalized.indexOf(
-        normalize(name)
-      );
-
-
-    if(index !== -1){
-      return index;
-    }
-
+function findCol(headers, names){
+  const norm = headers.map(normalize);
+  for(const name of names){
+    const i = norm.indexOf(normalize(name));
+    if(i !== -1) return i;
   }
-
-
   return -1;
-
 }
-
-
-/* ==========================================================
-   PARSE DA PLANILHA
-========================================================== */
-
-function parseSheet(data, sheetName){
-
-  if(
-    !data ||
-    !data.table
-  ){
-
-    throw new Error(
-      "Resposta inválida do Google Sheets."
-    );
-
-  }
-
-
-  const table =
-    data.table;
-
-
-  if(
-    !Array.isArray(table.cols)
-  ){
-
-    throw new Error(
-      "Colunas não encontradas."
-    );
-
-  }
-
-
-  const headers =
-    table.cols.map(
-      (column,index) =>
-        String(
-          column.label ||
-          column.id ||
-          `Coluna ${index + 1}`
-        ).trim()
-    );
-
-
-  /*
-    NOME
-
-    Para Técnicos:
-    Técnico
-
-    Para outras abas:
-    aceita Nome/Colaborador/Funcionário.
-  */
-
-  let nameColumn =
-    findExactColumn(
-      headers,
-      [
-        "Técnico",
-        "Tecnico",
-        "Nome",
-        "Colaborador",
-        "Funcionário",
-        "Funcionario"
-      ]
-    );
-
-
-  /*
-    PONTUAÇÃO
-
-    PRIORIDADE ABSOLUTA:
-    NOTA FINAL
-  */
-
-  let scoreColumn =
-    findExactColumn(
-      headers,
-      [
-        "NOTA FINAL",
-        "Nota Final"
-      ]
-    );
-
-
-  if(nameColumn === -1){
-
-    throw new Error(
-      `${sheetName}: coluna Técnico/Nome não encontrada.`
-    );
-
-  }
-
-
-  if(scoreColumn === -1){
-
-    throw new Error(
-      `${sheetName}: coluna NOTA FINAL não encontrada.`
-    );
-
-  }
-
-
-  const people = [];
-
-
-  const rows =
-    Array.isArray(table.rows)
-      ? table.rows
-      : [];
-
-
-  rows.forEach(
-    row => {
-
-      if(
-        !row ||
-        !Array.isArray(row.c)
-      ){
-        return;
-      }
-
-
-      const name =
-        cellValue(
-          row.c[nameColumn]
-        );
-
-
-      const score =
-        parseScore(
-          row.c[scoreColumn]
-        );
-
-
-      /*
-        Sem nome = ignora.
-      */
-
-      if(
-        String(name ?? "").trim() === ""
-      ){
-        return;
-      }
-
-
-      /*
-        Sem nota = ignora.
-      */
-
-      if(score === null){
-        return;
-      }
-
-
-      /*
-        Evita valores absurdos.
-        Mantemos 0 como válido.
-      */
-
-      if(
-        !Number.isFinite(score)
-      ){
-        return;
-      }
-
-
-      people.push({
-
-        name:
-          String(name).trim(),
-
-        score:
-          Number(score)
-
-      });
-
-    }
-  );
-
-
-  /*
-    Ordena da maior para menor.
-  */
-
-  people.sort(
-    (a,b) =>
-      b.score - a.score
-  );
-
-
-  return {
-    people
-  };
-
-}
-
-
-/* ==========================================================
-   GOOGLE SHEETS JSONP
-========================================================== */
-
-function loadSheet(sheetName){
-
-  return new Promise(
-    (resolve,reject)=>{
-
-      const callback =
-        "__OEM_SHEET_" +
-        Date.now() +
-        "_" +
-        Math.random()
-          .toString(36)
-          .substring(2,8);
-
-
-      const script =
-        document.createElement("script");
-
-
-      let finished = false;
-
-
-      const timeout =
-        setTimeout(
-          () => {
-
-            if(finished){
-              return;
-            }
-
-            finished = true;
-
-            cleanup();
-
-            reject(
-              new Error(
-                `Timeout: ${sheetName}`
-              )
-            );
-
-          },
-          10000
-        );
-
-
-      function cleanup(){
-
-        clearTimeout(timeout);
-
-
-        if(script.parentNode){
-          script.parentNode.removeChild(script);
-        }
-
-
-        try{
-          delete window[callback];
-        }catch(e){}
-
-      }
-
-
-      window[callback] =
-        function(data){
-
-          if(finished){
-            return;
-          }
-
-
-          finished = true;
-
-          cleanup();
-
-          resolve(data);
-
-        };
-
-
-      script.onerror =
-        function(){
-
-          if(finished){
-            return;
-          }
-
-
-          finished = true;
-
-          cleanup();
-
-          reject(
-            new Error(
-              `Falha de conexão: ${sheetName}`
-            )
-          );
-
-        };
-
-
-      /*
-        IMPORTANTE:
-
-        O tqx precisa ser:
-
-        tqx=out:json;responseHandler:callback
-
-        e NÃO dois tqx separados.
-      */
-
-      const url =
-        "https://docs.google.com/spreadsheets/d/" +
-        SHEET_ID +
-        "/gviz/tq" +
-        "?sheet=" +
-        encodeURIComponent(sheetName) +
-        "&tqx=" +
-        encodeURIComponent(
-          "out:json;responseHandler:" +
-          callback
-        );
-
-
-      script.src = url;
-
-
-      document.body.appendChild(
-        script
-      );
-
-    }
-  );
-
-}
-
-
-/* ==========================================================
-   ESCAPE HTML
-========================================================== */
 
 function escapeHTML(value){
-
   return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
 }
-
-
-/* ==========================================================
-   INICIAIS
-========================================================== */
 
 function initials(name){
+  const parts = String(name).trim().split(/\s+/).filter(Boolean);
+  if(!parts.length) return "?";
+  if(parts.length === 1) return parts[0].substring(0,2).toUpperCase();
+  return (parts[0][0] + parts[parts.length-1][0]).toUpperCase();
+}
 
-  const parts =
-    String(name)
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean);
+const fmt2 = n => Number(n).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmt0 = n => Number(n).toLocaleString("pt-BR",{maximumFractionDigits:0});
+const fmtPct = n => (Number(n)*100).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1}) + "%";
 
 
-  if(!parts.length){
-    return "?";
+/* ==========================================================
+   CÁLCULO DA NOTA
+   (recalculada aqui; não depende da coluna NOTA FINAL do Sheets)
+========================================================== */
+function calcNotas(u){
+  const notaFech = Math.min(10, Math.max(0, u.fech * 10));
+  const notaRetr = Math.max(0, 10 - u.retr * 50);
+  let final;
+
+  if(u.notaSla !== null && u.notaSla !== undefined){
+    final = notaFech*PESO_FECH + notaRetr*PESO_RETR + u.notaSla*PESO_SLA;
+  }else{
+    final = (notaFech*PESO_FECH + notaRetr*PESO_RETR) / (PESO_FECH + PESO_RETR);
   }
 
+  return {
+    notaFech,
+    notaRetr,
+    final: Math.round(final*100)/100
+  };
+}
 
-  if(parts.length === 1){
+function buildRows(raw){
+  return raw.map(u => {
+    const rec = Number(u.rec) || 0;
+    const enc = Number(u.enc) || 0;
+    const abe = Number(u.abe) || 0;
+    const reab = Number(u.reab) || 0;
 
-    return parts[0]
-      .substring(0,2)
-      .toUpperCase();
+    let fech = u.fech;
+    let retr = u.retr;
+    if(fech === null || fech === undefined) fech = rec > 0 ? enc/rec : null;
+    if(retr === null || retr === undefined) retr = rec > 0 ? reab/rec : null;
+    if(fech !== null && fech > 1) fech = fech/100;
+    if(retr !== null && retr > 1) retr = retr/100;
 
-  }
+    const elegivel = rec > 0 && fech !== null && retr !== null &&
+      normalize(u.elegivel || "sim") !== "nao";
 
+    const base = {
+      usina: u.usina, rec, enc, abe, reab,
+      fech: fech ?? 0, retr: retr ?? 0,
+      tipos: (u.tipos || []).map(v => Number(v) || 0),
+      notaSla: (u.notaSla === undefined ? null : u.notaSla),
+      elegivel
+    };
 
-  return (
-    parts[0][0] +
-    parts[parts.length - 1][0]
-  ).toUpperCase();
-
+    return Object.assign(base, elegivel ? calcNotas(base) : {notaFech:null,notaRetr:null,final:null});
+  });
 }
 
 
 /* ==========================================================
-   FORMATA NOTA
+   GOOGLE SHEETS (JSONP)
 ========================================================== */
+function loadSheet(sheetName){
+  return new Promise((resolve,reject)=>{
+    const callback = "__OEM_SHEET_" + Date.now() + "_" + Math.random().toString(36).substring(2,8);
+    const script = document.createElement("script");
+    let finished = false;
 
-function formatScore(score){
+    const timeout = setTimeout(()=>{
+      if(finished) return;
+      finished = true; cleanup();
+      reject(new Error("Timeout: " + sheetName));
+    },10000);
 
-  return Number(score).toLocaleString(
-    "pt-BR",
-    {
-      minimumFractionDigits:2,
-      maximumFractionDigits:2
+    function cleanup(){
+      clearTimeout(timeout);
+      if(script.parentNode) script.parentNode.removeChild(script);
+      try{ delete window[callback]; }catch(e){}
     }
-  );
 
+    window[callback] = function(data){
+      if(finished) return;
+      finished = true; cleanup(); resolve(data);
+    };
+
+    script.onerror = function(){
+      if(finished) return;
+      finished = true; cleanup();
+      reject(new Error("Falha de conexão: " + sheetName));
+    };
+
+    script.src =
+      "https://docs.google.com/spreadsheets/d/" + SHEET_ID +
+      "/gviz/tq?sheet=" + encodeURIComponent(sheetName) +
+      "&tqx=" + encodeURIComponent("out:json;responseHandler:" + callback);
+
+    document.body.appendChild(script);
+  });
+}
+
+function parseSheet(data){
+  if(!data || !data.table || !Array.isArray(data.table.cols)){
+    throw new Error("Resposta inválida do Google Sheets.");
+  }
+
+  const table = data.table;
+  let rows = Array.isArray(table.rows) ? table.rows : [];
+  let headers = table.cols.map((c,i)=> String(c.label || "").trim());
+
+  /* Se o Google não identificou o cabeçalho, usa a 1ª linha */
+  if(headers.filter(Boolean).length < 3 && rows.length){
+    headers = (rows[0].c || []).map(c => cellText(c));
+    rows = rows.slice(1);
+  }
+
+  const iUsina = findCol(headers,["Usina"]);
+  const iRec   = findCol(headers,["SS Recebidas"]);
+  const iEnc   = findCol(headers,["SS Encerradas"]);
+  const iAbe   = findCol(headers,["SS Abertas/Pendentes","SS Abertas"]);
+  const iFech  = findCol(headers,["% Fechamento"]);
+  const iReab  = findCol(headers,["SS Reabertas"]);
+  const iRetr  = findCol(headers,["% Retrabalho"]);
+  const iSla   = findCol(headers,["Nota SLA (0-10)","Nota SLA"]);
+  const iElig  = findCol(headers,["Elegível para Vencedor?","Elegivel para Vencedor?","Elegível"]);
+  const iTipos = TIPOS_NOMES.map(n => findCol(headers,[n]));
+
+  if(iUsina === -1 || iRec === -1){
+    throw new Error("Colunas Usina / SS Recebidas não encontradas na aba " + SHEET_TAB + ".");
+  }
+
+  const out = [];
+  rows.forEach(row=>{
+    if(!row || !Array.isArray(row.c)) return;
+    const usina = cellText(row.c[iUsina]);
+    if(!usina) return;
+
+    out.push({
+      usina,
+      rec:  cellNumber(row.c[iRec])  ?? 0,
+      enc:  iEnc  >= 0 ? (cellNumber(row.c[iEnc])  ?? 0) : 0,
+      abe:  iAbe  >= 0 ? (cellNumber(row.c[iAbe])  ?? 0) : 0,
+      fech: iFech >= 0 ? cellNumber(row.c[iFech]) : null,
+      reab: iReab >= 0 ? (cellNumber(row.c[iReab]) ?? 0) : 0,
+      retr: iRetr >= 0 ? cellNumber(row.c[iRetr]) : null,
+      notaSla: iSla >= 0 ? cellNumber(row.c[iSla]) : null,
+      elegivel: iElig >= 0 ? cellText(row.c[iElig]) : "SIM",
+      tipos: iTipos.map(i => i >= 0 ? (cellNumber(row.c[i]) ?? 0) : 0)
+    });
+  });
+
+  if(!out.length) throw new Error("Nenhuma usina encontrada.");
+  return out;
 }
 
 
 /* ==========================================================
-   PÓDIO
+   RENDER
 ========================================================== */
+function sortRanking(list){
+  return list.slice().sort((a,b)=> b.final - a.final || b.rec - a.rec || a.usina.localeCompare(b.usina,"pt-BR"));
+}
 
-function renderPodium(people){
+function renderPodium(rank){
+  if(!rank.length) return "";
+  const order = [rank[1], rank[0], rank[2]];
+  let html = `<div class="podium">`;
+  order.forEach(u=>{
+    if(!u) return;
+    const pos = rank.indexOf(u) + 1;
+    html += `
+      <div class="podium-item ${pos===1?"first":""}">
+        <div class="podium-position">${pos}º LUGAR</div>
+        <div class="avatar">${escapeHTML(initials(u.usina))}</div>
+        <div class="podium-name">${escapeHTML(u.usina)}</div>
+        <div class="podium-score">${fmt2(u.final)}</div>
+      </div>`;
+  });
+  return html + `</div>`;
+}
 
-  if(!people.length){
-    return "";
+function renderRanking(rank){
+  if(!rank.length){
+    return `<div class="empty">Nenhuma usina elegível.</div>`;
   }
-
-
-  const positions = [
-    people[1],
-    people[0],
-    people[2]
-  ];
-
-
-  let html =
-    `<div class="podium">`;
-
-
-  positions.forEach(
-    person => {
-
-      if(!person){
-        return;
-      }
-
-
-      const position =
-        people.indexOf(person) + 1;
-
-
-      html += `
-
-        <div class="podium-item ${
-          position === 1 ? "first" : ""
-        }">
-
-          <div class="podium-position">
-            ${position}º LUGAR
+  let html = `<div class="ranking">`;
+  rank.forEach((u,i)=>{
+    const width = Math.min(100,Math.max(0,u.final/10*100));
+    const cls = u.final >= 8 ? "" : (u.final >= 6 ? "warn" : "bad");
+    html += `
+      <div class="rank">
+        <div class="position">#${i+1}</div>
+        <div class="person">
+          <div class="person-name">${escapeHTML(u.usina)}</div>
+          <div class="person-meta">
+            Fech. <b>${fmtPct(u.fech)}</b> · Retrab. <b>${fmtPct(u.retr)}</b> · <b>${fmt0(u.rec)}</b> SS
           </div>
-
-          <div class="avatar">
-            ${initials(person.name)}
-          </div>
-
-          <div class="podium-name">
-            ${escapeHTML(person.name)}
-          </div>
-
-          <div class="podium-score">
-            ${formatScore(person.score)}
-          </div>
-
+          <div class="progress ${cls}"><span style="width:${width}%"></span></div>
         </div>
+        <div class="score">${fmt2(u.final)}</div>
+      </div>`;
+  });
+  return html + `</div>`;
+}
 
-      `;
+function renderTipos(rows){
+  const totais = TIPOS_NOMES.map((n,i)=>({
+    nome:n, total: rows.reduce((s,u)=> s + (u.tipos[i]||0), 0)
+  })).filter(t=>t.total>0).sort((a,b)=>b.total-a.total);
 
-    }
-  );
+  if(!totais.length) return `<div class="empty">Sem dados.</div>`;
+  const max = Math.max(...totais.map(t=>t.total));
 
+  return `<div class="bars">` + totais.map(t=>`
+    <div class="bar-row">
+      <div class="lbl" title="${escapeHTML(t.nome)}">${escapeHTML(t.nome)}</div>
+      <div class="bar-track"><span style="width:${t.total/max*100}%"></span></div>
+      <div class="val">${fmt0(t.total)}</div>
+    </div>`).join("") + `</div>`;
+}
 
-  html +=
-    `</div>`;
+function renderBacklog(rows){
+  const top = rows.filter(u=>u.abe>0).sort((a,b)=>b.abe-a.abe).slice(0,6);
+  if(!top.length) return `<div class="empty">Nenhuma SS pendente. 🎉</div>`;
+  const max = Math.max(...top.map(u=>u.abe));
 
+  return `<div class="bars">` + top.map(u=>`
+    <div class="bar-row">
+      <div class="lbl">${escapeHTML(u.usina)}</div>
+      <div class="bar-track red"><span style="width:${u.abe/max*100}%"></span></div>
+      <div class="val">${fmt0(u.abe)}</div>
+    </div>`).join("") + `</div>`;
+}
 
-  return html;
+function renderFora(rows){
+  const fora = rows.filter(u=>!u.elegivel);
+  if(!fora.length) return `<div class="empty">Todas as usinas tiveram SS.</div>`;
+  return `<div class="chips">` + fora.map(u=>`<span class="chip">${escapeHTML(u.usina)}</span>`).join("") + `</div>`;
+}
 
+function renderAll(rows, modo){
+  const elegiveis = rows.filter(u=>u.elegivel);
+  const rank = sortRanking(elegiveis);
+
+  document.getElementById("podiumTmp")?.remove();
+  document.getElementById("ranking").innerHTML = renderPodium(rank) + renderRanking(rank);
+  document.getElementById("tipos").innerHTML   = renderTipos(rows);
+  document.getElementById("backlog").innerHTML = renderBacklog(rows);
+  document.getElementById("fora").innerHTML    = renderFora(rows);
+
+  const status = document.getElementById("status-ranking");
+  status.textContent = modo === "live" ? "ONLINE" : "SNAPSHOT";
+  status.className = "status " + (modo === "live" ? "ok" : "warn");
+
+  /* KPIs */
+  const tot = k => rows.reduce((s,u)=> s + (u[k]||0), 0);
+  const rec = tot("rec"), enc = tot("enc");
+
+  document.getElementById("kpiUsinas").textContent = `${elegiveis.length}/${rows.length}`;
+  document.getElementById("kpiLider").textContent  = rank.length ? rank[0].usina : "—";
+  document.getElementById("kpiTop").textContent    = rank.length ? fmt2(rank[0].final) : "—";
+  document.getElementById("kpiFech").textContent   = rec > 0 ? fmtPct(enc/rec) : "—";
+  document.getElementById("kpiRec").textContent    = fmt0(rec);
+  document.getElementById("kpiEnc").textContent    = fmt0(enc);
+  document.getElementById("kpiAbe").textContent    = fmt0(tot("abe"));
+  document.getElementById("kpiReab").textContent   = fmt0(tot("reab"));
+
+  /* Selo de nota provisória / definitiva */
+  const slaOk = elegiveis.length > 0 && elegiveis.every(u=>u.notaSla !== null && u.notaSla !== undefined);
+  const badge = document.getElementById("notaBadge");
+  badge.textContent = slaOk ? "NOTA DEFINITIVA" : "NOTA PROVISÓRIA — SLA PENDENTE";
+  badge.style.color = slaOk ? "var(--green)" : "var(--yellow)";
 }
 
 
 /* ==========================================================
-   RANKING
+   CARREGAMENTO
 ========================================================== */
-
-function renderRanking(people){
-
-  if(!people.length){
-
-    return `
-      <div class="empty">
-        Nenhum participante encontrado.
-      </div>
-    `;
-
-  }
-
-
-  const max =
-    Math.max(
-      ...people.map(
-        person => person.score
-      )
-    );
-
-
-  let html =
-    `<div class="ranking">`;
-
-
-  people.forEach(
-    (person,index) => {
-
-      const width =
-        max > 0
-          ? Math.min(
-              100,
-              Math.max(
-                0,
-                person.score / max * 100
-              )
-            )
-          : 0;
-
-
-      html += `
-
-        <div class="rank">
-
-          <div class="position">
-            #${index + 1}
-          </div>
-
-          <div class="person">
-
-            <div class="person-name">
-              ${escapeHTML(person.name)}
-            </div>
-
-            <div class="progress">
-              <span
-                style="width:${width}%"
-              ></span>
-            </div>
-
-          </div>
-
-          <div class="score">
-            ${formatScore(person.score)}
-          </div>
-
-        </div>
-
-      `;
-
-    }
-  );
-
-
-  html +=
-    `</div>`;
-
-
-  return html;
-
-}
-
-
-/* ==========================================================
-   RENDER DEPARTAMENTO
-========================================================== */
-
-function renderDepartment(
-  sheetName,
-  result
-){
-
-  const container =
-    document.getElementById(
-      sheetName
-    );
-
-
-  const status =
-    document.getElementById(
-      "status-" + sheetName
-    );
-
-
-  if(!container || !status){
-    return;
-  }
-
-
-  if(
-    !result ||
-    !result.people.length
-  ){
-
-    container.innerHTML = `
-      <div class="empty">
-        Nenhum participante encontrado.
-      </div>
-    `;
-
-
-    status.textContent =
-      "SEM DADOS";
-
-
-    status.className =
-      "status";
-
-
-    return;
-
-  }
-
-
-  container.innerHTML =
-    renderPodium(
-      result.people
-    ) +
-    renderRanking(
-      result.people
-    );
-
-
-  status.textContent =
-    "ONLINE";
-
-
-  status.className =
-    "status ok";
-
-}
-
-
-/* ==========================================================
-   KPIs
-========================================================== */
-
-function updateKPIs(allResults){
-
-  const valid =
-    allResults.filter(
-      Boolean
-    );
-
-
-  const people =
-    valid.flatMap(
-      result =>
-        result.people
-    );
-
-
-  document.getElementById(
-    "totalPeople"
-  ).textContent =
-    people.length;
-
-
-  document.getElementById(
-    "onlineTeams"
-  ).textContent =
-    `${valid.length}/${SHEETS.length}`;
-
-
-  if(!people.length){
-
-    document.getElementById(
-      "leaderName"
-    ).textContent =
-      "—";
-
-
-    document.getElementById(
-      "topScore"
-    ).textContent =
-      "—";
-
-
-    return;
-
-  }
-
-
-  people.sort(
-    (a,b) =>
-      b.score - a.score
-  );
-
-
-  const leader =
-    people[0];
-
-
-  document.getElementById(
-    "leaderName"
-  ).textContent =
-    leader.name;
-
-
-  document.getElementById(
-    "topScore"
-  ).textContent =
-    formatScore(
-      leader.score
-    );
-
-}
-
-
-/* ==========================================================
-   CARREGAMENTO PRINCIPAL
-========================================================== */
-
 async function loadAll(){
+  const button = document.getElementById("refreshButton");
+  const dot = document.getElementById("globalDot");
+  const statusText = document.getElementById("globalStatus");
 
-  const button =
-    document.getElementById(
-      "refreshButton"
-    );
+  button.classList.add("loading");
+  button.textContent = "↻ ATUALIZANDO";
+  statusText.textContent = "Sincronizando";
+  dot.className = "dot";
 
+  document.getElementById("periodo").textContent = PERIODO;
 
-  const globalDot =
-    document.getElementById(
-      "globalDot"
-    );
+  let rows, modo;
+  const semId = !SHEET_ID || SHEET_ID.startsWith("COLE_AQUI");
 
-
-  const globalStatus =
-    document.getElementById(
-      "globalStatus"
-    );
-
-
-  const lastUpdate =
-    document.getElementById(
-      "lastUpdate"
-    );
-
-
-  button.classList.add(
-    "loading"
-  );
-
-
-  button.textContent =
-    "↻ ATUALIZANDO";
-
-
-  globalStatus.textContent =
-    "Sincronizando";
-
-
-  globalDot.className =
-    "dot";
-
-
-  /*
-    IMPORTANTE:
-
-    Agora as 4 abas são consultadas
-    AO MESMO TEMPO.
-
-    Antes era:
-
-    Tecnicos -> espera
-    Supervisores -> espera
-    COG -> espera
-    PCM -> espera
-
-    Agora:
-
-    Tecnicos
-    Supervisores
-    COG
-    PCM
-
-    simultaneamente.
-  */
-
-  const promises =
-    SHEETS.map(
-      sheetName =>
-        loadSheet(sheetName)
-          .then(
-            data =>
-              ({
-                sheetName,
-                result:
-                  parseSheet(
-                    data,
-                    sheetName
-                  )
-              })
-          )
-          .catch(
-            error =>
-              ({
-                sheetName,
-                error
-              })
-          )
-    );
-
-
-  const responses =
-    await Promise.all(
-      promises
-    );
-
-
-  const results = [];
-
-
-  responses.forEach(
-    response => {
-
-      const sheetName =
-        response.sheetName;
-
-
-      if(response.error){
-
-        console.error(
-          `[${sheetName}]`,
-          response.error
-        );
-
-
-        const container =
-          document.getElementById(
-            sheetName
-          );
-
-
-        const status =
-          document.getElementById(
-            "status-" +
-            sheetName
-          );
-
-
-        if(container){
-
-          container.innerHTML = `
-            <div class="empty">
-              Dados indisponíveis.
-            </div>
-          `;
-
-        }
-
-
-        if(status){
-
-          status.textContent =
-            "OFFLINE";
-
-          status.className =
-            "status error";
-
-        }
-
-
-        return;
-
-      }
-
-
-      currentData[sheetName] =
-        response.result;
-
-
-      renderDepartment(
-        sheetName,
-        response.result
-      );
-
-
-      results.push(
-        response.result
-      );
-
+  if(!semId){
+    try{
+      const data = await loadSheet(SHEET_TAB);
+      rows = buildRows(parseSheet(data));
+      modo = "live";
+    }catch(err){
+      console.error(err);
+      rows = buildRows(SNAPSHOT);
+      modo = "snapshot";
     }
-  );
-
-
-  updateKPIs(
-    results
-  );
-
-
-  const successful =
-    results.length;
-
-
-  if(
-    successful === SHEETS.length
-  ){
-
-    globalDot.className =
-      "dot online";
-
-
-    globalStatus.textContent =
-      "Sistema online";
-
+  }else{
+    rows = buildRows(SNAPSHOT);
+    modo = "snapshot";
   }
 
-  else if(
-    successful > 0
-  ){
+  currentRows = rows;
+  renderAll(rows, modo);
 
-    globalDot.className =
-      "dot online";
-
-
-    globalStatus.textContent =
-      `${successful}/${SHEETS.length} equipes online`;
-
+  if(modo === "live"){
+    dot.className = "dot online";
+    statusText.textContent = "Sistema online";
+  }else{
+    dot.className = "dot warn";
+    statusText.textContent = semId ? "Dados do snapshot" : "Sheets offline · snapshot";
   }
 
-  else{
+  document.getElementById("lastUpdate").textContent =
+    "Última atualização: " + new Date().toLocaleString("pt-BR");
 
-    globalDot.className =
-      "dot error";
-
-
-    globalStatus.textContent =
-      "Sem conexão";
-
-  }
-
-
-  lastUpdate.textContent =
-    "Última atualização: " +
-    new Date().toLocaleString(
-      "pt-BR"
-    );
-
-
-  button.classList.remove(
-    "loading"
-  );
-
-
-  button.textContent =
-    "↻ ATUALIZAR";
-
+  button.classList.remove("loading");
+  button.textContent = "↻ ATUALIZAR";
 }
 
+setInterval(loadAll, 5 * 60 * 1000);
 
-/* ==========================================================
-   AUTO REFRESH
-========================================================== */
-
-setInterval(
-  loadAll,
-  5 * 60 * 1000
-);
-
-
-/* ==========================================================
-   PRIMEIRA EXECUÇÃO
-========================================================== */
-
-if(
-  document.readyState === "loading"
-){
-
-  document.addEventListener(
-    "DOMContentLoaded",
-    loadAll
-  );
-
+if(document.readyState === "loading"){
+  document.addEventListener("DOMContentLoaded", loadAll);
 }else{
-
   loadAll();
-
 }
-
 </script>
+</body>
+</html>
